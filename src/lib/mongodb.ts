@@ -11,7 +11,6 @@ interface MongooseCache {
   promise: Promise<typeof mongoose> | null;
 }
 
-// Usando o padrão oficial Next.js + Mongoose
 declare global {
   // eslint-disable-next-line no-var
   var mongoose: MongooseCache | undefined;

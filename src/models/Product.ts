@@ -5,9 +5,9 @@ const ProductModel = new mongoose.Schema<IProduct>(
   {
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: false },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Product || mongoose.model('Product', ProductModel);
+export const Product = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductModel);
