@@ -1,4 +1,4 @@
-import { User } from '@/models';
+import { User } from '@/models/';
 import { IUser, RegisterUserSchema } from '@/types';
 
 export const UserService = {
