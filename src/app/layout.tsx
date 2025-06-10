@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Roboto, Roboto_Slab } from "next/font/google";
 import "./globals.css";
 import { ThemeProviderWrapper } from './ThemeProviderWrapper';
+import { SessionProvider } from '@/components/providers/SessionProvider';
 
 // Configure Roboto font
 const roboto = Roboto({
@@ -36,9 +37,11 @@ export default function RootLayout({
         className={`${roboto.variable} ${robotoSlab.variable}`}
         suppressHydrationWarning
       >
-        <ThemeProviderWrapper>
-          {children}
-        </ThemeProviderWrapper>
+        <SessionProvider>
+          <ThemeProviderWrapper>
+            {children}
+          </ThemeProviderWrapper>
+        </SessionProvider>
       </body>
     </html>
   );

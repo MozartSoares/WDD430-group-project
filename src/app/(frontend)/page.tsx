@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Box } from '@mui/material';
 import Header from '@/components/layout/Header';
 import HeroSection from '@/components/sections/HeroSection';
@@ -30,14 +31,14 @@ interface Product {
   discount?: number;
 }
 
-// Demo data
+// Demo data with navigation hrefs
 const demoCategories: Category[] = [
-  { id: '1', name: 'Pottery & Ceramics', image: '/api/placeholder/300/200' },
-  { id: '2', name: 'Jewelry & Accessories', image: '/api/placeholder/300/200' },
-  { id: '3', name: 'Home Decor', image: '/api/placeholder/300/200' },
-  { id: '4', name: 'Textiles & Fiber Arts', image: '/api/placeholder/300/200' },
-  { id: '5', name: 'Woodworking', image: '/api/placeholder/300/200' },
-  { id: '6', name: 'Glass & Metalwork', image: '/api/placeholder/300/200' },
+  { id: '1', name: 'Pottery & Ceramics', image: '/api/placeholder/300/200', href: '/products?category=pottery' },
+  { id: '2', name: 'Jewelry & Accessories', image: '/api/placeholder/300/200', href: '/products?category=jewelry' },
+  { id: '3', name: 'Home Decor', image: '/api/placeholder/300/200', href: '/products?category=decor' },
+  { id: '4', name: 'Textiles & Fiber Arts', image: '/api/placeholder/300/200', href: '/products?category=textiles' },
+  { id: '5', name: 'Woodworking', image: '/api/placeholder/300/200', href: '/products?category=wood' },
+  { id: '6', name: 'Glass & Metalwork', image: '/api/placeholder/300/200', href: '/products?category=glass' },
 ];
 
 const demoProducts: Product[] = [
@@ -134,29 +135,24 @@ const demoProducts: Product[] = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [cartCount, setCartCount] = useState(3);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Event handlers
-  const handleLoginClick = () => {
-    console.log('Login clicked');
-    setIsLoggedIn(!isLoggedIn);
-  };
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
+  // Event handlers with navigation
   const handleCategoryClick = (category: Category) => {
-    console.log('Category clicked:', category);
+    if (category.href) {
+      router.push(category.href);
+    } else {
+      router.push(`/products?category=${category.id}`);
+    }
   };
 
   const handleProductClick = (product: Product) => {
-    console.log('Product clicked:', product);
+    router.push(`/products/${product.id}`);
   };
 
   const handleBackClick = () => {
-    console.log('Back to all products clicked');
+    router.push('/products');
   };
 
   const handlePageChange = (page: number) => {
@@ -184,9 +180,7 @@ export default function Home() {
       {/* Header */}
       <Header
         cartItemCount={cartCount}
-        isLoggedIn={isLoggedIn}
-        onLoginClick={handleLoginClick}
-        onCartClick={handleCartClick}
+        onCartClick={() => console.log('Cart clicked')}
       />
 
       {/* Main Content */}

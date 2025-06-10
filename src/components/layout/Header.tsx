@@ -1,31 +1,40 @@
+// src/components/layout/Header.tsx
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 import {
   AppBar,
   Toolbar,
   Typography,
   Box,
   TextField,
-  InputAdornment,
   IconButton,
   Badge,
   Button,
   Menu,
   MenuItem,
-  useTheme,
-  useMediaQuery,
   Drawer,
   List,
   ListItem,
   ListItemText,
+  ListItemIcon,
+  Divider,
+  Avatar,
 } from '@mui/material';
 import {
   Search,
   ShoppingCart,
-  Person,
   Menu as MenuIcon,
   Close,
+  Person,
+  Logout,
+  ShoppingBag,
+  Home,
+  Category,
+  Info,
+  Phone,
 } from '@mui/icons-material';
 
 interface HeaderProps {
@@ -35,218 +44,333 @@ interface HeaderProps {
   onCartClick?: () => void;
 }
 
-const menuItems = ['MENU', 'MENU', 'MENU', 'MENU'];
-
 export default function Header({ 
   cartItemCount = 0, 
-  isLoggedIn = false,
-  onLoginClick,
   onCartClick 
 }: HeaderProps) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleMobileMenuToggle = () => {
+  const isLoggedIn = !!session;
+
+  const handleLoginClick = () => {
+    router.push('/login');
+  };
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    setUserMenuAnchor(null);
+    router.push('/');
+  };
+
+  const handleUserMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setUserMenuAnchor(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchor(null);
+  };
+
+  const handleCartClick = () => {
+    if (onCartClick) {
+      onCartClick();
+    } else {
+      // Demo cart page - you can create this later
+      console.log('Navigate to cart');
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const navigationItems = [
+    { label: 'Home', href: '/', icon: <Home /> },
+    { label: 'All Products', href: '/products', icon: <ShoppingBag /> },
+    { label: 'Categories', href: '/categories', icon: <Category /> },
+    { label: 'About', href: '/about', icon: <Info /> },
+    { label: 'Contact', href: '/contact', icon: <Phone /> },
+  ];
+
+  const handleNavClick = (href: string) => {
+    // For demo purposes, only certain routes exist
+    if (href === '/products') {
+      router.push('/products');
+    } else if (href === '/') {
+      router.push('/');
+    } else {
+      // For non-existent routes, just close menu and log
+      console.log(`Navigate to: ${href}`);
+      setMobileMenuOpen(false);
+    }
+  };
+
+  const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
-
-  const handleSearchSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Handle search functionality
-    console.log('Search:', searchValue);
-  };
-
-  const MobileMenu = (
-    <Drawer
-      anchor="right"
-      open={mobileMenuOpen}
-      onClose={handleMobileMenuToggle}
-      sx={{ '& .MuiDrawer-paper': { width: 250, pt: 2 } }}
-    >
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 2, pb: 2 }}>
-        <IconButton onClick={handleMobileMenuToggle}>
-          <Close />
-        </IconButton>
-      </Box>
-      <List>
-        {menuItems.map((item, index) => (
-          <ListItem key={index}>
-            <ListItemText primary={item} />
-          </ListItem>
-        ))}
-        <ListItem>
-          <Button
-            variant="outlined"
-            startIcon={<Person />}
-            fullWidth
-            onClick={onLoginClick}
-          >
-            {isLoggedIn ? 'Account' : 'Login'}
-          </Button>
-        </ListItem>
-      </List>
-    </Drawer>
-  );
 
   return (
     <>
       <AppBar 
         position="sticky" 
-        color="inherit" 
         elevation={1}
         sx={{ 
           backgroundColor: 'background.paper',
+          color: 'text.primary',
           borderBottom: 1,
           borderColor: 'divider'
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
+        <Toolbar sx={{ gap: 2 }}>
+          {/* Mobile Menu Button */}
+          <IconButton
+            edge="start"
+            onClick={toggleMobileMenu}
+            sx={{ display: { xs: 'block', md: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+
           {/* Logo */}
           <Typography
-            variant="h5"
+            variant="h6"
             component="div"
+            onClick={() => router.push('/')}
             sx={{
-              fontWeight: 700,
+              fontFamily: 'var(--font-roboto-slab)',
+              fontWeight: 600,
               color: 'primary.main',
-              textDecoration: 'none',
               cursor: 'pointer',
+              flexShrink: 0,
             }}
           >
             Handcrafted Haven
           </Typography>
 
           {/* Desktop Navigation */}
-          {!isMobile && (
-            <Box sx={{ display: 'flex', gap: 4 }}>
-              {menuItems.map((item, index) => (
-                <Button
-                  key={index}
-                  sx={{ 
-                    color: 'text.primary',
-                    fontWeight: 500,
-                    '&:hover': {
-                      backgroundColor: 'primary.main',
-                      color: 'primary.contrastText',
-                    }
-                  }}
-                >
-                  {item}
-                </Button>
-              ))}
-            </Box>
-          )}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, ml: 4 }}>
+            {navigationItems.map((item) => (
+              <Button
+                key={item.label}
+                onClick={() => handleNavClick(item.href)}
+                sx={{ color: 'text.primary' }}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* Search Bar */}
-          <Box 
-            component="form" 
-            onSubmit={handleSearchSubmit}
-            sx={{ 
-              display: { xs: 'none', sm: 'block' },
+          <Box
+            component="form"
+            onSubmit={handleSearch}
+            sx={{
+              display: { xs: 'none', sm: 'flex' },
+              alignItems: 'center',
+              maxWidth: 300,
               flexGrow: 1,
-              maxWidth: 400,
-              mx: 2 
             }}
           >
             <TextField
-              fullWidth
-              placeholder="Search products..."
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
               size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search color="action" />
-                  </InputAdornment>
-                ),
-                sx: {
-                  borderRadius: 2,
-                  '& .MuiOutlinedInput-root': {
-                    '&:hover fieldset': {
-                      borderColor: 'primary.main',
-                    },
-                  },
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  backgroundColor: 'background.default',
                 },
               }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton type="submit" size="small">
+                    <Search />
+                  </IconButton>
+                ),
+              }}
+              fullWidth
             />
           </Box>
 
           {/* Right Side Actions */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Desktop Login Button */}
-            {!isMobile && (
-              <Button
-                variant="outlined"
-                startIcon={<Person />}
-                onClick={onLoginClick}
-                sx={{
-                  borderColor: 'primary.main',
-                  color: 'primary.main',
-                  '&:hover': {
-                    backgroundColor: 'primary.main',
-                    color: 'primary.contrastText',
-                  },
-                }}
-              >
-                {isLoggedIn ? 'Account' : 'Login'}
-              </Button>
-            )}
+            {/* Mobile Search */}
+            <IconButton sx={{ display: { xs: 'block', sm: 'none' } }}>
+              <Search />
+            </IconButton>
 
             {/* Cart */}
-            <IconButton 
-              onClick={onCartClick}
-              sx={{ 
-                color: 'primary.main',
-                '&:hover': {
-                  backgroundColor: 'primary.main',
-                  color: 'primary.contrastText',
-                }
-              }}
-            >
-              <Badge badgeContent={cartItemCount} color="error">
+            <IconButton onClick={handleCartClick}>
+              <Badge badgeContent={cartItemCount} color="primary">
                 <ShoppingCart />
               </Badge>
             </IconButton>
 
-            {/* Mobile Menu Button */}
-            {isMobile && (
-              <IconButton 
-                onClick={handleMobileMenuToggle}
-                sx={{ color: 'primary.main' }}
+            {/* Login/User Menu */}
+            {isLoggedIn ? (
+              <>
+                <IconButton onClick={handleUserMenuClick}>
+                  <Avatar sx={{ width: 32, height: 32 }}>
+                    {session?.user?.name?.[0] || 'U'}
+                  </Avatar>
+                </IconButton>
+                <Menu
+                  anchorEl={userMenuAnchor}
+                  open={Boolean(userMenuAnchor)}
+                  onClose={handleUserMenuClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                >
+                  <MenuItem disabled>
+                    <Typography variant="body2" color="text.secondary">
+                      {session?.user?.email}
+                    </Typography>
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleUserMenuClose}>
+                    <ListItemIcon>
+                      <Person />
+                    </ListItemIcon>
+                    Profile
+                  </MenuItem>
+                  <MenuItem onClick={handleUserMenuClose}>
+                    <ListItemIcon>
+                      <ShoppingBag />
+                    </ListItemIcon>
+                    My Orders
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <Logout />
+                    </ListItemIcon>
+                    Sign Out
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                variant="outlined"
+                onClick={handleLoginClick}
+                startIcon={<Person />}
+                sx={{ display: { xs: 'none', sm: 'flex' } }}
               >
-                <MenuIcon />
-              </IconButton>
+                Login
+              </Button>
             )}
           </Box>
         </Toolbar>
-
-        {/* Mobile Search Bar */}
-        {isMobile && (
-          <Box sx={{ px: 2, pb: 2 }}>
-            <Box component="form" onSubmit={handleSearchSubmit}>
-              <TextField
-                fullWidth
-                placeholder="Search products..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                size="small"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-          </Box>
-        )}
       </AppBar>
 
-      {/* Mobile Menu Drawer */}
-      {MobileMenu}
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="left"
+        open={mobileMenuOpen}
+        onClose={toggleMobileMenu}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 280,
+          },
+        }}
+      >
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6" color="primary.main" fontWeight="bold">
+            Menu
+          </Typography>
+          <IconButton onClick={toggleMobileMenu}>
+            <Close />
+          </IconButton>
+        </Box>
+        <Divider />
+
+        <List>
+          {navigationItems.map((item) => (
+            <ListItem
+              key={item.label}
+              onClick={() => {
+                handleNavClick(item.href);
+                setMobileMenuOpen(false);
+              }}
+              sx={{ cursor: 'pointer' }}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItem>
+          ))}
+        </List>
+
+        <Divider />
+
+        {/* Mobile Login/User Section */}
+        <Box sx={{ p: 2 }}>
+          {isLoggedIn ? (
+            <Box>
+              <Typography variant="subtitle2" gutterBottom>
+                Signed in as:
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                {session?.user?.email}
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={handleLogout}
+                startIcon={<Logout />}
+                fullWidth
+                sx={{ mt: 1 }}
+              >
+                Sign Out
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={() => {
+                handleLoginClick();
+                setMobileMenuOpen(false);
+              }}
+              startIcon={<Person />}
+              fullWidth
+            >
+              Login
+            </Button>
+          )}
+        </Box>
+
+        {/* Mobile Search */}
+        <Box sx={{ p: 2 }}>
+          <Box component="form" onSubmit={handleSearch}>
+            <TextField
+              size="small"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <IconButton type="submit" size="small">
+                    <Search />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Box>
+        </Box>
+      </Drawer>
     </>
   );
 }
