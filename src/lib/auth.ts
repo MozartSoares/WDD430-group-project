@@ -71,15 +71,39 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         try {
           if (!credentials?.email || !credentials?.password) return null;
 
-          // Demo authentication - replace with real logic later
-          if (
-            credentials.email === "demo@example.com" &&
-            credentials.password === "password"
-          ) {
-            return {
+          // Demo users for testing - UPDATE THIS SECTION
+          const demoUsers = [
+            {
               id: "1",
               email: "demo@example.com",
+              password: "password",
               name: "Demo User",
+            },
+            {
+              id: "2",
+              email: "artisan1@example.com",
+              password: "password",
+              name: "Sarah Chen",
+            },
+            {
+              id: "3",
+              email: "artisan2@example.com",
+              password: "password",
+              name: "Marcus Rodriguez",
+            },
+          ];
+
+          const user = demoUsers.find(
+            (u) =>
+              u.email === credentials.email &&
+              u.password === credentials.password
+          );
+
+          if (user) {
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
             };
           }
 

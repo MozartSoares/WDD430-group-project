@@ -133,7 +133,9 @@ export default function LoginPage() {
                 }
               }}
             >
-              <strong>Demo Login:</strong> demo@example.com / password
+              <p><strong>Demo Login:</strong> demo@example.com / password</p>
+              <p><strong>Artist1 Login:</strong> artisan1@example.com / password</p>
+              <p><strong>Artist2 Login:</strong> artisan2@example.com" / password</p>
             </Alert>
 
             {/* Error Alert */}

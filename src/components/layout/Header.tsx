@@ -74,6 +74,12 @@ export default function Header({
     setUserMenuAnchor(null);
   };
 
+  // Add this function to handle profile navigation
+  const handleProfileClick = () => {
+    setUserMenuAnchor(null);
+    router.push('/profile');
+  };
+
   const handleCartClick = () => {
     if (onCartClick) {
       onCartClick();
@@ -242,7 +248,7 @@ export default function Header({
                     </Typography>
                   </MenuItem>
                   <Divider />
-                  <MenuItem onClick={handleUserMenuClose}>
+                  <MenuItem onClick={handleProfileClick}>
                     <ListItemIcon>
                       <Person />
                     </ListItemIcon>
@@ -326,6 +332,18 @@ export default function Header({
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 {session?.user?.email}
               </Typography>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  handleProfileClick();
+                  setMobileMenuOpen(false);
+                }}
+                startIcon={<Person />}
+                fullWidth
+                sx={{ mb: 1 }}
+              >
+                Profile
+              </Button>
               <Button
                 variant="outlined"
                 onClick={handleLogout}
