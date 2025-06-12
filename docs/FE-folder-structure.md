@@ -1,20 +1,31 @@
 
 ## FE Structure
 src/
+├── app/
+│   └── (frontend)/
+│       ├── page.tsx                    # Homepage
+│       ├── login/
+│       │   └── page.tsx               # Login page
+│       ├── profile/
+│       │   └── page.tsx               # User profile (NEW)
+│       ├── artisans/
+│       │   └── [id]/
+│       │       └── page.tsx           # Public artisan page (NEW)
+│       └── products/
+│           ├── page.tsx               # Products listing
+│           └── [id]/
+│               └── page.tsx           # Product detail (UPDATED)
 ├── components/
 │   ├── layout/
 │   │   ├── Header.tsx
 │   │   └── Footer.tsx
-│   └── sections/
-│       ├── HeroSection.tsx
-│       ├── CategoryGrid.tsx
-│       └── ProductGrid.tsx
-├── lib/
-│   └── theme.ts
-├── types/
-│   └── index.ts
-└── app/
-    └── (frontend)/
+│   ├── sections/
+│   │   └── ProductGrid.tsx
+│   └── modals/                        
+│       ├── AddProductModal.tsx        # Not an individual page to add products
+│       └── ReviewModal.tsx            # Not an individual page to add reviews
+└── data/
+    └── demoData.ts                    # Fake data until BE/DB is ready
         └── page.tsx
 
 ## Usage Examples
