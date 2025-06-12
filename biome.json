@@ -24,13 +24,7 @@
   },
   "organizeImports": {
     "enabled": true,
-    "ignore": [
-      "*.min.js",
-      "dist/**",
-      "coverage/**",
-      "build/**",
-      "reports/**"
-    ]
+    "ignore": ["*.min.js", "dist/**", "coverage/**", "build/**", "reports/**"]
   },
   "linter": {
     "enabled": true,

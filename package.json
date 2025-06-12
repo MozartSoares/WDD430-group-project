@@ -6,8 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint --fix",
-    "lint:check": "biome lint"
+    "lint": "biome lint .",
+    "lint:fix": "biome lint . --apply",
+    "format": "biome format . --check",
+    "format:fix": "biome format . --write",
+    "check": "pnpm run lint && pnpm run format",
+    "fix": "pnpm run lint:fix && pnpm run format:fix"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

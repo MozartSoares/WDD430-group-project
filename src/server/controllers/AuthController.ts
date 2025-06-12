@@ -1,7 +1,7 @@
-import type { NextRequest } from 'next/server';
-import { AuthService } from '../services';
-import { registerUserSchema } from '@/types';
-import { handleControllerError, validateBody } from '@/lib/validation';
+import type { NextRequest } from "next/server";
+import { AuthService } from "../services";
+import { registerUserSchema } from "@/types";
+import { handleControllerError, validateBody } from "@/lib/validation";
 
 export const AuthController = {
   //probably we wont need this because nextauth will handle the login and register using the service directly
@@ -44,10 +44,10 @@ export const AuthController = {
       return Response.json(
         {
           success: true,
-          message: 'User created successfully',
+          message: "User created successfully",
           user,
         },
-        { status: 201 }
+        { status: 201 },
       );
     } catch (error) {
       return handleControllerError(error);

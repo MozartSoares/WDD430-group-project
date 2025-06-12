@@ -1,9 +1,9 @@
 // src/app/(frontend)/products/[id]/page.tsx
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   Box,
   Container,
@@ -19,7 +19,7 @@ import {
   Breadcrumbs,
   Link,
   Alert,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Add,
   Remove,
@@ -30,19 +30,19 @@ import {
   ChevronRight,
   RateReview,
   ThumbUp,
-} from '@mui/icons-material';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import ReviewModal from '@/components/modals/ReviewModal';
-import { 
-  demoProducts, 
-  getUserByArtistId, 
-  getReviewsForProduct, 
+} from "@mui/icons-material";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import ReviewModal from "@/components/modals/ReviewModal";
+import {
+  demoProducts,
+  getUserByArtistId,
+  getReviewsForProduct,
   canUserReviewProduct,
   type DemoProduct,
   type DemoReview,
-  type DemoUser
-} from '@/data/demoData';
+  type DemoUser,
+} from "@/data/demoData";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -57,27 +57,27 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     const productId = params.id as string;
-    const foundProduct = demoProducts.find(p => p.id === productId);
-    
+    const foundProduct = demoProducts.find((p) => p.id === productId);
+
     if (foundProduct) {
       setProduct(foundProduct);
-      
+
       // Get artisan info
       const productArtisan = getUserByArtistId(foundProduct.artistId);
       setArtisan(productArtisan || null);
-      
+
       // Get reviews
       const productReviews = getReviewsForProduct(productId);
       setReviews(productReviews);
-      
+
       // Check if current user can review
       if (session?.user?.email) {
         const userEmail = session.user.email;
-        let userId = '';
-        if (userEmail === 'demo@example.com') userId = 'user_0';
-        else if (userEmail === 'artisan1@example.com') userId = 'user_1';
-        else if (userEmail === 'artisan2@example.com') userId = 'user_2';
-        
+        let userId = "";
+        if (userEmail === "demo@example.com") userId = "user_0";
+        else if (userEmail === "artisan1@example.com") userId = "user_1";
+        else if (userEmail === "artisan2@example.com") userId = "user_2";
+
         if (userId) {
           setCanReview(canUserReviewProduct(userId, productId));
         }
@@ -87,14 +87,23 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
         <Typography variant="h5">Product not found</Typography>
       </Box>
     );
   }
 
   const handleQuantityChange = (change: number) => {
-    setQuantity(prev => Math.max(1, Math.min(product.stockQuantity, prev + change)));
+    setQuantity((prev) =>
+      Math.max(1, Math.min(product.stockQuantity, prev + change)),
+    );
   };
 
   const handleAddToCart = () => {
@@ -103,60 +112,66 @@ export default function ProductDetailPage() {
   };
 
   const handleReviewAdded = (newReview: DemoReview) => {
-    setReviews(prev => [newReview, ...prev]);
-    
+    setReviews((prev) => [newReview, ...prev]);
+
     // Update product review count and rating
     const updatedReviews = [newReview, ...reviews];
-    const newRating = updatedReviews.reduce((sum, review) => sum + review.rating, 0) / updatedReviews.length;
-    
-    setProduct(prev => prev ? {
-      ...prev,
-      rating: Math.round(newRating * 10) / 10,
-      reviewCount: updatedReviews.length
-    } : null);
-    
+    const newRating =
+      updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
+      updatedReviews.length;
+
+    setProduct((prev) =>
+      prev
+        ? {
+            ...prev,
+            rating: Math.round(newRating * 10) / 10,
+            reviewCount: updatedReviews.length,
+          }
+        : null,
+    );
+
     setCanReview(false);
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const getCurrentUserId = (): string | null => {
     if (!session?.user?.email) return null;
     const email = session.user.email;
-    if (email === 'demo@example.com') return 'user_0';
-    if (email === 'artisan1@example.com') return 'user_1';
-    if (email === 'artisan2@example.com') return 'user_2';
+    if (email === "demo@example.com") return "user_0";
+    if (email === "artisan1@example.com") return "user_1";
+    if (email === "artisan2@example.com") return "user_2";
     return null;
   };
 
   const getCurrentUserName = (): string => {
-    if (!session?.user?.email) return '';
+    if (!session?.user?.email) return "";
     const email = session.user.email;
-    if (email === 'demo@example.com') return 'Demo User';
-    if (email === 'artisan1@example.com') return 'Sarah Chen';
-    if (email === 'artisan2@example.com') return 'Marcus Rodriguez';
-    return '';
+    if (email === "demo@example.com") return "Demo User";
+    if (email === "artisan1@example.com") return "Sarah Chen";
+    if (email === "artisan2@example.com") return "Marcus Rodriguez";
+    return "";
   };
 
   const getCurrentArtistId = (): number | null => {
     if (!session?.user?.email) return null;
     const email = session.user.email;
-    if (email === 'demo@example.com') return 0;
-    if (email === 'artisan1@example.com') return 1;
-    if (email === 'artisan2@example.com') return 2;
+    if (email === "demo@example.com") return 0;
+    if (email === "artisan1@example.com") return 1;
+    if (email === "artisan2@example.com") return 2;
     return null;
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header cartItemCount={0} onCartClick={() => {}} />
-      
+
       <Container maxWidth="lg" sx={{ py: 3, flexGrow: 1 }}>
         {/* Breadcrumbs */}
         <Breadcrumbs
@@ -167,11 +182,11 @@ export default function ProductDetailPage() {
           <Link
             component="button"
             variant="body2"
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             sx={{
-              color: 'text.secondary',
-              textDecoration: 'none',
-              '&:hover': { textDecoration: 'underline' },
+              color: "text.secondary",
+              textDecoration: "none",
+              "&:hover": { textDecoration: "underline" },
             }}
           >
             Home
@@ -179,11 +194,11 @@ export default function ProductDetailPage() {
           <Link
             component="button"
             variant="body2"
-            onClick={() => router.push('/products')}
+            onClick={() => router.push("/products")}
             sx={{
-              color: 'text.secondary',
-              textDecoration: 'none',
-              '&:hover': { textDecoration: 'underline' },
+              color: "text.secondary",
+              textDecoration: "none",
+              "&:hover": { textDecoration: "underline" },
             }}
           >
             Products
@@ -201,8 +216,8 @@ export default function ProductDetailPage() {
               src="/api/placeholder/500/500"
               alt={product.name}
               sx={{
-                width: '100%',
-                height: 'auto',
+                width: "100%",
+                height: "auto",
                 borderRadius: 2,
                 boxShadow: 3,
               }}
@@ -211,23 +226,36 @@ export default function ProductDetailPage() {
 
           {/* Product Info */}
           <Grid item xs={12} md={6}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              {product.isNew && <Chip label="New" color="success" size="small" />}
-              {product.discount && <Chip label={`-${product.discount}%`} color="error" size="small" />}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+              {product.isNew && (
+                <Chip label="New" color="success" size="small" />
+              )}
+              {product.discount && (
+                <Chip
+                  label={`-${product.discount}%`}
+                  color="error"
+                  size="small"
+                />
+              )}
             </Box>
 
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
               {product.name}
             </Typography>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
               <Rating value={product.rating} precision={0.1} readOnly />
               <Typography variant="body2" color="text.secondary">
                 ({product.reviewCount} reviews)
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
               <Typography variant="h4" color="primary" sx={{ fontWeight: 600 }}>
                 ${product.price}
               </Typography>
@@ -235,60 +263,96 @@ export default function ProductDetailPage() {
                 <Typography
                   variant="h6"
                   color="text.secondary"
-                  sx={{ textDecoration: 'line-through' }}
+                  sx={{ textDecoration: "line-through" }}
                 >
                   ${product.originalPrice}
                 </Typography>
               )}
             </Box>
 
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3, lineHeight: 1.6 }}>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ mb: 3, lineHeight: 1.6 }}
+            >
               {product.description}
             </Typography>
 
             {/* Product Details */}
             <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" gutterBottom>Product Details</Typography>
+              <Typography variant="h6" gutterBottom>
+                Product Details
+              </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">Category</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Category
+                  </Typography>
                   <Typography variant="body1">{product.category}</Typography>
                 </Grid>
                 {product.materials && (
                   <Grid item xs={6}>
-                    <Typography variant="body2" color="text.secondary">Materials</Typography>
-                    <Typography variant="body1">{product.materials.join(', ')}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Materials
+                    </Typography>
+                    <Typography variant="body1">
+                      {product.materials.join(", ")}
+                    </Typography>
                   </Grid>
                 )}
                 {product.dimensions && (
                   <Grid item xs={6}>
-                    <Typography variant="body2" color="text.secondary">Dimensions</Typography>
-                    <Typography variant="body1">{product.dimensions}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Dimensions
+                    </Typography>
+                    <Typography variant="body1">
+                      {product.dimensions}
+                    </Typography>
                   </Grid>
                 )}
                 <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">In Stock</Typography>
-                  <Typography variant="body1">{product.stockQuantity} available</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    In Stock
+                  </Typography>
+                  <Typography variant="body1">
+                    {product.stockQuantity} available
+                  </Typography>
                 </Grid>
               </Grid>
             </Box>
 
             {/* Quantity Selector */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
               <Typography variant="body1">Quantity:</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', border: 1, borderColor: 'divider', borderRadius: 1 }}>
-                <IconButton onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: 1,
+                }}
+              >
+                <IconButton
+                  onClick={() => handleQuantityChange(-1)}
+                  disabled={quantity <= 1}
+                >
                   <Remove />
                 </IconButton>
-                <Typography sx={{ px: 2, minWidth: 40, textAlign: 'center' }}>{quantity}</Typography>
-                <IconButton onClick={() => handleQuantityChange(1)} disabled={quantity >= product.stockQuantity}>
+                <Typography sx={{ px: 2, minWidth: 40, textAlign: "center" }}>
+                  {quantity}
+                </Typography>
+                <IconButton
+                  onClick={() => handleQuantityChange(1)}
+                  disabled={quantity >= product.stockQuantity}
+                >
                   <Add />
                 </IconButton>
               </Box>
             </Box>
 
             {/* Action Buttons */}
-            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+            <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
               <Button
                 variant="contained"
                 size="large"
@@ -296,7 +360,7 @@ export default function ProductDetailPage() {
                 disabled={!product.inStock}
                 sx={{ flexGrow: 1, py: 1.5 }}
               >
-                {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                {product.inStock ? "Add to Cart" : "Out of Stock"}
               </Button>
               <IconButton size="large" color="primary">
                 <FavoriteOutlined />
@@ -314,24 +378,37 @@ export default function ProductDetailPage() {
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
               Meet the Artisan
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
               <Avatar src={artisan.profileImage} sx={{ width: 80, height: 80 }}>
                 {artisan.name.charAt(0)}
               </Avatar>
               <Box sx={{ flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {artisan.name}
                   </Typography>
                   <Verified color="primary" fontSize="small" />
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    mb: 1,
+                  }}
+                >
                   <LocationOn fontSize="small" color="action" />
                   <Typography variant="body2" color="text.secondary">
                     {artisan.location}
                   </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
                   {artisan.bio}
                 </Typography>
                 <Button
@@ -347,7 +424,14 @@ export default function ProductDetailPage() {
 
         {/* Reviews Section */}
         <Paper elevation={2} sx={{ p: 3, mt: 4, borderRadius: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
+          >
             <Typography variant="h5" sx={{ fontWeight: 600 }}>
               Customer Reviews ({reviews.length})
             </Typography>
@@ -365,7 +449,14 @@ export default function ProductDetailPage() {
           {!session && (
             <Alert severity="info" sx={{ mb: 3 }}>
               <Typography>
-                Please <Link onClick={() => router.push('/login')} sx={{ cursor: 'pointer' }}>sign in</Link> to write a review.
+                Please{" "}
+                <Link
+                  onClick={() => router.push("/login")}
+                  sx={{ cursor: "pointer" }}
+                >
+                  sign in
+                </Link>{" "}
+                to write a review.
               </Typography>
             </Alert>
           )}
@@ -374,14 +465,14 @@ export default function ProductDetailPage() {
             <Alert severity="info" sx={{ mb: 3 }}>
               <Typography>
                 {product.artistId === getCurrentArtistId()
-                  ? "You cannot review your own product." 
+                  ? "You cannot review your own product."
                   : "You have already reviewed this product."}
               </Typography>
             </Alert>
           )}
 
           {reviews.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Box sx={{ textAlign: "center", py: 4 }}>
               <Typography variant="h6" color="text.secondary" gutterBottom>
                 No reviews yet
               </Typography>
@@ -393,13 +484,25 @@ export default function ProductDetailPage() {
             <Box>
               {reviews.map((review, index) => (
                 <Box key={review.id}>
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                  <Box
+                    sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}
+                  >
                     <Avatar sx={{ width: 40, height: 40 }}>
                       {review.userName.charAt(0)}
                     </Avatar>
                     <Box sx={{ flexGrow: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 2,
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontWeight: 600 }}
+                        >
                           {review.userName}
                         </Typography>
                         <Rating value={review.rating} size="small" readOnly />
@@ -407,10 +510,16 @@ export default function ProductDetailPage() {
                           {formatDate(review.createdAt)}
                         </Typography>
                       </Box>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
+                      >
                         {review.comment}
                       </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <IconButton size="small">
                           <ThumbUp fontSize="small" />
                         </IconButton>
@@ -428,10 +537,7 @@ export default function ProductDetailPage() {
         </Paper>
       </Container>
 
-      <Footer 
-        onContactClick={() => {}}
-        onLinkClick={() => {}}
-      />
+      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
 
       {/* Review Modal */}
       {canReview && session && (
@@ -441,7 +547,7 @@ export default function ProductDetailPage() {
           onReviewAdded={handleReviewAdded}
           productId={product.id}
           productName={product.name}
-          userId={getCurrentUserId() || ''}
+          userId={getCurrentUserId() || ""}
           userName={getCurrentUserName()}
         />
       )}

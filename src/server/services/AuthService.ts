@@ -1,6 +1,6 @@
-import type { RegisterUserSchema } from '@/types';
-import { UserService } from './UserService';
-import { comparePassword, hashPassword } from '@/lib/password';
+import type { RegisterUserSchema } from "@/types";
+import { UserService } from "./UserService";
+import { comparePassword, hashPassword } from "@/lib/password";
 
 export const AuthService = {
   //used by nextauth
@@ -8,10 +8,14 @@ export const AuthService = {
     const user = await UserService.findByEmail(email);
     if (!user) {
       // //temporary until we have register page
-      if (email.includes('register*')) {
-        email = email.split('*')[1];
+      if (email.includes("register*")) {
+        email = email.split("*")[1];
       }
-      const newUser = await UserService.create({ email, password, name: email });
+      const newUser = await UserService.create({
+        email,
+        password,
+        name: email,
+      });
       return {
         id: newUser._id.toString(),
         email: newUser.email,
@@ -32,10 +36,14 @@ export const AuthService = {
   },
   register: async ({ email, password, name }: RegisterUserSchema) => {
     const user = await UserService.findByEmail(email);
-    if (user) throw new Error('User already exists');
+    if (user) throw new Error("User already exists");
 
     const hashedPassword = await hashPassword(password);
-    const newUser = await UserService.create({ email, password: hashedPassword, name });
+    const newUser = await UserService.create({
+      email,
+      password: hashedPassword,
+      name,
+    });
     return {
       id: newUser._id.toString(),
       email: newUser.email,

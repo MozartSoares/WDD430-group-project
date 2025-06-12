@@ -358,7 +358,7 @@ export const getReviewsForProduct = (productId: string): DemoReview[] => {
 
 export const canUserReviewProduct = (
   userId: string,
-  productId: string
+  productId: string,
 ): boolean => {
   const product = demoProducts.find((p) => p.id === productId);
   const user = demoUsers.find((u) => u.id === userId);
@@ -370,7 +370,7 @@ export const canUserReviewProduct = (
 
   // Check if user already reviewed this product
   const existingReview = demoReviews.find(
-    (r) => r.productId === productId && r.userId === userId
+    (r) => r.productId === productId && r.userId === userId,
   );
   return !existingReview;
 };

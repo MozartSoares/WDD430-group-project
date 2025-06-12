@@ -1,10 +1,10 @@
 // src/app/(frontend)/login/page.tsx
-'use client';
+"use client";
 
-import type React from 'react';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import type React from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import {
   Box,
   Container,
@@ -18,44 +18,44 @@ import {
   InputAdornment,
   Divider,
   Stack,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
   Email,
   Lock,
   ArrowBack,
-} from '@mui/icons-material';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+} from "@mui/icons-material";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
       if (result?.error) {
-        setError('Invalid email or password');
+        setError("Invalid email or password");
       } else {
-        router.push('/'); // Redirect to homepage
+        router.push("/"); // Redirect to homepage
       }
     } catch (err) {
-      setError('An error occurred during login');
+      setError("An error occurred during login");
     } finally {
       setLoading(false);
     }
@@ -66,16 +66,16 @@ export default function LoginPage() {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header cartItemCount={0} onCartClick={() => {}} />
-      
+
       <Box
         sx={{
           flexGrow: 1,
-          backgroundColor: '#1976d2',
+          backgroundColor: "#1976d2",
           py: 6,
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <Container component="main" maxWidth="sm">
@@ -83,11 +83,11 @@ export default function LoginPage() {
           <Box sx={{ mb: 3 }}>
             <Button
               startIcon={<ArrowBack />}
-              onClick={() => router.push('/')}
+              onClick={() => router.push("/")}
               sx={{
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                 },
               }}
             >
@@ -100,50 +100,56 @@ export default function LoginPage() {
             sx={{
               p: 6,
               borderRadius: 3,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
+              background: "rgba(255, 255, 255, 0.95)",
+              backdropFilter: "blur(10px)",
             }}
           >
             {/* Header */}
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Box sx={{ textAlign: "center", mb: 4 }}>
               <Typography
                 component="h1"
                 variant="h3"
                 sx={{
                   fontWeight: 700,
-                  color: '#1976d2',
+                  color: "#1976d2",
                   mb: 1,
                 }}
               >
                 Welcome Back
               </Typography>
-              
+
               <Typography variant="body1" color="text.secondary">
                 Sign in to your Handcrafted Haven account
               </Typography>
             </Box>
 
             {/* Demo Credentials Alert */}
-            <Alert 
-              severity="info" 
-              sx={{ 
+            <Alert
+              severity="info"
+              sx={{
                 mb: 3,
                 borderRadius: 2,
-                '& .MuiAlert-message': {
-                  fontSize: '0.875rem',
-                }
+                "& .MuiAlert-message": {
+                  fontSize: "0.875rem",
+                },
               }}
             >
-              <p><strong>Demo Login:</strong> demo@example.com / password</p>
-              <p><strong>Artist1 Login:</strong> artisan1@example.com / password</p>
-              <p><strong>Artist2 Login:</strong> artisan2@example.com" / password</p>
+              <p>
+                <strong>Demo Login:</strong> demo@example.com / password
+              </p>
+              <p>
+                <strong>Artist1 Login:</strong> artisan1@example.com / password
+              </p>
+              <p>
+                <strong>Artist2 Login:</strong> artisan2@example.com" / password
+              </p>
             </Alert>
 
             {/* Error Alert */}
             {error && (
-              <Alert 
-                severity="error" 
-                sx={{ 
+              <Alert
+                severity="error"
+                sx={{
                   mb: 3,
                   borderRadius: 2,
                 }}
@@ -174,7 +180,7 @@ export default function LoginPage() {
                 }}
                 sx={{
                   mb: 2,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
                   },
                 }}
@@ -186,7 +192,7 @@ export default function LoginPage() {
                 fullWidth
                 name="password"
                 label="Password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
                 value={password}
@@ -211,7 +217,7 @@ export default function LoginPage() {
                 }}
                 sx={{
                   mb: 3,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     borderRadius: 2,
                   },
                 }}
@@ -226,21 +232,21 @@ export default function LoginPage() {
                   mt: 2,
                   mb: 3,
                   py: 1.5,
-                  fontSize: '1.1rem',
+                  fontSize: "1.1rem",
                   fontWeight: 600,
                   borderRadius: 2,
-                  backgroundColor: '#1976d2',
-                  '&:hover': {
-                    backgroundColor: '#1565c0',
-                    transform: 'translateY(-1px)',
+                  backgroundColor: "#1976d2",
+                  "&:hover": {
+                    backgroundColor: "#1565c0",
+                    transform: "translateY(-1px)",
                   },
-                  '&:disabled': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                  "&:disabled": {
+                    backgroundColor: "rgba(0, 0, 0, 0.12)",
                   },
-                  transition: 'all 0.3s ease',
+                  transition: "all 0.3s ease",
                 }}
               >
-                {loading ? 'Signing In...' : 'Sign In'}
+                {loading ? "Signing In..." : "Sign In"}
               </Button>
 
               <Divider sx={{ my: 3 }}>
@@ -254,15 +260,15 @@ export default function LoginPage() {
                 <Button
                   variant="outlined"
                   fullWidth
-                  onClick={() => router.push('/register')}
+                  onClick={() => router.push("/register")}
                   sx={{
                     py: 1.5,
                     borderRadius: 2,
-                    borderColor: '#1976d2',
-                    color: '#1976d2',
-                    '&:hover': {
-                      borderColor: '#1565c0',
-                      backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                    borderColor: "#1976d2",
+                    color: "#1976d2",
+                    "&:hover": {
+                      borderColor: "#1565c0",
+                      backgroundColor: "rgba(25, 118, 210, 0.04)",
                     },
                   }}
                 >
@@ -272,12 +278,12 @@ export default function LoginPage() {
                 <Link
                   component="button"
                   variant="body2"
-                  onClick={() => router.push('/forgot-password')}
+                  onClick={() => router.push("/forgot-password")}
                   sx={{
-                    color: '#1976d2',
-                    textDecoration: 'none',
-                    '&:hover': {
-                      textDecoration: 'underline',
+                    color: "#1976d2",
+                    textDecoration: "none",
+                    "&:hover": {
+                      textDecoration: "underline",
                     },
                   }}
                 >
@@ -293,19 +299,17 @@ export default function LoginPage() {
             align="center"
             sx={{
               mt: 4,
-              color: 'rgba(255, 255, 255, 0.8)',
-              fontSize: '0.875rem',
+              color: "rgba(255, 255, 255, 0.8)",
+              fontSize: "0.875rem",
             }}
           >
-            Discover unique handcrafted treasures from talented artisans around the world
+            Discover unique handcrafted treasures from talented artisans around
+            the world
           </Typography>
         </Container>
       </Box>
 
-      <Footer 
-        onContactClick={() => {}}
-        onLinkClick={() => {}}
-      />
+      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
     </Box>
   );
 }
