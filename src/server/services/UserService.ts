@@ -1,10 +1,11 @@
+import { hashPassword } from '@/lib/password';
 import { User } from '@/models/';
 import { IUser, RegisterUserSchema } from '@/types';
 
 export const UserService = {
-  create: async (user: RegisterUserSchema): Promise<IUser> => {
-    console.log('user', user);
-    const newUser = await User.create(user);
+  create: async ({ password, ...props }: RegisterUserSchema): Promise<IUser> => {
+    const hashedPassword = await hashPassword(password);
+    const newUser = await User.create({ ...props, password: hashedPassword });
     return newUser;
   },
   findByEmail: async (email: string): Promise<IUser | null> => {

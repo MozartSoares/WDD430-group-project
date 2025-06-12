@@ -7,11 +7,16 @@ export const AuthService = {
   authenticate: async (email: string, password: string) => {
     const user = await UserService.findByEmail(email);
     if (!user) {
-      // //temporary for testing
-      // const name = 'test' + Math.random().toString(36).substring(2, 15);
-      // console.log('creating user', email, password, name);
-      // return UserService.create({ email, password, name });
-      return null;
+      // //temporary until we have register page
+      if (email.includes('register*')) {
+        email = email.split('*')[1];
+      }
+      const newUser = await UserService.create({ email, password, name: email });
+      return {
+        id: newUser._id.toString(),
+        email: newUser.email,
+        name: newUser.name,
+      };
     }
 
     const passwordMatch = await comparePassword(password, user.password);
