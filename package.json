@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome lint --fix",
-    "lint:check": "biome lint",
-    "biome:watch": "nodemon --ext js,ts,json --exec 'npx biome check'"
+    "lint:check": "biome lint"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -33,7 +32,6 @@
     "@types/node": "^20",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
-    "nodemon": "^3.1.10",
     "typescript": "^5"
   },
   "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"
