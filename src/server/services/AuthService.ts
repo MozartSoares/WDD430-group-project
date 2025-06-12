@@ -1,22 +1,23 @@
-import { RegisterUserSchema } from '@/types';
+import { createUserSchema } from '@/types';
 import { UserService } from './UserService';
 import { comparePassword, hashPassword } from '@/lib/password';
 
-export const AuthService = {
+export class AuthService {
   //used by nextauth
-  authenticate: async (email: string, password: string) => {
+  static async authenticate(email: string, password: string) {
     const user = await UserService.findByEmail(email);
     if (!user) {
       // //temporary until we have register page
       if (email.includes('register*')) {
         email = email.split('*')[1];
+        const newUser = await UserService.create({ email, password, name: email });
+        return {
+          id: newUser._id.toString(),
+          email: newUser.email,
+          name: newUser.name,
+        };
       }
-      const newUser = await UserService.create({ email, password, name: email });
-      return {
-        id: newUser._id.toString(),
-        email: newUser.email,
-        name: newUser.name,
-      };
+      return null;
     }
 
     const passwordMatch = await comparePassword(password, user.password);
@@ -29,8 +30,9 @@ export const AuthService = {
       email: user.email,
       name: user.name,
     };
-  },
-  register: async ({ email, password, name }: RegisterUserSchema) => {
+  }
+
+  static async register({ email, password, name }: createUserSchema) {
     const user = await UserService.findByEmail(email);
     if (user) throw new Error('User already exists');
 
@@ -41,5 +43,5 @@ export const AuthService = {
       email: newUser.email,
       name: newUser.name,
     };
-  },
-};
+  }
+}
