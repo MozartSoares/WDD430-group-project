@@ -1,6 +1,6 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { AuthService } from '../services';
-import { loginUserSchema, registerUserSchema } from '@/types';
+import { registerUserSchema } from '@/types';
 import { handleControllerError, validateBody } from '@/lib/validation';
 
 export const AuthController = {

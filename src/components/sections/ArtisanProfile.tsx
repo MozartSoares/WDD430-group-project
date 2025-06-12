@@ -1,7 +1,5 @@
 // src/components/sections/ArtisanProfile.tsx
 'use client';
-
-import React from 'react';
 import {
   Box,
   Card,

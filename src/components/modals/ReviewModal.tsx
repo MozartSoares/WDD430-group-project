@@ -1,7 +1,8 @@
 // src/components/modals/ReviewModal.tsx
 'use client';
 
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -19,7 +20,7 @@ import {
   Close,
   Star,
 } from '@mui/icons-material';
-import { DemoReview } from '@/data/demoData';
+import type { DemoReview } from '@/data/demoData';
 
 interface ReviewModalProps {
   open: boolean;

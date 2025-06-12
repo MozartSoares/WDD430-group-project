@@ -1,6 +1,6 @@
 import { hashPassword } from '@/lib/password';
 import { User } from '@/models/';
-import { IUser, RegisterUserSchema } from '@/types';
+import type { IUser, RegisterUserSchema } from '@/types';
 
 export const UserService = {
   create: async ({ password, ...props }: RegisterUserSchema): Promise<IUser> => {

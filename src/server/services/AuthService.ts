@@ -1,4 +1,4 @@
-import { RegisterUserSchema } from '@/types';
+import type { RegisterUserSchema } from '@/types';
 import { UserService } from './UserService';
 import { comparePassword, hashPassword } from '@/lib/password';
 

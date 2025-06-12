@@ -1,7 +1,8 @@
 // src/app/(frontend)/profile/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
@@ -14,13 +15,10 @@ import {
   TextField,
   Grid,
   Chip,
-  Divider,
   Card,
   CardContent,
   CardMedia,
   Rating,
-  IconButton,
-  Tooltip,
 } from '@mui/material';
 import {
   Edit,
@@ -30,14 +28,11 @@ import {
   LocationOn,
   CalendarToday,
   Language,
-  Instagram,
-  Facebook,
-  Store,
 } from '@mui/icons-material';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AddProductModal from '@/components/modals/AddProductModal';
-import { demoUsers, demoProducts, getUserById, getProductsByArtistId, DemoUser, DemoProduct } from '@/data/demoData';
+import { demoUsers, getProductsByArtistId, type DemoUser, type DemoProduct } from '@/data/demoData';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();

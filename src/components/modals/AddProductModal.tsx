@@ -1,7 +1,8 @@
 // src/components/modals/AddProductModal.tsx
 'use client';
 
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -27,7 +28,7 @@ import {
   Add,
   Delete,
 } from '@mui/icons-material';
-import { DemoProduct } from '@/data/demoData';
+import type { DemoProduct } from '@/data/demoData';
 
 interface AddProductModalProps {
   open: boolean;
@@ -113,11 +114,11 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
 
     if (!formData.name.trim()) newErrors.name = 'Product name is required';
     if (!formData.description.trim()) newErrors.description = 'Description is required';
-    if (!formData.price || parseFloat(formData.price) <= 0) newErrors.price = 'Valid price is required';
+    if (!formData.price || Number.parseFloat(formData.price) <= 0) newErrors.price = 'Valid price is required';
     if (!formData.category) newErrors.category = 'Category is required';
-    if (!formData.stockQuantity || parseInt(formData.stockQuantity) < 0) newErrors.stockQuantity = 'Valid stock quantity is required';
+    if (!formData.stockQuantity || Number.parseInt(formData.stockQuantity) < 0) newErrors.stockQuantity = 'Valid stock quantity is required';
 
-    if (formData.originalPrice && parseFloat(formData.originalPrice) <= parseFloat(formData.price)) {
+    if (formData.originalPrice && Number.parseFloat(formData.originalPrice) <= Number.parseFloat(formData.price)) {
       newErrors.originalPrice = 'Original price must be higher than current price';
     }
 
@@ -134,8 +135,8 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const price = parseFloat(formData.price);
-      const originalPrice = formData.originalPrice ? parseFloat(formData.originalPrice) : undefined;
+      const price = Number.parseFloat(formData.price);
+      const originalPrice = formData.originalPrice ? Number.parseFloat(formData.originalPrice) : undefined;
       const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : undefined;
 
       const newProduct: DemoProduct = {
@@ -154,7 +155,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
         dimensions: formData.dimensions || undefined,
         createdAt: new Date().toISOString(),
         inStock: true,
-        stockQuantity: parseInt(formData.stockQuantity),
+        stockQuantity: Number.parseInt(formData.stockQuantity),
       };
 
       onProductAdded(newProduct);
@@ -382,10 +383,10 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
           </Grid>
         </Grid>
 
-        {formData.originalPrice && formData.price && parseFloat(formData.originalPrice) > parseFloat(formData.price) && (
+        {formData.originalPrice && formData.price && Number.parseFloat(formData.originalPrice) > Number.parseFloat(formData.price) && (
           <Alert severity="info" sx={{ mt: 2 }}>
             <strong>Sale Item:</strong> This product will show a{' '}
-            {Math.round(((parseFloat(formData.originalPrice) - parseFloat(formData.price)) / parseFloat(formData.originalPrice)) * 100)}% discount
+            {Math.round(((Number.parseFloat(formData.originalPrice) - Number.parseFloat(formData.price)) / Number.parseFloat(formData.originalPrice)) * 100)}% discount
           </Alert>
         )}
       </DialogContent>

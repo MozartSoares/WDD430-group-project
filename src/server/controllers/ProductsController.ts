@@ -1,6 +1,6 @@
 import { handleControllerError, validateBody } from '@/lib/validation';
 import { createProductSchema } from '@/types';
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { ProductService } from '@/server';
 
 export const ProductsController = {

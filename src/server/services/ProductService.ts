@@ -1,5 +1,5 @@
 import { Product } from '@/models/Product';
-import { CreateProductSchema } from '@/types';
+import type { CreateProductSchema } from '@/types';
 
 export const ProductService = {
   create: async (product: CreateProductSchema) => {

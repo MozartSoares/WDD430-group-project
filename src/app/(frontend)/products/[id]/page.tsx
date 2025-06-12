@@ -1,7 +1,7 @@
 // src/app/(frontend)/products/[id]/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
@@ -36,13 +36,12 @@ import Footer from '@/components/layout/Footer';
 import ReviewModal from '@/components/modals/ReviewModal';
 import { 
   demoProducts, 
-  demoReviews, 
   getUserByArtistId, 
   getReviewsForProduct, 
   canUserReviewProduct,
-  DemoProduct,
-  DemoReview,
-  DemoUser
+  type DemoProduct,
+  type DemoReview,
+  type DemoUser
 } from '@/data/demoData';
 
 export default function ProductDetailPage() {

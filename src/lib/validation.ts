@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { z } from 'zod';
 
 export const validateBody = <T extends z.ZodTypeAny>(schema: T, body: unknown): z.infer<T> => {
   const result = schema.safeParse(body);

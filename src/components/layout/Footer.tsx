@@ -1,7 +1,5 @@
 // src/components/layout/Footer.tsx
 'use client';
-
-import React from 'react';
 import {
   Box,
   Container,
@@ -19,7 +17,6 @@ import {
   Facebook,
   YouTube,
   Twitter,
-  Email,
 } from '@mui/icons-material';
 
 interface FooterLink {

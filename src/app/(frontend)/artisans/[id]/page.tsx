@@ -1,7 +1,7 @@
 // src/app/(frontend)/artisans/[id]/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
@@ -17,21 +17,16 @@ import {
   Rating,
   Breadcrumbs,
   Link,
-  IconButton,
-  Tooltip,
 } from '@mui/material';
 import {
   LocationOn,
   CalendarToday,
   Language,
-  Instagram,
-  Facebook,
-  Store,
   ChevronRight,
 } from '@mui/icons-material';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { getUserByArtistId, getProductsByArtistId, DemoUser, DemoProduct } from '@/data/demoData';
+import { getUserByArtistId, getProductsByArtistId, type DemoUser, type DemoProduct } from '@/data/demoData';
 
 export default function ArtisanPage() {
   const params = useParams();
@@ -40,7 +35,7 @@ export default function ArtisanPage() {
   const [artisanProducts, setArtisanProducts] = useState<DemoProduct[]>([]);
 
   useEffect(() => {
-    const artistId = parseInt(params.id as string);
+    const artistId = Number.parseInt(params.id as string);
     if (!isNaN(artistId)) {
       const user = getUserByArtistId(artistId);
       if (user) {

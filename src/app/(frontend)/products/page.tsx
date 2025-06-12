@@ -1,7 +1,7 @@
 // src/app/(frontend)/products/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Box, Container, Typography, Breadcrumbs, Link } from '@mui/material';
 import { ChevronRight } from '@mui/icons-material';

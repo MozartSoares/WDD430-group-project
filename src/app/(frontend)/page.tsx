@@ -1,7 +1,7 @@
 // src/app/(frontend)/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box } from '@mui/material';
 import Header from '@/components/layout/Header';
