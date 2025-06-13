@@ -1,0 +1,97 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80,
+    "attributePosition": "auto",
+    "ignore": [
+      "*.min.js",
+      "dist/**",
+      "coverage/**",
+      ".nyc_output/**",
+      "build/**",
+      "reports/**"
+    ]
+  },
+  "organizeImports": {
+    "enabled": true,
+    "ignore": ["*.min.js", "dist/**", "coverage/**", "build/**", "reports/**"]
+  },
+  "linter": {
+    "enabled": true,
+    "ignore": [
+      "*.min.js",
+      "dist/**",
+      "coverage/**",
+      ".nyc_output/**",
+      "build/**",
+      "reports/**"
+    ],
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noBannedTypes": "error",
+        "noUselessThisAlias": "error",
+        "noUselessTypeConstraint": "error",
+        "useLiteralKeys": "off",
+        "noForEach": "off",
+        "useOptionalChain": "off",
+        "noUselessTernary": "off",
+        "useArrowFunction": "off"
+      },
+      "correctness": {
+        "noPrecisionLoss": "error",
+        "noUnusedImports": "error",
+        "noUnusedVariables": "off"
+      },
+      "performance": {
+        "noDelete": "off",
+        "noAccumulatingSpread": "off"
+      },
+      "style": {
+        "noDefaultExport": "error",
+        "noNamespace": "error",
+        "useAsConstAssertion": "error",
+        "noArguments": "error",
+        "noVar": "error",
+        "useConst": "error",
+        "noInferrableTypes": "off",
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noExtraNonNullAssertion": "error",
+        "noMisleadingInstantiator": "error",
+        "noUnsafeDeclarationMerging": "error",
+        "noExplicitAny": "off",
+        "noImplicitAnyLet": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false,
+      "quoteStyle": "double",
+      "attributePosition": "auto"
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true
+    }
+  }
+}

@@ -1,6 +1,6 @@
-import dbConnect from '@/lib/mongodb';
-import { ProductsController } from '@/server';
-import { NextRequest } from 'next/server';
+import dbConnect from "@/lib/mongodb";
+import { ProductsController } from "@/server";
+import type { NextRequest } from "next/server";
 
 //create product
 export async function POST(req: NextRequest) {
