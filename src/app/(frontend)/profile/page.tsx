@@ -37,7 +37,7 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
 
-export const ProfilePage = () => {
+function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -453,6 +453,6 @@ export const ProfilePage = () => {
       />
     </Box>
   );
-};
+}
 
 export default ProfilePage;

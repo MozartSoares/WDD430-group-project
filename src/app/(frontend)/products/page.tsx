@@ -8,7 +8,7 @@ import { Box, Breadcrumbs, Container, Link, Typography } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export const ProductsPage = () => {
+function ProductsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
@@ -119,6 +119,6 @@ export const ProductsPage = () => {
       />
     </Box>
   );
-};
+}
 
 export default ProductsPage;

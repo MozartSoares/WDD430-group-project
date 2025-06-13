@@ -32,7 +32,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const ArtisanPage = () => {
+function ArtisanPage() {
   const params = useParams();
   const router = useRouter();
   const [artisan, setArtisan] = useState<DemoUser | null>(null);
@@ -409,6 +409,6 @@ export const ArtisanPage = () => {
       <Footer onContactClick={() => {}} onLinkClick={() => {}} />
     </Box>
   );
-};
+}
 
 export default ArtisanPage;

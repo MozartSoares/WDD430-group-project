@@ -28,7 +28,7 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 
-export const LoginPage = () => {
+function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -311,6 +311,6 @@ export const LoginPage = () => {
       <Footer onContactClick={() => {}} onLinkClick={() => {}} />
     </Box>
   );
-};
+}
 
 export default LoginPage;
