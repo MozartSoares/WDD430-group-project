@@ -1,5 +1,7 @@
 // src/components/sections/ArtisanProfile.tsx
-"use client";
+'use client';
+
+import React from 'react';
 import {
   Box,
   Card,
@@ -10,7 +12,7 @@ import {
   Container,
   useTheme,
   useMediaQuery,
-} from "@mui/material";
+} from '@mui/material';
 
 interface ArtisanProfileProps {
   artist: {
@@ -33,7 +35,7 @@ export default function ArtisanProfile({
   sx = {},
 }: ArtisanProfileProps) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const content = (
     <Box sx={{ mb: 6, ...sx }}>
@@ -43,35 +45,28 @@ export default function ArtisanProfile({
       <Card sx={{ p: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={3}>
-            <Box sx={{ textAlign: "center" }}>
+            <Box sx={{ textAlign: 'center' }}>
               <Avatar
                 src={artist.avatar}
-                sx={{
-                  width: { xs: 60, md: 80 },
-                  height: { xs: 60, md: 80 },
-                  mx: "auto",
-                  mb: 2,
+                sx={{ 
+                  width: { xs: 60, md: 80 }, 
+                  height: { xs: 60, md: 80 }, 
+                  mx: 'auto', 
+                  mb: 2 
                 }}
               >
                 {artist.name.charAt(0)}
               </Avatar>
               <Typography variant="h6">{artist.name}</Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mt: 1,
-                  flexDirection: isMobile ? "column" : "row",
-                  gap: isMobile ? 0.5 : 1,
-                }}
-              >
-                <Rating
-                  value={artist.rating}
-                  precision={0.5}
-                  readOnly
-                  size="small"
-                />
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                mt: 1,
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? 0.5 : 1
+              }}>
+                <Rating value={artist.rating} precision={0.5} readOnly size="small" />
                 <Typography variant="body2" sx={{ ml: isMobile ? 0 : 1 }}>
                   ({artist.reviewCount})
                 </Typography>
