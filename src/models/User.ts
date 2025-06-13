@@ -6,6 +6,8 @@ const UserModel = new mongoose.Schema<IUser>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    biography: { type: String, required: false },
+    imageUrl: { type: String, required: false },
   },
   { timestamps: true }
 );
