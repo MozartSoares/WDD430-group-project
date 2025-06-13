@@ -1,42 +1,42 @@
 // src/components/layout/Header.tsx
 "use client";
 
-import type React from "react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import {
+  Category,
+  Close,
+  Home,
+  Info,
+  Logout,
+  Menu as MenuIcon,
+  Person,
+  Phone,
+  Search,
+  ShoppingBag,
+  ShoppingCart,
+} from "@mui/icons-material";
 import {
   AppBar,
-  Toolbar,
-  Typography,
-  Box,
-  TextField,
-  IconButton,
+  Avatar,
   Badge,
+  Box,
   Button,
-  Menu,
-  MenuItem,
+  Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
-  Divider,
-  Avatar,
+  ListItemText,
+  Menu,
+  MenuItem,
+  TextField,
+  Toolbar,
+  Typography,
 } from "@mui/material";
-import {
-  Search,
-  ShoppingCart,
-  Menu as MenuIcon,
-  Close,
-  Person,
-  Logout,
-  ShoppingBag,
-  Home,
-  Category,
-  Info,
-  Phone,
-} from "@mui/icons-material";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
 
 interface HeaderProps {
   cartItemCount?: number;
@@ -45,10 +45,7 @@ interface HeaderProps {
   onCartClick?: () => void;
 }
 
-export default function Header({
-  cartItemCount = 0,
-  onCartClick,
-}: HeaderProps) {
+export const Header = ({ cartItemCount = 0, onCartClick }: HeaderProps) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -401,4 +398,4 @@ export default function Header({
       </Drawer>
     </>
   );
-}
+};

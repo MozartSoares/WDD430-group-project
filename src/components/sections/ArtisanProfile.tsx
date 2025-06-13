@@ -1,15 +1,15 @@
 // src/components/sections/ArtisanProfile.tsx
 "use client";
 import {
+  Avatar,
   Box,
   Card,
-  Grid,
-  Typography,
-  Avatar,
-  Rating,
   Container,
-  useTheme,
+  Grid,
+  Rating,
+  Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 interface ArtisanProfileProps {
@@ -26,12 +26,12 @@ interface ArtisanProfileProps {
   sx?: any;
 }
 
-export default function ArtisanProfile({
+export const ArtisanProfile = ({
   artist,
   title = "About the Artisan",
   showContainer = true,
   sx = {},
-}: ArtisanProfileProps) {
+}: ArtisanProfileProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -93,4 +93,4 @@ export default function ArtisanProfile({
   }
 
   return content;
-}
+};

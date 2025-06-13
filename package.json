@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "biome lint .",
     "lint:fix": "biome lint . --apply",
-    "format": "biome format . --check",
+    "format": "biome format . ",
     "format:fix": "biome format . --write",
     "check": "pnpm run lint && pnpm run format",
     "fix": "pnpm run lint:fix && pnpm run format:fix"

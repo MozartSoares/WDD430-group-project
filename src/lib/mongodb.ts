@@ -1,3 +1,5 @@
+import mongo from "mongoose";
+
 const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
@@ -7,8 +9,8 @@ if (!MONGODB_URI) {
 }
 
 interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+  conn: typeof mongo | null;
+  promise: Promise<typeof mongo> | null;
 }
 
 declare global {
@@ -22,19 +24,15 @@ if (!global.mongoose) {
   global.mongoose = cached;
 }
 
-async function dbConnect(): Promise<typeof mongoose> {
+export async function dbConnect() {
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongo.connect(MONGODB_URI).then((mongoose) => mongoose);
   }
 
   cached.conn = await cached.promise;
   return cached.conn;
 }
-
-export default dbConnect;

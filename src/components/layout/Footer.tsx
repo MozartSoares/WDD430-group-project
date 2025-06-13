@@ -1,18 +1,18 @@
 // src/components/layout/Footer.tsx
 "use client";
+import { Facebook, Instagram, Twitter, YouTube } from "@mui/icons-material";
 import {
   Box,
-  Container,
-  Grid,
-  Typography,
-  Link,
   Button,
+  Container,
   Divider,
+  Grid,
   IconButton,
-  useTheme,
+  Link,
+  Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import { Instagram, Facebook, YouTube, Twitter } from "@mui/icons-material";
 
 interface FooterLink {
   label: string;
@@ -60,7 +60,7 @@ const footerSections: FooterSection[] = [
   },
 ];
 
-export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
+export const Footer = ({ onContactClick, onLinkClick }: FooterProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -92,7 +92,7 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
         {/* Main Footer Content */}
         <Grid container spacing={4} sx={{ mb: 4 }}>
           {footerSections.map((section, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Grid item xs={12} sm={6} md={3} key={Math.random()}>
               <Typography
                 variant="h6"
                 component="h3"
@@ -111,7 +111,7 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
                   if (link.label === "Contact Us") {
                     return (
                       <Button
-                        key={linkIndex}
+                        key={Math.random()}
                         variant="contained"
                         onClick={handleContactClick}
                         sx={{
@@ -132,7 +132,7 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
 
                   return (
                     <Link
-                      key={linkIndex}
+                      key={Math.random()}
                       href={link.href}
                       onClick={(e) => {
                         e.preventDefault();
@@ -259,4 +259,4 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
       </Container>
     </Box>
   );
-}
+};

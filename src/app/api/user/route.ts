@@ -1,5 +1,5 @@
-import { UserController } from '@/server/controllers';
-import dbConnect from '@/lib/mongodb';
+import { dbConnect } from "@/lib/mongodb";
+import { UserController } from "@/server/controllers";
 
 // GET /api/user - lists all
 export async function GET() {

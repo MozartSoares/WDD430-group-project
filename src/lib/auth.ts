@@ -1,8 +1,8 @@
+import { AuthService } from "@/server";
 // src/lib/auth.ts
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { AuthService } from "@/server";
-import dbConnect from "./mongodb";
+import { dbConnect } from "./mongodb";
 
 //https://authjs.dev/getting-started/authentication/credentials?framework=Next.js
 

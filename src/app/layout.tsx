@@ -2,8 +2,8 @@
 import type { Metadata } from "next";
 import { Roboto, Roboto_Slab } from "next/font/google";
 import "./globals.css";
+import { SessionProvider } from "@/components";
 import { ThemeProviderWrapper } from "./ThemeProviderWrapper";
-import { SessionProvider } from "@/components/providers/SessionProvider";
 
 // Configure Roboto font
 const roboto = Roboto({
@@ -26,11 +26,11 @@ export const metadata: Metadata = {
   description: "Discover unique handcrafted treasures from talented artisans",
 };
 
-export default function RootLayout({
+export const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -43,4 +43,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};

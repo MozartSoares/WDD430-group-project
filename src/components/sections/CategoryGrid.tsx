@@ -1,16 +1,16 @@
 "use client";
+import { ArrowBack } from "@mui/icons-material";
 import {
   Box,
-  Container,
-  Typography,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
   Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Container,
+  Grid,
+  Typography,
   useTheme,
 } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
 
 interface Category {
   id: string;
@@ -36,13 +36,13 @@ const defaultCategories: Category[] = [
   { id: "6", name: "Subcategory", image: "/api/placeholder/300/200" },
 ];
 
-export default function CategoryGrid({
+export const CategoryGrid = ({
   title = "Category Name",
   categories = defaultCategories,
   onCategoryClick,
   onBackClick,
   showBackButton = true,
-}: CategoryGridProps) {
+}: CategoryGridProps) => {
   const theme = useTheme();
 
   const handleCategoryClick = (category: Category) => {
@@ -161,4 +161,4 @@ export default function CategoryGrid({
       </Grid>
     </Container>
   );
-}
+};

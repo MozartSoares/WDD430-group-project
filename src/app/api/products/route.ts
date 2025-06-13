@@ -1,5 +1,4 @@
-
-import dbConnect from "@/lib/mongodb";
+import { dbConnect } from "@/lib/mongodb";
 import { ProductsController } from "@/server";
 import type { NextRequest } from "next/server";
 

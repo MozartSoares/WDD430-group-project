@@ -4,8 +4,8 @@ import {
   Box,
   Container,
   Typography,
-  useTheme,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 interface HeroSectionProps {
@@ -14,11 +14,11 @@ interface HeroSectionProps {
   backgroundColor?: string;
 }
 
-export default function HeroSection({
+export const HeroSection = ({
   title = "Tagline describing Handcrafted Haven",
   subtitle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque.",
   backgroundColor = "#E5E7EB", // Light gray default
-}: HeroSectionProps) {
+}: HeroSectionProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -82,4 +82,4 @@ export default function HeroSection({
       />
     </Box>
   );
-}
+};

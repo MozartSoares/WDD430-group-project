@@ -1,23 +1,23 @@
 // src/components/modals/ReviewModal.tsx
 "use client";
 
-import type React from "react";
-import { useState } from "react";
+import type { DemoReview } from "@/data/demoData";
+import { Close, Star } from "@mui/icons-material";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
+  Alert,
   Box,
-  Typography,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Rating,
-  Alert,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Close, Star } from "@mui/icons-material";
-import type { DemoReview } from "@/data/demoData";
+import type React from "react";
+import { useState } from "react";
 
 interface ReviewModalProps {
   open: boolean;
@@ -29,7 +29,7 @@ interface ReviewModalProps {
   userName: string;
 }
 
-export default function ReviewModal({
+export const ReviewModal = ({
   open,
   onClose,
   onReviewAdded,
@@ -37,7 +37,7 @@ export default function ReviewModal({
   productName,
   userId,
   userName,
-}: ReviewModalProps) {
+}: ReviewModalProps) => {
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -230,4 +230,4 @@ export default function ReviewModal({
       </DialogActions>
     </Dialog>
   );
-}
+};

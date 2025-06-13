@@ -1,29 +1,29 @@
 // src/components/modals/AddProductModal.tsx
 "use client";
 
+import type { DemoProduct } from "@/data/demoData";
+import { Add, Close, CloudUpload, Delete } from "@mui/icons-material";
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import type React from "react";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Box,
-  Typography,
-  IconButton,
-  Chip,
-  InputAdornment,
-  Alert,
-} from "@mui/material";
-import { Close, CloudUpload, Add, Delete } from "@mui/icons-material";
-import type { DemoProduct } from "@/data/demoData";
 
 interface AddProductModalProps {
   open: boolean;
@@ -47,12 +47,12 @@ const categories = [
   "Home Decor",
 ];
 
-export default function AddProductModal({
+export const AddProductModal = ({
   open,
   onClose,
   onProductAdded,
   artistId,
-}: AddProductModalProps) {
+}: AddProductModalProps) => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -366,7 +366,7 @@ export default function AddProductModal({
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                 {materials.map((material, index) => (
                   <Chip
-                    key={index}
+                    key={Math.random()}
                     label={material}
                     onDelete={() => removeMaterial(material)}
                     deleteIcon={<Delete />}
@@ -445,4 +445,4 @@ export default function AddProductModal({
       </DialogActions>
     </Dialog>
   );
-}
+};

@@ -1,45 +1,43 @@
 // src/app/(frontend)/profile/page.tsx
 "use client";
 
-import type React from "react";
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { AddProductModal, Footer, Header } from "@/components";
 import {
-  Box,
-  Container,
-  Paper,
+  type DemoProduct,
+  type DemoUser,
+  demoUsers,
+  getProductsByArtistId,
+} from "@/data/demoData";
+import {
+  Add,
+  CalendarToday,
+  Cancel,
+  Edit,
+  Language,
+  LocationOn,
+  Save,
+} from "@mui/icons-material";
+import {
   Avatar,
-  Typography,
+  Box,
   Button,
-  TextField,
-  Grid,
-  Chip,
   Card,
   CardContent,
   CardMedia,
+  Chip,
+  Container,
+  Grid,
+  Paper,
   Rating,
+  TextField,
+  Typography,
 } from "@mui/material";
-import {
-  Edit,
-  Save,
-  Cancel,
-  Add,
-  LocationOn,
-  CalendarToday,
-  Language,
-} from "@mui/icons-material";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import AddProductModal from "@/components/modals/AddProductModal";
-import {
-  demoUsers,
-  getProductsByArtistId,
-  type DemoUser,
-  type DemoProduct,
-} from "@/data/demoData";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useEffect, useState } from "react";
 
-export default function ProfilePage() {
+export const ProfilePage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -286,7 +284,7 @@ export default function ProfilePage() {
                   <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                     {userData.specialties?.map((specialty, index) => (
                       <Chip
-                        key={index}
+                        key={Math.random()}
                         label={specialty}
                         size="small"
                         color="primary"
@@ -455,4 +453,4 @@ export default function ProfilePage() {
       />
     </Box>
   );
-}
+};

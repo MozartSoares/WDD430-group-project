@@ -1,47 +1,46 @@
 // src/app/(frontend)/artisans/[id]/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { Footer, Header } from "@/components/layout/";
 import {
-  Box,
-  Container,
-  Paper,
+  type DemoProduct,
+  type DemoUser,
+  getProductsByArtistId,
+  getUserByArtistId,
+} from "@/data/demoData";
+import {
+  CalendarToday,
+  ChevronRight,
+  Language,
+  LocationOn,
+} from "@mui/icons-material";
+import {
   Avatar,
-  Typography,
-  Grid,
-  Chip,
+  Box,
+  Breadcrumbs,
   Card,
   CardContent,
   CardMedia,
-  Rating,
-  Breadcrumbs,
+  Chip,
+  Container,
+  Grid,
   Link,
+  Paper,
+  Rating,
+  Typography,
 } from "@mui/material";
-import {
-  LocationOn,
-  CalendarToday,
-  Language,
-  ChevronRight,
-} from "@mui/icons-material";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import {
-  getUserByArtistId,
-  getProductsByArtistId,
-  type DemoUser,
-  type DemoProduct,
-} from "@/data/demoData";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function ArtisanPage() {
+export const ArtisanPage = () => {
   const params = useParams();
   const router = useRouter();
   const [artisan, setArtisan] = useState<DemoUser | null>(null);
   const [artisanProducts, setArtisanProducts] = useState<DemoProduct[]>([]);
 
   useEffect(() => {
-    const artistId = Number.parseInt(params.id as string);
-    if (!isNaN(artistId)) {
+    const artistId = params.id as string;
+    if (artistId) {
       const user = getUserByArtistId(artistId);
       if (user) {
         setArtisan(user);
@@ -238,7 +237,7 @@ export default function ArtisanPage() {
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
                 {artisan.specialties?.map((specialty, index) => (
                   <Chip
-                    key={index}
+                    key={Math.random()}
                     label={specialty}
                     size="small"
                     color="primary"
@@ -410,4 +409,4 @@ export default function ArtisanPage() {
       <Footer onContactClick={() => {}} onLinkClick={() => {}} />
     </Box>
   );
-}
+};

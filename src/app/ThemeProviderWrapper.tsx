@@ -1,9 +1,9 @@
 // app/ThemeProviderWrapper.tsx
 "use client";
 
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import { theme } from "@/lib/theme";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useEffect, useState } from "react";
-import theme from "@/lib/theme";
 
 interface ThemeProviderWrapperProps {
   children: React.ReactNode;

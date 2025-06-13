@@ -1,6 +1,10 @@
-import { handleControllerError, ValidateBody, ValidateId } from '@/lib/validation';
-import { updateUserSchema, UpdateUserSchema } from '@/types/user/schemas';
-import { UserService } from '@/server';
+import {
+  ValidateBody,
+  ValidateId,
+  handleControllerError,
+} from "@/lib/validation";
+import { UserService } from "@/server";
+import { type UpdateUserSchema, updateUserSchema } from "@/types/user/schemas";
 
 export class UserController {
   static async getAll() {
@@ -17,7 +21,10 @@ export class UserController {
     try {
       const user = await UserService.getById(id);
       if (!user) {
-        return Response.json({ success: false, message: 'User not found' }, { status: 404 });
+        return Response.json(
+          { success: false, message: "User not found" },
+          { status: 404 },
+        );
       }
       return Response.json({ success: true, user });
     } catch (error) {
@@ -31,7 +38,10 @@ export class UserController {
     try {
       const user = await UserService.update(id, payload);
       if (!user) {
-        return Response.json({ success: false, message: 'User not updated' }, { status: 404 });
+        return Response.json(
+          { success: false, message: "User not updated" },
+          { status: 404 },
+        );
       }
       return Response.json({ success: true, user });
     } catch (error) {
@@ -44,9 +54,12 @@ export class UserController {
     try {
       const deleted = await UserService.delete(id);
       if (!deleted) {
-        return Response.json({ success: false, message: 'User not deleted' }, { status: 404 });
+        return Response.json(
+          { success: false, message: "User not deleted" },
+          { status: 404 },
+        );
       }
-      return Response.json({ success: true, message: 'User deleted' });
+      return Response.json({ success: true, message: "User deleted" });
     } catch (error) {
       return handleControllerError(error);
     }

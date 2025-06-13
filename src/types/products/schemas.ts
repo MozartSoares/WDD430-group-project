@@ -24,15 +24,5 @@ export const updateProductSchema = z.object({
   userId: z.string().min(1, "User ID is required").optional(),
 });
 
-export const getProductByIdSchema = z.object({
-  id: z.string().min(1, "Product ID is required"),
-});
-
-export const deleteProductSchema = z.object({
-  id: z.string().min(1, "Product ID is required"),
-
-
 export type CreateProductSchema = z.infer<typeof createProductSchema>;
 export type UpdateProductSchema = z.infer<typeof updateProductSchema>;
-export type GetProductByIdSchema = z.infer<typeof getProductByIdSchema>;
-export type DeleteProductSchema = z.infer<typeof deleteProductSchema>;

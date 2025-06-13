@@ -1,27 +1,27 @@
 // src/components/sections/ProductGrid.tsx
 "use client";
 
-import { useState } from "react";
+import { FilterList } from "@mui/icons-material";
 import {
   Box,
-  Container,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Rating,
-  Chip,
   Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  Container,
   FormControl,
-  Select,
-  MenuItem,
+  Grid,
   InputLabel,
+  MenuItem,
   Pagination,
-  useTheme,
+  Rating,
+  Select,
+  Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import { FilterList } from "@mui/icons-material";
+import { useState } from "react";
 
 interface Product {
   id: string;
@@ -82,7 +82,7 @@ const defaultProducts: Product[] = [
   })),
 ];
 
-export default function ProductGrid({
+export const ProductGrid = ({
   products = defaultProducts,
   totalProducts = 28,
   currentPage = 1,
@@ -91,7 +91,7 @@ export default function ProductGrid({
   onSortChange,
   onFilterClick,
   showFilters = true,
-}: ProductGridProps) {
+}: ProductGridProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [sortBy, setSortBy] = useState("");
@@ -420,4 +420,4 @@ export default function ProductGrid({
       </Box>
     </Container>
   );
-}
+};

@@ -1,35 +1,34 @@
 // src/app/(frontend)/login/page.tsx
 "use client";
 
-import type React from "react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { Footer, Header } from "@/components/layout";
 import {
-  Box,
-  Container,
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  Link,
-  Alert,
-  IconButton,
-  InputAdornment,
-  Divider,
-  Stack,
-} from "@mui/material";
-import {
-  Visibility,
-  VisibilityOff,
+  ArrowBack,
   Email,
   Lock,
-  ArrowBack,
+  Visibility,
+  VisibilityOff,
 } from "@mui/icons-material";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Link,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
 
-export default function LoginPage() {
+export const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -312,4 +311,4 @@ export default function LoginPage() {
       <Footer onContactClick={() => {}} onLinkClick={() => {}} />
     </Box>
   );
-}
+};

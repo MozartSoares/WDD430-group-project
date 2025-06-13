@@ -344,11 +344,15 @@ export const getUserById = (userId: string): DemoUser | undefined => {
   return demoUsers.find((user) => user.id === userId);
 };
 
-export const getUserByArtistId = (artistId: number): DemoUser | undefined => {
+export const getUserByArtistId = (
+  artistId: number | string,
+): DemoUser | undefined => {
   return demoUsers.find((user) => user.artistId === artistId);
 };
 
-export const getProductsByArtistId = (artistId: number): DemoProduct[] => {
+export const getProductsByArtistId = (
+  artistId: number | string,
+): DemoProduct[] => {
   return demoProducts.filter((product) => product.artistId === artistId);
 };
 

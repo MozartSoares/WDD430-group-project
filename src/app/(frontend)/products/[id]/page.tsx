@@ -1,50 +1,49 @@
 // src/app/(frontend)/products/[id]/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { Footer, Header, ReviewModal } from "@/components";
+
 import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  Button,
-  Rating,
-  Chip,
-  Paper,
-  Avatar,
-  Divider,
-  IconButton,
-  Breadcrumbs,
-  Link,
-  Alert,
-} from "@mui/material";
-import {
-  Add,
-  Remove,
-  FavoriteOutlined,
-  ShareOutlined,
-  LocationOn,
-  Verified,
-  ChevronRight,
-  RateReview,
-  ThumbUp,
-} from "@mui/icons-material";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import ReviewModal from "@/components/modals/ReviewModal";
-import {
-  demoProducts,
-  getUserByArtistId,
-  getReviewsForProduct,
-  canUserReviewProduct,
   type DemoProduct,
   type DemoReview,
   type DemoUser,
+  canUserReviewProduct,
+  demoProducts,
+  getReviewsForProduct,
+  getUserByArtistId,
 } from "@/data/demoData";
+import {
+  Add,
+  ChevronRight,
+  FavoriteOutlined,
+  LocationOn,
+  RateReview,
+  Remove,
+  ShareOutlined,
+  ThumbUp,
+  Verified,
+} from "@mui/icons-material";
+import {
+  Alert,
+  Avatar,
+  Box,
+  Breadcrumbs,
+  Button,
+  Chip,
+  Container,
+  Divider,
+  Grid,
+  IconButton,
+  Link,
+  Paper,
+  Rating,
+  Typography,
+} from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function ProductDetailPage() {
+export const ProductDetailPage = () => {
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
@@ -553,4 +552,4 @@ export default function ProductDetailPage() {
       )}
     </Box>
   );
-}
+};

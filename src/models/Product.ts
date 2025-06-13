@@ -7,7 +7,11 @@ const ProductModel = new mongoose.Schema<IProduct>(
     originalPrice: { type: Number, required: true },
     currentPrice: { type: Number, required: true },
     imageUrl: { type: String, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     description: { type: String, required: false },
   },
   { timestamps: true },
