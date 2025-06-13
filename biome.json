@@ -59,7 +59,6 @@
         "noAccumulatingSpread": "off"
       },
       "style": {
-        "noDefaultExport": "error",
         "noNamespace": "error",
         "useAsConstAssertion": "error",
         "noArguments": "error",

@@ -1,4 +1,5 @@
 // src/lib/theme.ts
+"use-client";
 import { createTheme } from "@mui/material/styles";
 
 declare module "@mui/material/styles" {

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   description: "Discover unique handcrafted treasures from talented artisans",
 };
 
-export const RootLayout = ({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -44,3 +44,5 @@ export const RootLayout = ({
     </html>
   );
 };
+
+export default RootLayout;

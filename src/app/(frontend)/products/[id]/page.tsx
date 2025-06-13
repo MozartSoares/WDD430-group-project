@@ -43,7 +43,7 @@ import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const ProductDetailPage = () => {
+function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
@@ -552,4 +552,6 @@ export const ProductDetailPage = () => {
       )}
     </Box>
   );
-};
+}
+
+export default ProductDetailPage;

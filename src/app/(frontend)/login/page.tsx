@@ -1,7 +1,7 @@
 // src/app/(frontend)/login/page.tsx
 "use client";
 
-import { Footer, Header } from "@/components/layout";
+import { Footer, Header } from "@/components";
 import {
   ArrowBack,
   Email,
@@ -28,7 +28,7 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 
-export const LoginPage = () => {
+function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -133,15 +133,15 @@ export const LoginPage = () => {
                 },
               }}
             >
-              <p>
+              {/* <p>
                 <strong>Demo Login:</strong> demo@example.com / password
               </p>
               <p>
                 <strong>Artist1 Login:</strong> artisan1@example.com / password
               </p>
               <p>
-                <strong>Artist2 Login:</strong> artisan2@example.com" / password
-              </p>
+                <strong>Artist2 Login:</strong> artisan2@example.com / password */}
+              {/* </p> */}
             </Alert>
 
             {/* Error Alert */}
@@ -311,4 +311,5 @@ export const LoginPage = () => {
       <Footer onContactClick={() => {}} onLinkClick={() => {}} />
     </Box>
   );
-};
+}
+export default LoginPage;

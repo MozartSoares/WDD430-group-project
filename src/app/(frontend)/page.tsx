@@ -72,8 +72,7 @@ const demoCategories: Category[] = [
     href: "/products?category=glass",
   },
 ];
-
-export const Home = () => {
+function Home() {
   const router = useRouter();
   const [cartCount, setCartCount] = useState(3);
 
@@ -159,4 +158,6 @@ export const Home = () => {
       />
     </Box>
   );
-};
+}
+
+export default Home;

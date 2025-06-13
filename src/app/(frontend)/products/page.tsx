@@ -1,4 +1,3 @@
-// src/app/(frontend)/products/page.tsx
 "use client";
 
 import { Footer, Header, ProductGrid } from "@/components";
@@ -6,16 +5,44 @@ import { demoProducts } from "@/data/demoData";
 import { ChevronRight } from "@mui/icons-material";
 import { Box, Breadcrumbs, Container, Link, Typography } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-export const ProductsPage = () => {
-  const router = useRouter();
+function SearchParamsHandler({
+  onCategoryChange,
+  onSearchChange,
+}: {
+  onCategoryChange: (cat: string | null) => void;
+  onSearchChange: (search: string | null) => void;
+}) {
   const searchParams = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(1);
 
-  // Get search and filter params
   const category = searchParams.get("category");
   const search = searchParams.get("search");
+
+  useEffect(() => {
+    onCategoryChange(category);
+  }, [category, onCategoryChange]);
+
+  useEffect(() => {
+    onSearchChange(search);
+  }, [search, onSearchChange]);
+
+  return null;
+}
+
+function ProductsPage() {
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [category, setCategory] = useState<string | null>(null);
+  const [search, setSearch] = useState<string | null>(null);
+
+  const handleCategoryChange = (cat: string | null) => {
+    setCategory(cat);
+  };
+
+  const handleSearchChange = (search: string | null) => {
+    setSearch(search);
+  };
 
   const handleProductClick = (product: any) => {
     router.push(`/products/${product.id}`);
@@ -87,6 +114,14 @@ export const ProductsPage = () => {
           {pageTitle}
         </Typography>
 
+        {/* Suspense wrap para o SearchParamsHandler */}
+        <Suspense fallback={<div>Loading filters...</div>}>
+          <SearchParamsHandler
+            onCategoryChange={handleCategoryChange}
+            onSearchChange={handleSearchChange}
+          />
+        </Suspense>
+
         {search && (
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
             Showing results for: <strong>"{search}"</strong>
@@ -119,4 +154,6 @@ export const ProductsPage = () => {
       />
     </Box>
   );
-};
+}
+
+export default ProductsPage;

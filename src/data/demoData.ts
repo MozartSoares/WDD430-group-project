@@ -1,4 +1,5 @@
 // src/data/demoData.ts
+"use-client";
 export interface DemoUser {
   id: string;
   artistId: number;
