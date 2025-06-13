@@ -30,7 +30,7 @@ export const getProductByIdSchema = z.object({
 
 export const deleteProductSchema = z.object({
   id: z.string().min(1, "Product ID is required"),
-});
+
 
 export type CreateProductSchema = z.infer<typeof createProductSchema>;
 export type UpdateProductSchema = z.infer<typeof updateProductSchema>;

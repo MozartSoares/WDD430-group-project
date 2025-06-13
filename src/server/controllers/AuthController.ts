@@ -2,6 +2,7 @@ import { ValidateBody, handleControllerError } from "@/lib/validation";
 import { type CreateUserSchema, createUserSchema } from "@/types";
 import { AuthService } from "../services";
 
+
 export class AuthController {
   //probably we wont need this because nextauth will handle the login and register using the service directly
   //but we can keep it here commented for now

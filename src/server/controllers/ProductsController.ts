@@ -21,6 +21,7 @@ export class ProductsController {
     }
   }
 
+
   @ValidateId
   static async getById(id: string) {
     try {
@@ -31,6 +32,42 @@ export class ProductsController {
           { success: false, message: "Product not found" },
           { status: 404 },
         );
+
+  @ValidateId
+  static async getById(id: string) {
+    try {
+      // o id já tá validado pelo decorator
+      const product = await ProductService.getById(id);
+      if (!product) {
+        return Response.json({ success: false, message: 'Product not found' }, { status: 404 });
+      }
+      return Response.json({ success: true, product });
+    } catch (error) {
+      return handleControllerError(error);
+    }
+  }
+
+  @ValidateBody(createProductSchema)
+  static async create(payload: CreateProductSchema) {
+    try {
+      const product = await ProductService.create(payload);
+      if (!product) {
+        return Response.json({ success: false, message: 'Product not created' }, { status: 401 });
+      }
+      return Response.json({ success: true, message: 'Product created successfully', product });
+    } catch (error) {
+      return handleControllerError(error);
+    }
+  }
+
+  @ValidateId
+  @ValidateBody(updateProductSchema)
+  static async update(id: string, payload: UpdateProductSchema) {
+    try {
+      const product = await ProductService.update(id, payload);
+      if (!product) {
+        return Response.json({ success: false, message: 'Product not updated' }, { status: 404 });
+
       }
       return Response.json({ success: true, product });
     } catch (error) {

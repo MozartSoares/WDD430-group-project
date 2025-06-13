@@ -6,6 +6,7 @@ export function ValidateBody<T extends z.ZodTypeAny>(schema: T) {
     propertyKey: string | symbol,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor {
+
     const originalMethod = descriptor.value!;
 
     descriptor.value = async function (...args: unknown[]) {
@@ -14,7 +15,9 @@ export function ValidateBody<T extends z.ZodTypeAny>(schema: T) {
       const result = schema.safeParse(body);
 
       if (!result.success) {
+
         throw new Error(result.error.errors.map((e) => e.message).join(", "));
+
       }
 
       args[bodyIndex] = result.data;
@@ -25,6 +28,7 @@ export function ValidateBody<T extends z.ZodTypeAny>(schema: T) {
     return descriptor;
   };
 }
+
 
 export function ValidateId(
   target: unknown,
