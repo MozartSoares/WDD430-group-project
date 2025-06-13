@@ -120,3 +120,5 @@ export const ProductsPage = () => {
     </Box>
   );
 };
+
+export default ProductsPage;

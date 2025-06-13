@@ -553,3 +553,5 @@ export const ProductDetailPage = () => {
     </Box>
   );
 };
+
+export default ProductDetailPage;

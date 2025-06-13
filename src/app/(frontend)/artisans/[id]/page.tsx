@@ -410,3 +410,5 @@ export const ArtisanPage = () => {
     </Box>
   );
 };
+
+export default ArtisanPage;
