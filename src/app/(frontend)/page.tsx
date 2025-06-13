@@ -1,15 +1,15 @@
 // src/app/(frontend)/page.tsx
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Box } from '@mui/material';
-import Header from '@/components/layout/Header';
-import HeroSection from '@/components/sections/HeroSection';
-import CategoryGrid from '@/components/sections/CategoryGrid';
-import ProductGrid from '@/components/sections/ProductGrid';
-import { demoProducts } from '@/data/demoData';
-import Footer from '@/components/layout/Footer';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Box } from "@mui/material";
+import Header from "@/components/layout/Header";
+import HeroSection from "@/components/sections/HeroSection";
+import CategoryGrid from "@/components/sections/CategoryGrid";
+import ProductGrid from "@/components/sections/ProductGrid";
+import { demoProducts } from "@/data/demoData";
+import Footer from "@/components/layout/Footer";
 
 // Types for demo data
 interface Category {
@@ -34,12 +34,42 @@ interface Product {
 
 // Demo data with navigation hrefs
 const demoCategories: Category[] = [
-  { id: '1', name: 'Pottery & Ceramics', image: '/api/placeholder/300/200', href: '/products?category=pottery' },
-  { id: '2', name: 'Jewelry & Accessories', image: '/api/placeholder/300/200', href: '/products?category=jewelry' },
-  { id: '3', name: 'Home Decor', image: '/api/placeholder/300/200', href: '/products?category=decor' },
-  { id: '4', name: 'Textiles & Fiber Arts', image: '/api/placeholder/300/200', href: '/products?category=textiles' },
-  { id: '5', name: 'Woodworking', image: '/api/placeholder/300/200', href: '/products?category=wood' },
-  { id: '6', name: 'Glass & Metalwork', image: '/api/placeholder/300/200', href: '/products?category=glass' },
+  {
+    id: "1",
+    name: "Pottery & Ceramics",
+    image: "/api/placeholder/300/200",
+    href: "/products?category=pottery",
+  },
+  {
+    id: "2",
+    name: "Jewelry & Accessories",
+    image: "/api/placeholder/300/200",
+    href: "/products?category=jewelry",
+  },
+  {
+    id: "3",
+    name: "Home Decor",
+    image: "/api/placeholder/300/200",
+    href: "/products?category=decor",
+  },
+  {
+    id: "4",
+    name: "Textiles & Fiber Arts",
+    image: "/api/placeholder/300/200",
+    href: "/products?category=textiles",
+  },
+  {
+    id: "5",
+    name: "Woodworking",
+    image: "/api/placeholder/300/200",
+    href: "/products?category=wood",
+  },
+  {
+    id: "6",
+    name: "Glass & Metalwork",
+    image: "/api/placeholder/300/200",
+    href: "/products?category=glass",
+  },
 ];
 
 // const demoProducts: Product[] = [
@@ -153,35 +183,35 @@ export default function Home() {
   };
 
   const handleBackClick = () => {
-    router.push('/products');
+    router.push("/products");
   };
 
   const handlePageChange = (page: number) => {
-    console.log('Page changed to:', page);
+    console.log("Page changed to:", page);
   };
 
   const handleSortChange = (sortBy: string) => {
-    console.log('Sort changed to:', sortBy);
+    console.log("Sort changed to:", sortBy);
   };
 
   const handleFilterClick = () => {
-    console.log('Filter clicked');
+    console.log("Filter clicked");
   };
 
   const handleContactClick = () => {
-    console.log('Contact clicked');
+    console.log("Contact clicked");
   };
 
   const handleFooterLinkClick = (href: string) => {
-    console.log('Footer link clicked:', href);
+    console.log("Footer link clicked:", href);
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* Header */}
       <Header
         cartItemCount={cartCount}
-        onCartClick={() => console.log('Cart clicked')}
+        onCartClick={() => console.log("Cart clicked")}
       />
 
       {/* Main Content */}

@@ -1,15 +1,15 @@
 // src/app/(frontend)/products/page.tsx
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Box, Container, Typography, Breadcrumbs, Link } from '@mui/material';
-import { ChevronRight } from '@mui/icons-material';
-import Header from '@/components/layout/Header';
-import ProductGrid from '@/components/sections/ProductGrid';
-import { demoProducts } from '@/data/demoData';
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Box, Container, Typography, Breadcrumbs, Link } from "@mui/material";
+import { ChevronRight } from "@mui/icons-material";
+import Header from "@/components/layout/Header";
+import ProductGrid from "@/components/sections/ProductGrid";
+import { demoProducts } from "@/data/demoData";
 
-import Footer from '@/components/layout/Footer';
+import Footer from "@/components/layout/Footer";
 
 // Demo products data
 // const demoProducts = [
@@ -121,11 +121,11 @@ export default function ProductsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // Get search and filter params
-  const category = searchParams.get('category');
-  const search = searchParams.get('search');
-  
+  const category = searchParams.get("category");
+  const search = searchParams.get("search");
+
   const handleProductClick = (product: any) => {
     router.push(`/products/${product.id}`);
   };
@@ -135,36 +135,36 @@ export default function ProductsPage() {
   };
 
   const handleSortChange = (sortBy: string) => {
-    console.log('Sort changed to:', sortBy);
+    console.log("Sort changed to:", sortBy);
   };
 
   const handleFilterClick = () => {
-    console.log('Filter clicked');
+    console.log("Filter clicked");
   };
 
   const getCategoryName = (categoryId: string | null) => {
     const categoryMap: Record<string, string> = {
-      pottery: 'Pottery & Ceramics',
-      jewelry: 'Jewelry & Accessories',
-      decor: 'Home Decor',
-      textiles: 'Textiles & Fiber Arts',
-      wood: 'Woodworking',
-      glass: 'Glass & Metalwork',
+      pottery: "Pottery & Ceramics",
+      jewelry: "Jewelry & Accessories",
+      decor: "Home Decor",
+      textiles: "Textiles & Fiber Arts",
+      wood: "Woodworking",
+      glass: "Glass & Metalwork",
     };
-    return categoryId ? categoryMap[categoryId] || 'Products' : 'All Products';
+    return categoryId ? categoryMap[categoryId] || "Products" : "All Products";
   };
 
-  const pageTitle = search 
-    ? `Search results for "${search}"` 
+  const pageTitle = search
+    ? `Search results for "${search}"`
     : getCategoryName(category);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Header 
-        cartItemCount={3} 
-        onCartClick={() => console.log('Cart clicked')} 
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <Header
+        cartItemCount={3}
+        onCartClick={() => console.log("Cart clicked")}
       />
-      
+
       <Container maxWidth="lg" sx={{ py: 3 }}>
         {/* Breadcrumbs */}
         <Breadcrumbs
@@ -175,12 +175,12 @@ export default function ProductsPage() {
           <Link
             component="button"
             variant="body2"
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             sx={{
-              color: 'text.secondary',
-              textDecoration: 'none',
-              '&:hover': {
-                textDecoration: 'underline',
+              color: "text.secondary",
+              textDecoration: "none",
+              "&:hover": {
+                textDecoration: "underline",
               },
             }}
           >
@@ -208,7 +208,7 @@ export default function ProductsPage() {
           </Typography>
         )}
       </Container>
-      
+
       <Box component="main" sx={{ flexGrow: 1 }}>
         <ProductGrid
           products={demoProducts}
@@ -222,9 +222,9 @@ export default function ProductsPage() {
         />
       </Box>
 
-      <Footer 
-        onContactClick={() => console.log('Contact clicked')}
-        onLinkClick={() => console.log('Footer link clicked')}
+      <Footer
+        onContactClick={() => console.log("Contact clicked")}
+        onLinkClick={() => console.log("Footer link clicked")}
       />
     </Box>
   );

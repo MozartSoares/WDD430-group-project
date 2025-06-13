@@ -1,6 +1,15 @@
-import { ValidateId, handleControllerError, ValidateBody } from '@/lib/validation';
-import { CreateProductSchema, createProductSchema, updateProductSchema, UpdateProductSchema } from '@/types';
-import { ProductService } from '@/server';
+import {
+  ValidateBody,
+  ValidateId,
+  handleControllerError,
+} from "@/lib/validation";
+import { ProductService } from "@/server";
+import {
+  type CreateProductSchema,
+  type UpdateProductSchema,
+  createProductSchema,
+  updateProductSchema,
+} from "@/types";
 
 export class ProductsController {
   static async getAll() {
@@ -18,7 +27,10 @@ export class ProductsController {
       // o id já tá validado pelo decorator
       const product = await ProductService.getById(id);
       if (!product) {
-        return Response.json({ success: false, message: 'Product not found' }, { status: 404 });
+        return Response.json(
+          { success: false, message: "Product not found" },
+          { status: 404 },
+        );
       }
       return Response.json({ success: true, product });
     } catch (error) {
@@ -31,9 +43,16 @@ export class ProductsController {
     try {
       const product = await ProductService.create(payload);
       if (!product) {
-        return Response.json({ success: false, message: 'Product not created' }, { status: 401 });
+        return Response.json(
+          { success: false, message: "Product not created" },
+          { status: 401 },
+        );
       }
-      return Response.json({ success: true, message: 'Product created successfully', product });
+      return Response.json({
+        success: true,
+        message: "Product created successfully",
+        product,
+      });
     } catch (error) {
       return handleControllerError(error);
     }
@@ -45,7 +64,10 @@ export class ProductsController {
     try {
       const product = await ProductService.update(id, payload);
       if (!product) {
-        return Response.json({ success: false, message: 'Product not updated' }, { status: 404 });
+        return Response.json(
+          { success: false, message: "Product not updated" },
+          { status: 404 },
+        );
       }
       return Response.json({ success: true, product });
     } catch (error) {
@@ -58,9 +80,12 @@ export class ProductsController {
     try {
       const deleted = await ProductService.delete(id);
       if (!deleted) {
-        return Response.json({ success: false, message: 'Product not deleted' }, { status: 404 });
+        return Response.json(
+          { success: false, message: "Product not deleted" },
+          { status: 404 },
+        );
       }
-      return Response.json({ success: true, message: 'Product deleted' });
+      return Response.json({ success: true, message: "Product deleted" });
     } catch (error) {
       return handleControllerError(error);
     }
