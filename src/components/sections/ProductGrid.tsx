@@ -1,7 +1,7 @@
 // src/components/sections/ProductGrid.tsx
-"use client";
+'use client';
 
-import { useState } from "react";
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -20,8 +20,8 @@ import {
   Pagination,
   useTheme,
   useMediaQuery,
-} from "@mui/material";
-import { FilterList } from "@mui/icons-material";
+} from '@mui/material';
+import { FilterList } from '@mui/icons-material';
 
 interface Product {
   id: string;
@@ -51,9 +51,9 @@ interface ProductGridProps {
 
 const defaultProducts: Product[] = [
   {
-    id: "1",
-    name: "Product Name",
-    description: "Description, color, size",
+    id: '1',
+    name: 'Product Name',
+    description: 'Description, color, size',
     price: 95,
     originalPrice: 119,
     rating: 4.5,
@@ -62,9 +62,9 @@ const defaultProducts: Product[] = [
     discount: 20,
   },
   {
-    id: "2",
-    name: "Product Name",
-    description: "Description, color, size",
+    id: '2',
+    name: 'Product Name',
+    description: 'Description, color, size',
     price: 95,
     rating: 4.0,
     reviewCount: 28,
@@ -73,8 +73,8 @@ const defaultProducts: Product[] = [
   // Add more products as needed
   ...Array.from({ length: 8 }, (_, i) => ({
     id: `${i + 3}`,
-    name: "Product Name",
-    description: "Description, color, size",
+    name: 'Product Name',
+    description: 'Description, color, size',
     price: 95,
     rating: 4.2,
     reviewCount: 15,
@@ -93,9 +93,9 @@ export default function ProductGrid({
   showFilters = true,
 }: ProductGridProps) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [sortBy, setSortBy] = useState("");
-  const [activeFilters, setActiveFilters] = useState(["New Arrivals"]);
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [sortBy, setSortBy] = useState('');
+  const [activeFilters, setActiveFilters] = useState(['New Arrivals']);
 
   const handleSortChange = (event: any) => {
     const value = event.target.value;
@@ -112,7 +112,7 @@ export default function ProductGrid({
   };
 
   const removeFilter = (filter: string) => {
-    setActiveFilters((prev) => prev.filter((f) => f !== filter));
+    setActiveFilters(prev => prev.filter(f => f !== filter));
   };
 
   return (
@@ -122,72 +122,54 @@ export default function ProductGrid({
         <Box sx={{ mb: 4 }}>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
             <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 1,
-                  alignItems: "center",
-                }}
-              >
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
                 <Button
                   variant="contained"
                   startIcon={<FilterList />}
                   onClick={onFilterClick}
                   sx={{
-                    backgroundColor: "text.primary",
-                    color: "background.paper",
-                    "&:hover": {
-                      backgroundColor: "text.secondary",
+                    backgroundColor: 'text.primary',
+                    color: 'background.paper',
+                    '&:hover': {
+                      backgroundColor: 'text.secondary',
                     },
                   }}
                 >
                   Sort by
                 </Button>
-
+                
                 <Button
                   variant="contained"
                   sx={{
-                    backgroundColor: "text.primary",
-                    color: "background.paper",
-                    "&:hover": {
-                      backgroundColor: "text.secondary",
+                    backgroundColor: 'text.primary',
+                    color: 'background.paper',
+                    '&:hover': {
+                      backgroundColor: 'text.secondary',
                     },
                   }}
                 >
                   New Arrivals
                 </Button>
-
+                
                 <Button
                   variant="outlined"
-                  sx={{
-                    color: "text.secondary",
-                    borderColor: "text.secondary",
-                  }}
+                  sx={{ color: 'text.secondary', borderColor: 'text.secondary' }}
                 >
                   Sales
                 </Button>
-
+                
                 <Button
                   variant="outlined"
                   startIcon={<FilterList />}
-                  sx={{
-                    color: "text.secondary",
-                    borderColor: "text.secondary",
-                  }}
+                  sx={{ color: 'text.secondary', borderColor: 'text.secondary' }}
                 >
                   All filters
                 </Button>
               </Box>
             </Grid>
-
+            
             <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: { xs: "flex-start", md: "flex-end" },
-                }}
-              >
+              <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
                 <FormControl size="small" sx={{ minWidth: 120 }}>
                   <InputLabel>Sort by</InputLabel>
                   <Select
@@ -232,58 +214,56 @@ export default function ProductGrid({
           <Grid item xs={12} sm={6} md={4} lg={2.4} key={product.id}>
             <Card
               sx={{
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-2px)",
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
                   boxShadow: theme.shadows[4],
                 },
-                position: "relative",
+                position: 'relative',
               }}
               onClick={() => handleProductClick(product)}
             >
               {/* Product Image */}
-              <Box sx={{ position: "relative" }}>
+              <Box sx={{ position: 'relative' }}>
                 <CardMedia
                   component="div"
                   sx={{
                     height: 200,
-                    backgroundColor: "#F3F4F6",
-                    backgroundImage: product.image
-                      ? `url(${product.image})`
-                      : "none",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    backgroundColor: '#F3F4F6',
+                    backgroundImage: product.image ? `url(${product.image})` : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                   }}
                 />
-
+                
                 {/* Badges */}
                 {product.isNew && (
                   <Chip
                     label="NEW"
                     size="small"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       top: 8,
                       left: 8,
-                      backgroundColor: "text.primary",
-                      color: "background.paper",
-                      fontWeight: "bold",
+                      backgroundColor: 'text.primary',
+                      color: 'background.paper',
+                      fontWeight: 'bold',
                     }}
                   />
                 )}
-
+                
                 {product.discount && (
                   <Chip
                     label={`-${product.discount}%`}
                     size="small"
                     sx={{
-                      position: "absolute",
+                      position: 'absolute',
                       top: 8,
                       right: 8,
-                      backgroundColor: "error.main",
-                      color: "error.contrastText",
-                      fontWeight: "bold",
+                      backgroundColor: 'error.main',
+                      color: 'error.contrastText',
+                      fontWeight: 'bold',
                     }}
                   />
                 )}
@@ -297,68 +277,64 @@ export default function ProductGrid({
                   sx={{
                     fontWeight: 500,
                     mb: 0.5,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {product.name}
                 </Typography>
-
+                
                 <Typography
                   variant="caption"
                   color="text.secondary"
-                  sx={{ display: "block", mb: 1 }}
+                  sx={{ display: 'block', mb: 1 }}
                 >
                   {product.description}
                 </Typography>
 
                 {/* Rating */}
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                   <Rating
                     value={product.rating}
                     precision={0.5}
                     size="small"
                     readOnly
                   />
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ ml: 0.5 }}
-                  >
+                  <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
                     ({product.reviewCount})
                   </Typography>
                 </Box>
 
                 {/* Price */}
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography
                     variant="subtitle2"
                     component="span"
-                    sx={{ fontWeight: 600, color: "text.primary" }}
+                    sx={{ fontWeight: 600, color: 'text.primary' }}
                   >
                     ${product.price}
                   </Typography>
-
+                  
                   {product.originalPrice && (
                     <Typography
                       variant="caption"
                       component="span"
                       sx={{
-                        textDecoration: "line-through",
-                        color: "text.secondary",
+                        textDecoration: 'line-through',
+                        color: 'text.secondary',
                       }}
                     >
                       ${product.originalPrice}
                     </Typography>
                   )}
-
+                  
                   {product.discount && (
                     <Typography
                       variant="caption"
                       component="span"
                       sx={{
-                        color: "error.main",
+                        color: 'error.main',
                         fontWeight: 500,
                       }}
                     >
@@ -373,45 +349,38 @@ export default function ProductGrid({
       </Grid>
 
       {/* Pagination */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
         <Typography variant="body2" color="text.secondary">
           Showing 10 of {totalProducts} products
         </Typography>
-
+        
         <Pagination
           count={Math.ceil(totalProducts / 10)}
           page={currentPage}
           onChange={(_, page) => onPageChange && onPageChange(page)}
           color="primary"
           sx={{
-            "& .MuiPaginationItem-root": {
-              "&:hover": {
-                backgroundColor: "primary.main",
-                color: "primary.contrastText",
+            '& .MuiPaginationItem-root': {
+              '&:hover': {
+                backgroundColor: 'primary.main',
+                color: 'primary.contrastText',
               },
             },
           }}
         />
-
+        
         {/* Show More Button */}
         <Button
           variant="contained"
           size="large"
           sx={{
-            backgroundColor: "text.primary",
-            color: "background.paper",
+            backgroundColor: 'text.primary',
+            color: 'background.paper',
             px: 4,
             py: 1.5,
             mt: 2,
-            "&:hover": {
-              backgroundColor: "text.secondary",
+            '&:hover': {
+              backgroundColor: 'text.secondary',
             },
           }}
         >

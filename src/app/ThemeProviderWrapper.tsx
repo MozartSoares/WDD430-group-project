@@ -1,9 +1,9 @@
 // app/ThemeProviderWrapper.tsx
-"use client";
+'use client';
 
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { useEffect, useState } from "react";
-import theme from "@/lib/theme";
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { useEffect, useState } from 'react';
+import theme from '@/lib/theme';
 
 interface ThemeProviderWrapperProps {
   children: React.ReactNode;
@@ -18,7 +18,11 @@ export function ThemeProviderWrapper({ children }: ThemeProviderWrapperProps) {
 
   if (!mounted) {
     // Return a div with minimal styling to prevent layout shift
-    return <div suppressHydrationWarning>{children}</div>;
+    return (
+      <div suppressHydrationWarning>
+        {children}
+      </div>
+    );
   }
 
   return (

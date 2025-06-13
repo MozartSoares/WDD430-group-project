@@ -1,10 +1,9 @@
 // src/components/layout/Header.tsx
-"use client";
+'use client';
 
-import type React from "react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 import {
   AppBar,
   Toolbar,
@@ -23,7 +22,7 @@ import {
   ListItemIcon,
   Divider,
   Avatar,
-} from "@mui/material";
+} from '@mui/material';
 import {
   Search,
   ShoppingCart,
@@ -36,7 +35,7 @@ import {
   Category,
   Info,
   Phone,
-} from "@mui/icons-material";
+} from '@mui/icons-material';
 
 interface HeaderProps {
   cartItemCount?: number;
@@ -45,28 +44,26 @@ interface HeaderProps {
   onCartClick?: () => void;
 }
 
-export default function Header({
-  cartItemCount = 0,
-  onCartClick,
+export default function Header({ 
+  cartItemCount = 0, 
+  onCartClick 
 }: HeaderProps) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(
-    null,
-  );
-  const [searchQuery, setSearchQuery] = useState("");
+  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const isLoggedIn = !!session;
 
   const handleLoginClick = () => {
-    router.push("/login");
+    router.push('/login');
   };
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
     setUserMenuAnchor(null);
-    router.push("/");
+    router.push('/');
   };
 
   const handleUserMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -80,7 +77,7 @@ export default function Header({
   // Add this function to handle profile navigation
   const handleProfileClick = () => {
     setUserMenuAnchor(null);
-    router.push("/profile");
+    router.push('/profile');
   };
 
   const handleCartClick = () => {
@@ -88,7 +85,7 @@ export default function Header({
       onCartClick();
     } else {
       // Demo cart page - you can create this later
-      console.log("Navigate to cart");
+      console.log('Navigate to cart');
     }
   };
 
@@ -100,19 +97,19 @@ export default function Header({
   };
 
   const navigationItems = [
-    { label: "Home", href: "/", icon: <Home /> },
-    { label: "All Products", href: "/products", icon: <ShoppingBag /> },
-    { label: "Categories", href: "/categories", icon: <Category /> },
-    { label: "About", href: "/about", icon: <Info /> },
-    { label: "Contact", href: "/contact", icon: <Phone /> },
+    { label: 'Home', href: '/', icon: <Home /> },
+    { label: 'All Products', href: '/products', icon: <ShoppingBag /> },
+    { label: 'Categories', href: '/categories', icon: <Category /> },
+    { label: 'About', href: '/about', icon: <Info /> },
+    { label: 'Contact', href: '/contact', icon: <Phone /> },
   ];
 
   const handleNavClick = (href: string) => {
     // For demo purposes, only certain routes exist
-    if (href === "/products") {
-      router.push("/products");
-    } else if (href === "/") {
-      router.push("/");
+    if (href === '/products') {
+      router.push('/products');
+    } else if (href === '/') {
+      router.push('/');
     } else {
       // For non-existent routes, just close menu and log
       console.log(`Navigate to: ${href}`);
@@ -126,14 +123,14 @@ export default function Header({
 
   return (
     <>
-      <AppBar
-        position="sticky"
+      <AppBar 
+        position="sticky" 
         elevation={1}
-        sx={{
-          backgroundColor: "background.paper",
-          color: "text.primary",
+        sx={{ 
+          backgroundColor: 'background.paper',
+          color: 'text.primary',
           borderBottom: 1,
-          borderColor: "divider",
+          borderColor: 'divider'
         }}
       >
         <Toolbar sx={{ gap: 2 }}>
@@ -141,7 +138,7 @@ export default function Header({
           <IconButton
             edge="start"
             onClick={toggleMobileMenu}
-            sx={{ display: { xs: "block", md: "none" } }}
+            sx={{ display: { xs: 'block', md: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
@@ -150,12 +147,12 @@ export default function Header({
           <Typography
             variant="h6"
             component="div"
-            onClick={() => router.push("/")}
+            onClick={() => router.push('/')}
             sx={{
-              fontFamily: "var(--font-roboto-slab)",
+              fontFamily: 'var(--font-roboto-slab)',
               fontWeight: 600,
-              color: "primary.main",
-              cursor: "pointer",
+              color: 'primary.main',
+              cursor: 'pointer',
               flexShrink: 0,
             }}
           >
@@ -163,12 +160,12 @@ export default function Header({
           </Typography>
 
           {/* Desktop Navigation */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1, ml: 4 }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, ml: 4 }}>
             {navigationItems.map((item) => (
               <Button
                 key={item.label}
                 onClick={() => handleNavClick(item.href)}
-                sx={{ color: "text.primary" }}
+                sx={{ color: 'text.primary' }}
               >
                 {item.label}
               </Button>
@@ -182,8 +179,8 @@ export default function Header({
             component="form"
             onSubmit={handleSearch}
             sx={{
-              display: { xs: "none", sm: "flex" },
-              alignItems: "center",
+              display: { xs: 'none', sm: 'flex' },
+              alignItems: 'center',
               maxWidth: 300,
               flexGrow: 1,
             }}
@@ -194,9 +191,9 @@ export default function Header({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               sx={{
-                "& .MuiOutlinedInput-root": {
+                '& .MuiOutlinedInput-root': {
                   borderRadius: 3,
-                  backgroundColor: "background.default",
+                  backgroundColor: 'background.default',
                 },
               }}
               InputProps={{
@@ -211,9 +208,9 @@ export default function Header({
           </Box>
 
           {/* Right Side Actions */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {/* Mobile Search */}
-            <IconButton sx={{ display: { xs: "block", sm: "none" } }}>
+            <IconButton sx={{ display: { xs: 'block', sm: 'none' } }}>
               <Search />
             </IconButton>
 
@@ -229,7 +226,7 @@ export default function Header({
               <>
                 <IconButton onClick={handleUserMenuClick}>
                   <Avatar sx={{ width: 32, height: 32 }}>
-                    {session?.user?.name?.[0] || "U"}
+                    {session?.user?.name?.[0] || 'U'}
                   </Avatar>
                 </IconButton>
                 <Menu
@@ -237,12 +234,12 @@ export default function Header({
                   open={Boolean(userMenuAnchor)}
                   onClose={handleUserMenuClose}
                   anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
+                    vertical: 'bottom',
+                    horizontal: 'right',
                   }}
                   transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+                    vertical: 'top',
+                    horizontal: 'right',
                   }}
                 >
                   <MenuItem disabled>
@@ -277,7 +274,7 @@ export default function Header({
                 variant="outlined"
                 onClick={handleLoginClick}
                 startIcon={<Person />}
-                sx={{ display: { xs: "none", sm: "flex" } }}
+                sx={{ display: { xs: 'none', sm: 'flex' } }}
               >
                 Login
               </Button>
@@ -292,19 +289,12 @@ export default function Header({
         open={mobileMenuOpen}
         onClose={toggleMobileMenu}
         sx={{
-          "& .MuiDrawer-paper": {
+          '& .MuiDrawer-paper': {
             width: 280,
           },
         }}
       >
-        <Box
-          sx={{
-            p: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6" color="primary.main" fontWeight="bold">
             Menu
           </Typography>
@@ -322,7 +312,7 @@ export default function Header({
                 handleNavClick(item.href);
                 setMobileMenuOpen(false);
               }}
-              sx={{ cursor: "pointer" }}
+              sx={{ cursor: 'pointer' }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.label} />

@@ -1,5 +1,5 @@
-export * from "./products";
-export * from "./user";
+export * from './products';
+export * from './user';
 
 // src/types/index.ts
 
@@ -199,3 +199,4 @@ export * from "./user";
 //   page?: number;
 //   limit?: number;
 // }
+

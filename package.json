@@ -6,19 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint . --apply",
-    "format": "biome format . --check",
-    "format:fix": "biome format . --write",
-    "check": "pnpm run lint && pnpm run format",
-    "fix": "pnpm run lint:fix && pnpm run format:fix"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.6",
-    "@mui/material": "^6.1.6",
     "@mui/material-nextjs": "^7.1.0",
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^6.0.0",
@@ -28,14 +19,20 @@
     "next": "15.1.8",
     "next-auth": "5.0.0-beta.28",
     "react": "^18.3.1",
+    "@mui/material": "^6.1.6",
+    "@mui/icons-material": "^6.1.6",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "react-dom": "^18.3.1",
     "zod": "^3.25.51"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.8",
     "typescript": "^5"
   },
   "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"

@@ -1,8 +1,8 @@
 // src/app/(frontend)/artisans/[id]/page.tsx
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
   Container,
@@ -17,21 +17,21 @@ import {
   Rating,
   Breadcrumbs,
   Link,
-} from "@mui/material";
+  IconButton,
+  Tooltip,
+} from '@mui/material';
 import {
   LocationOn,
   CalendarToday,
   Language,
+  Instagram,
+  Facebook,
+  Store,
   ChevronRight,
-} from "@mui/icons-material";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import {
-  getUserByArtistId,
-  getProductsByArtistId,
-  type DemoUser,
-  type DemoProduct,
-} from "@/data/demoData";
+} from '@mui/icons-material';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import { getUserByArtistId, getProductsByArtistId, DemoUser, DemoProduct } from '@/data/demoData';
 
 export default function ArtisanPage() {
   const params = useParams();
@@ -40,7 +40,7 @@ export default function ArtisanPage() {
   const [artisanProducts, setArtisanProducts] = useState<DemoProduct[]>([]);
 
   useEffect(() => {
-    const artistId = Number.parseInt(params.id as string);
+    const artistId = parseInt(params.id as string);
     if (!isNaN(artistId)) {
       const user = getUserByArtistId(artistId);
       if (user) {
@@ -53,18 +53,9 @@ export default function ArtisanPage() {
 
   if (!artisan) {
     return (
-      <Box
-        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-      >
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Header cartItemCount={0} onCartClick={() => {}} />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexGrow: 1,
-          }}
-        >
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
           <Typography variant="h5">Artisan not found</Typography>
         </Box>
         <Footer onContactClick={() => {}} onLinkClick={() => {}} />
@@ -73,32 +64,26 @@ export default function ArtisanPage() {
   }
 
   const formatJoinDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long'
     });
   };
 
   const calculateAverageRating = () => {
     if (artisanProducts.length === 0) return 0;
-    const totalRating = artisanProducts.reduce(
-      (sum, product) => sum + product.rating,
-      0,
-    );
+    const totalRating = artisanProducts.reduce((sum, product) => sum + product.rating, 0);
     return totalRating / artisanProducts.length;
   };
 
   const getTotalReviews = () => {
-    return artisanProducts.reduce(
-      (sum, product) => sum + product.reviewCount,
-      0,
-    );
+    return artisanProducts.reduce((sum, product) => sum + product.reviewCount, 0);
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header cartItemCount={0} onCartClick={() => {}} />
-
+      
       <Container maxWidth="lg" sx={{ py: 3, flexGrow: 1 }}>
         {/* Breadcrumbs */}
         <Breadcrumbs
@@ -109,12 +94,12 @@ export default function ArtisanPage() {
           <Link
             component="button"
             variant="body2"
-            onClick={() => router.push("/")}
+            onClick={() => router.push('/')}
             sx={{
-              color: "text.secondary",
-              textDecoration: "none",
-              "&:hover": {
-                textDecoration: "underline",
+              color: 'text.secondary',
+              textDecoration: 'none',
+              '&:hover': {
+                textDecoration: 'underline',
               },
             }}
           >
@@ -123,12 +108,12 @@ export default function ArtisanPage() {
           <Link
             component="button"
             variant="body2"
-            onClick={() => router.push("/artisans")}
+            onClick={() => router.push('/artisans')}
             sx={{
-              color: "text.secondary",
-              textDecoration: "none",
-              "&:hover": {
-                textDecoration: "underline",
+              color: 'text.secondary',
+              textDecoration: 'none',
+              '&:hover': {
+                textDecoration: 'underline',
               },
             }}
           >
@@ -147,40 +132,36 @@ export default function ArtisanPage() {
               sx={{
                 height: 200,
                 backgroundImage: `url(${artisan.coverImage})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 borderRadius: 2,
                 mb: 3,
               }}
             />
           )}
 
-          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
             <Avatar
               src={artisan.profileImage}
-              sx={{ width: 120, height: 120, fontSize: "3rem" }}
+              sx={{ width: 120, height: 120, fontSize: '3rem' }}
             >
               {artisan.name.charAt(0)}
             </Avatar>
-
+            
             <Box sx={{ flexGrow: 1 }}>
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ fontWeight: 600, mb: 2 }}
-              >
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 2 }}>
                 {artisan.name}
               </Typography>
 
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <LocationOn fontSize="small" color="action" />
                   <Typography variant="body2" color="text.secondary">
                     {artisan.location}
                   </Typography>
                 </Box>
-
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <CalendarToday fontSize="small" color="action" />
                   <Typography variant="body2" color="text.secondary">
                     Joined {formatJoinDate(artisan.joinDate)}
@@ -188,18 +169,15 @@ export default function ArtisanPage() {
                 </Box>
 
                 {artisan.website && (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <Language fontSize="small" color="action" />
-                    <Typography
-                      variant="body2"
-                      color="primary"
-                      component="a"
-                      href={`https://${artisan.website}`}
+                    <Typography 
+                      variant="body2" 
+                      color="primary" 
+                      component="a" 
+                      href={`https://${artisan.website}`} 
                       target="_blank"
-                      sx={{
-                        textDecoration: "none",
-                        "&:hover": { textDecoration: "underline" },
-                      }}
+                      sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
                     >
                       {artisan.website}
                     </Typography>
@@ -235,20 +213,14 @@ export default function ArtisanPage() {
               )} */}
 
               {/* Specialties */}
-              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
                 {artisan.specialties?.map((specialty, index) => (
-                  <Chip
-                    key={index}
-                    label={specialty}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                  />
+                  <Chip key={index} label={specialty} size="small" color="primary" variant="outlined" />
                 ))}
               </Box>
 
               {/* Stats */}
-              <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
+              <Box sx={{ display: 'flex', gap: 3, mb: 2 }}>
                 <Box>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {artisanProducts.length}
@@ -258,16 +230,11 @@ export default function ArtisanPage() {
                   </Typography>
                 </Box>
                 <Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       {calculateAverageRating().toFixed(1)}
                     </Typography>
-                    <Rating
-                      value={calculateAverageRating()}
-                      precision={0.1}
-                      size="small"
-                      readOnly
-                    />
+                    <Rating value={calculateAverageRating()} precision={0.1} size="small" readOnly />
                   </Box>
                   <Typography variant="body2" color="text.secondary">
                     {getTotalReviews()} reviews
@@ -276,11 +243,7 @@ export default function ArtisanPage() {
               </Box>
 
               {/* Bio */}
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ lineHeight: 1.6 }}
-              >
+              <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.6 }}>
                 {artisan.bio}
               </Typography>
             </Box>
@@ -289,16 +252,12 @@ export default function ArtisanPage() {
 
         {/* Products Section */}
         <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
-          <Typography
-            variant="h5"
-            component="h2"
-            sx={{ fontWeight: 600, mb: 3 }}
-          >
+          <Typography variant="h5" component="h2" sx={{ fontWeight: 600, mb: 3 }}>
             Products by {artisan.name} ({artisanProducts.length})
           </Typography>
 
           {artisanProducts.length === 0 ? (
-            <Box sx={{ textAlign: "center", py: 6 }}>
+            <Box sx={{ textAlign: 'center', py: 6 }}>
               <Typography variant="h6" color="text.secondary" gutterBottom>
                 No products available
               </Typography>
@@ -312,10 +271,10 @@ export default function ArtisanPage() {
                 <Grid item xs={12} sm={6} md={4} key={product.id}>
                   <Card
                     sx={{
-                      cursor: "pointer",
-                      transition: "transform 0.2s",
-                      "&:hover": {
-                        transform: "translateY(-4px)",
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
                       },
                     }}
                     onClick={() => router.push(`/products/${product.id}`)}
@@ -327,61 +286,30 @@ export default function ArtisanPage() {
                       alt={product.name}
                     />
                     <CardContent>
-                      <Typography
-                        variant="h6"
-                        component="h3"
-                        gutterBottom
-                        noWrap
-                      >
+                      <Typography variant="h6" component="h3" gutterBottom noWrap>
                         {product.name}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 2 }}
-                      >
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         {product.description}
                       </Typography>
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          mb: 1,
-                        }}
-                      >
-                        <Rating
-                          value={product.rating}
-                          precision={0.1}
-                          size="small"
-                          readOnly
-                        />
+                      
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <Rating value={product.rating} precision={0.1} size="small" readOnly />
                         <Typography variant="body2" color="text.secondary">
                           ({product.reviewCount})
                         </Typography>
                       </Box>
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
+                      
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Box>
-                          <Typography
-                            variant="h6"
-                            color="primary"
-                            sx={{ fontWeight: 600 }}
-                          >
+                          <Typography variant="h6" color="primary" sx={{ fontWeight: 600 }}>
                             ${product.price}
                           </Typography>
                           {product.originalPrice && (
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ textDecoration: "line-through" }}
+                            <Typography 
+                              variant="body2" 
+                              color="text.secondary" 
+                              sx={{ textDecoration: 'line-through' }}
                             >
                               ${product.originalPrice}
                             </Typography>
@@ -391,11 +319,7 @@ export default function ArtisanPage() {
                           <Chip label="New" size="small" color="success" />
                         )}
                         {product.discount && (
-                          <Chip
-                            label={`-${product.discount}%`}
-                            size="small"
-                            color="error"
-                          />
+                          <Chip label={`-${product.discount}%`} size="small" color="error" />
                         )}
                       </Box>
                     </CardContent>
@@ -407,7 +331,10 @@ export default function ArtisanPage() {
         </Paper>
       </Container>
 
-      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
+      <Footer 
+        onContactClick={() => {}}
+        onLinkClick={() => {}}
+      />
     </Box>
   );
 }
