@@ -1,6 +1,7 @@
-import { AuthService } from '../services';
-import { createUserSchema, CreateUserSchema } from '@/types';
-import { handleControllerError, ValidateBody } from '@/lib/validation';
+import { ValidateBody, handleControllerError } from "@/lib/validation";
+import { type CreateUserSchema, createUserSchema } from "@/types";
+import { AuthService } from "../services";
+
 
 export class AuthController {
   //probably we wont need this because nextauth will handle the login and register using the service directly
@@ -41,10 +42,10 @@ export class AuthController {
       return Response.json(
         {
           success: true,
-          message: 'User created successfully',
+          message: "User created successfully",
           user,
         },
-        { status: 201 }
+        { status: 201 },
       );
     } catch (error) {
       return handleControllerError(error);

@@ -1,7 +1,8 @@
 // src/components/modals/AddProductModal.tsx
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import type React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -20,14 +21,9 @@ import {
   Chip,
   InputAdornment,
   Alert,
-} from '@mui/material';
-import {
-  Close,
-  CloudUpload,
-  Add,
-  Delete,
-} from '@mui/icons-material';
-import { DemoProduct } from '@/data/demoData';
+} from "@mui/material";
+import { Close, CloudUpload, Add, Delete } from "@mui/icons-material";
+import type { DemoProduct } from "@/data/demoData";
 
 interface AddProductModalProps {
   open: boolean;
@@ -37,72 +33,80 @@ interface AddProductModalProps {
 }
 
 const categories = [
-  'Ceramics',
-  'Jewelry',
-  'Furniture',
-  'Textiles',
-  'Glass Art',
-  'Leather Goods',
-  'Wood Crafts',
-  'Bath & Body',
-  'Metal Work',
-  'Paper Crafts',
-  'Fiber Arts',
-  'Home Decor',
+  "Ceramics",
+  "Jewelry",
+  "Furniture",
+  "Textiles",
+  "Glass Art",
+  "Leather Goods",
+  "Wood Crafts",
+  "Bath & Body",
+  "Metal Work",
+  "Paper Crafts",
+  "Fiber Arts",
+  "Home Decor",
 ];
 
-export default function AddProductModal({ open, onClose, onProductAdded, artistId }: AddProductModalProps) {
+export default function AddProductModal({
+  open,
+  onClose,
+  onProductAdded,
+  artistId,
+}: AddProductModalProps) {
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    originalPrice: '',
-    category: '',
-    materials: '',
-    dimensions: '',
-    stockQuantity: '1',
+    name: "",
+    description: "",
+    price: "",
+    originalPrice: "",
+    category: "",
+    materials: "",
+    dimensions: "",
+    stockQuantity: "1",
   });
   const [materials, setMaterials] = useState<string[]>([]);
-  const [currentMaterial, setCurrentMaterial] = useState('');
+  const [currentMaterial, setCurrentMaterial] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.value
-    }));
-    
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+  const handleInputChange =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: event.target.value,
+      }));
+
+      // Clear error when user starts typing
+      if (errors[field]) {
+        setErrors((prev) => ({ ...prev, [field]: "" }));
+      }
+    };
 
   const handleSelectChange = (field: string) => (event: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: event.target.value
+      [field]: event.target.value,
     }));
-    
+
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
   const addMaterial = () => {
     if (currentMaterial.trim() && !materials.includes(currentMaterial.trim())) {
-      setMaterials(prev => [...prev, currentMaterial.trim()]);
-      setCurrentMaterial('');
+      setMaterials((prev) => [...prev, currentMaterial.trim()]);
+      setCurrentMaterial("");
     }
   };
 
   const removeMaterial = (materialToRemove: string) => {
-    setMaterials(prev => prev.filter(material => material !== materialToRemove));
+    setMaterials((prev) =>
+      prev.filter((material) => material !== materialToRemove),
+    );
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       addMaterial();
     }
@@ -111,14 +115,22 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) newErrors.name = 'Product name is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
-    if (!formData.price || parseFloat(formData.price) <= 0) newErrors.price = 'Valid price is required';
-    if (!formData.category) newErrors.category = 'Category is required';
-    if (!formData.stockQuantity || parseInt(formData.stockQuantity) < 0) newErrors.stockQuantity = 'Valid stock quantity is required';
+    if (!formData.name.trim()) newErrors.name = "Product name is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (!formData.price || Number.parseFloat(formData.price) <= 0)
+      newErrors.price = "Valid price is required";
+    if (!formData.category) newErrors.category = "Category is required";
+    if (!formData.stockQuantity || Number.parseInt(formData.stockQuantity) < 0)
+      newErrors.stockQuantity = "Valid stock quantity is required";
 
-    if (formData.originalPrice && parseFloat(formData.originalPrice) <= parseFloat(formData.price)) {
-      newErrors.originalPrice = 'Original price must be higher than current price';
+    if (
+      formData.originalPrice &&
+      Number.parseFloat(formData.originalPrice) <=
+        Number.parseFloat(formData.price)
+    ) {
+      newErrors.originalPrice =
+        "Original price must be higher than current price";
     }
 
     setErrors(newErrors);
@@ -132,11 +144,15 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
 
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const price = parseFloat(formData.price);
-      const originalPrice = formData.originalPrice ? parseFloat(formData.originalPrice) : undefined;
-      const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : undefined;
+      const price = Number.parseFloat(formData.price);
+      const originalPrice = formData.originalPrice
+        ? Number.parseFloat(formData.originalPrice)
+        : undefined;
+      const discount = originalPrice
+        ? Math.round(((originalPrice - price) / originalPrice) * 100)
+        : undefined;
 
       const newProduct: DemoProduct = {
         id: `product_${Date.now()}`,
@@ -154,13 +170,13 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
         dimensions: formData.dimensions || undefined,
         createdAt: new Date().toISOString(),
         inStock: true,
-        stockQuantity: parseInt(formData.stockQuantity),
+        stockQuantity: Number.parseInt(formData.stockQuantity),
       };
 
       onProductAdded(newProduct);
       handleClose();
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.error("Error adding product:", error);
     } finally {
       setLoading(false);
     }
@@ -168,17 +184,17 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
 
   const handleClose = () => {
     setFormData({
-      name: '',
-      description: '',
-      price: '',
-      originalPrice: '',
-      category: '',
-      materials: '',
-      dimensions: '',
-      stockQuantity: '1',
+      name: "",
+      description: "",
+      price: "",
+      originalPrice: "",
+      category: "",
+      materials: "",
+      dimensions: "",
+      stockQuantity: "1",
     });
     setMaterials([]);
-    setCurrentMaterial('');
+    setCurrentMaterial("");
     setErrors({});
     setLoading(false);
     onClose();
@@ -191,10 +207,17 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
       maxWidth="md"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 3 }
+        sx: { borderRadius: 3 },
       }}
     >
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          pb: 1,
+        }}
+      >
         <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
           Add New Product
         </Typography>
@@ -210,7 +233,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
             <TextField
               label="Product Name"
               value={formData.name}
-              onChange={handleInputChange('name')}
+              onChange={handleInputChange("name")}
               fullWidth
               required
               error={!!errors.name}
@@ -224,7 +247,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
             <TextField
               label="Description"
               value={formData.description}
-              onChange={handleInputChange('description')}
+              onChange={handleInputChange("description")}
               fullWidth
               multiline
               rows={3}
@@ -240,14 +263,16 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
             <TextField
               label="Price"
               value={formData.price}
-              onChange={handleInputChange('price')}
+              onChange={handleInputChange("price")}
               fullWidth
               required
               type="number"
               error={!!errors.price}
               helperText={errors.price}
               InputProps={{
-                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
               }}
               inputProps={{ min: 0, step: 0.01 }}
             />
@@ -257,13 +282,15 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
             <TextField
               label="Original Price (Optional)"
               value={formData.originalPrice}
-              onChange={handleInputChange('originalPrice')}
+              onChange={handleInputChange("originalPrice")}
               fullWidth
               type="number"
               error={!!errors.originalPrice}
-              helperText={errors.originalPrice || 'For sale items only'}
+              helperText={errors.originalPrice || "For sale items only"}
               InputProps={{
-                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
               }}
               inputProps={{ min: 0, step: 0.01 }}
             />
@@ -275,7 +302,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
               <InputLabel>Category</InputLabel>
               <Select
                 value={formData.category}
-                onChange={handleSelectChange('category')}
+                onChange={handleSelectChange("category")}
                 label="Category"
               >
                 {categories.map((category) => (
@@ -285,7 +312,11 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
                 ))}
               </Select>
               {errors.category && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 0.5, ml: 1.5 }}
+                >
                   {errors.category}
                 </Typography>
               )}
@@ -297,7 +328,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
             <TextField
               label="Stock Quantity"
               value={formData.stockQuantity}
-              onChange={handleInputChange('stockQuantity')}
+              onChange={handleInputChange("stockQuantity")}
               fullWidth
               required
               type="number"
@@ -313,7 +344,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
               <Typography variant="subtitle2" gutterBottom>
                 Materials
               </Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+              <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
                 <TextField
                   placeholder="Add material (e.g. Clay, Wood, Silver)"
                   value={currentMaterial}
@@ -332,7 +363,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
                   Add
                 </Button>
               </Box>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                 {materials.map((material, index) => (
                   <Chip
                     key={index}
@@ -353,7 +384,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
             <TextField
               label="Dimensions (Optional)"
               value={formData.dimensions}
-              onChange={handleInputChange('dimensions')}
+              onChange={handleInputChange("dimensions")}
               fullWidth
               placeholder="e.g. 8&quot; H x 4&quot; W or 48&quot; L x 24&quot; W x 18&quot; H"
               helperText="Include height, width, depth, or other relevant measurements"
@@ -364,14 +395,14 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
           <Grid item xs={12}>
             <Box
               sx={{
-                border: '2px dashed #ccc',
+                border: "2px dashed #ccc",
                 borderRadius: 2,
                 p: 3,
-                textAlign: 'center',
-                backgroundColor: '#f9f9f9',
+                textAlign: "center",
+                backgroundColor: "#f9f9f9",
               }}
             >
-              <CloudUpload sx={{ fontSize: 48, color: '#ccc', mb: 1 }} />
+              <CloudUpload sx={{ fontSize: 48, color: "#ccc", mb: 1 }} />
               <Typography variant="body2" color="text.secondary">
                 Image upload will be available in the full version
               </Typography>
@@ -382,12 +413,21 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
           </Grid>
         </Grid>
 
-        {formData.originalPrice && formData.price && parseFloat(formData.originalPrice) > parseFloat(formData.price) && (
-          <Alert severity="info" sx={{ mt: 2 }}>
-            <strong>Sale Item:</strong> This product will show a{' '}
-            {Math.round(((parseFloat(formData.originalPrice) - parseFloat(formData.price)) / parseFloat(formData.originalPrice)) * 100)}% discount
-          </Alert>
-        )}
+        {formData.originalPrice &&
+          formData.price &&
+          Number.parseFloat(formData.originalPrice) >
+            Number.parseFloat(formData.price) && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              <strong>Sale Item:</strong> This product will show a{" "}
+              {Math.round(
+                ((Number.parseFloat(formData.originalPrice) -
+                  Number.parseFloat(formData.price)) /
+                  Number.parseFloat(formData.originalPrice)) *
+                  100,
+              )}
+              % discount
+            </Alert>
+          )}
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
@@ -400,7 +440,7 @@ export default function AddProductModal({ open, onClose, onProductAdded, artistI
           disabled={loading}
           sx={{ minWidth: 120 }}
         >
-          {loading ? 'Adding...' : 'Add Product'}
+          {loading ? "Adding..." : "Add Product"}
         </Button>
       </DialogActions>
     </Dialog>

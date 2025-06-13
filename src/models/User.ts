@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { IUser } from '@/types';
+import mongoose from "mongoose";
+import type { IUser } from "@/types";
 
 const UserModel = new mongoose.Schema<IUser>(
   {
@@ -9,7 +9,8 @@ const UserModel = new mongoose.Schema<IUser>(
     biography: { type: String, required: false },
     imageUrl: { type: String, required: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export const User = mongoose.models.User || mongoose.model<IUser>('User', UserModel);
+export const User =
+  mongoose.models.User || mongoose.model<IUser>("User", UserModel);

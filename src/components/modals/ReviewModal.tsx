@@ -1,7 +1,8 @@
 // src/components/modals/ReviewModal.tsx
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import type React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -14,12 +15,9 @@ import {
   IconButton,
   Rating,
   Alert,
-} from '@mui/material';
-import {
-  Close,
-  Star,
-} from '@mui/icons-material';
-import { DemoReview } from '@/data/demoData';
+} from "@mui/material";
+import { Close, Star } from "@mui/icons-material";
+import type { DemoReview } from "@/data/demoData";
 
 interface ReviewModalProps {
   open: boolean;
@@ -31,17 +29,17 @@ interface ReviewModalProps {
   userName: string;
 }
 
-export default function ReviewModal({ 
-  open, 
-  onClose, 
-  onReviewAdded, 
-  productId, 
-  productName, 
-  userId, 
-  userName 
+export default function ReviewModal({
+  open,
+  onClose,
+  onReviewAdded,
+  productId,
+  productName,
+  userId,
+  userName,
 }: ReviewModalProps) {
   const [rating, setRating] = useState<number | null>(null);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
@@ -49,13 +47,13 @@ export default function ReviewModal({
     const newErrors: Record<string, string> = {};
 
     if (!rating || rating === 0) {
-      newErrors.rating = 'Please select a rating';
+      newErrors.rating = "Please select a rating";
     }
 
     if (!comment.trim()) {
-      newErrors.comment = 'Please write a review comment';
+      newErrors.comment = "Please write a review comment";
     } else if (comment.trim().length < 10) {
-      newErrors.comment = 'Review must be at least 10 characters long';
+      newErrors.comment = "Review must be at least 10 characters long";
     }
 
     setErrors(newErrors);
@@ -69,7 +67,7 @@ export default function ReviewModal({
 
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const newReview: DemoReview = {
         id: `review_${Date.now()}`,
@@ -85,7 +83,7 @@ export default function ReviewModal({
       onReviewAdded(newReview);
       handleClose();
     } catch (error) {
-      console.error('Error adding review:', error);
+      console.error("Error adding review:", error);
     } finally {
       setLoading(false);
     }
@@ -93,35 +91,38 @@ export default function ReviewModal({
 
   const handleClose = () => {
     setRating(null);
-    setComment('');
+    setComment("");
     setErrors({});
     setLoading(false);
     onClose();
   };
 
-  const handleRatingChange = (event: React.SyntheticEvent, newValue: number | null) => {
+  const handleRatingChange = (
+    event: React.SyntheticEvent,
+    newValue: number | null,
+  ) => {
     setRating(newValue);
     if (errors.rating) {
-      setErrors(prev => ({ ...prev, rating: '' }));
+      setErrors((prev) => ({ ...prev, rating: "" }));
     }
   };
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
     if (errors.comment) {
-      setErrors(prev => ({ ...prev, comment: '' }));
+      setErrors((prev) => ({ ...prev, comment: "" }));
     }
   };
 
   const getRatingLabel = (value: number) => {
     const labels = {
-      1: 'Poor',
-      2: 'Fair', 
-      3: 'Good',
-      4: 'Very Good',
-      5: 'Excellent'
+      1: "Poor",
+      2: "Fair",
+      3: "Good",
+      4: "Very Good",
+      5: "Excellent",
     };
-    return labels[value as keyof typeof labels] || '';
+    return labels[value as keyof typeof labels] || "";
   };
 
   return (
@@ -131,10 +132,17 @@ export default function ReviewModal({
       maxWidth="sm"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 3 }
+        sx: { borderRadius: 3 },
       }}
     >
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          pb: 1,
+        }}
+      >
         <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
           Write a Review
         </Typography>
@@ -145,7 +153,7 @@ export default function ReviewModal({
 
       <DialogContent sx={{ pt: 2 }}>
         {/* Product Info */}
-        <Box sx={{ mb: 3, p: 2, backgroundColor: '#f5f5f5', borderRadius: 2 }}>
+        <Box sx={{ mb: 3, p: 2, backgroundColor: "#f5f5f5", borderRadius: 2 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             {productName}
           </Typography>
@@ -159,7 +167,7 @@ export default function ReviewModal({
           <Typography variant="subtitle2" gutterBottom>
             Overall Rating *
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
             <Rating
               name="product-rating"
               value={rating}
@@ -200,8 +208,9 @@ export default function ReviewModal({
         {/* Guidelines */}
         <Alert severity="info" sx={{ mb: 2 }}>
           <Typography variant="body2">
-            <strong>Review Guidelines:</strong> Please be honest and constructive. 
-            Focus on the product quality, craftsmanship, and your overall experience.
+            <strong>Review Guidelines:</strong> Please be honest and
+            constructive. Focus on the product quality, craftsmanship, and your
+            overall experience.
           </Typography>
         </Alert>
       </DialogContent>
@@ -216,7 +225,7 @@ export default function ReviewModal({
           disabled={loading || !rating || !comment.trim()}
           sx={{ minWidth: 120 }}
         >
-          {loading ? 'Submitting...' : 'Submit Review'}
+          {loading ? "Submitting..." : "Submit Review"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,6 +1,7 @@
-import dbConnect from '@/lib/mongodb';
-import { ProductsController } from '@/server/controllers';
-import { NextRequest } from 'next/server';
+
+import dbConnect from "@/lib/mongodb";
+import { ProductsController } from "@/server";
+import type { NextRequest } from "next/server";
 
 // GET /api/products - lists all products
 export async function GET() {
