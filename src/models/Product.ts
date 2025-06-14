@@ -12,6 +12,11 @@ const ProductModel = new mongoose.Schema<IProduct>(
       ref: "User",
       required: true,
     },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: false,
+    },
     description: { type: String, required: false },
   },
   { timestamps: true },

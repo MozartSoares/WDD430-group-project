@@ -7,6 +7,7 @@ export const createProductSchema = z.object({
   description: z.string().optional(),
   imageUrl: z.string().url("Invalid image URL").optional(),
   userId: z.string().min(1, "User ID is required"),
+  categoryId: z.string().optional(),
 });
 
 export const updateProductSchema = z.object({
