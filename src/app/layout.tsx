@@ -4,6 +4,7 @@ import { Roboto, Roboto_Slab } from "next/font/google";
 import "./globals.css";
 import { ThemeProviderWrapper } from './ThemeProviderWrapper';
 import { SessionProvider } from '@/components/providers/SessionProvider';
+import { CartWidgetProvider } from "@/components/providers/CartProvider";
 
 // Configure Roboto font
 const roboto = Roboto({
@@ -39,7 +40,9 @@ export default function RootLayout({
       >
         <SessionProvider>
           <ThemeProviderWrapper>
+            <CartWidgetProvider>
             {children}
+            </CartWidgetProvider>
           </ThemeProviderWrapper>
         </SessionProvider>
       </body>

@@ -44,6 +44,7 @@ import {
   DemoReview,
   DemoUser
 } from '@/data/demoData';
+import { useCartWidget } from '@/components/providers/CartProvider';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -55,6 +56,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [canReview, setCanReview] = useState(false);
+  const { increaseCartQuantity } = useCartWidget();
 
   useEffect(() => {
     const productId = params.id as string;
@@ -101,6 +103,7 @@ export default function ProductDetailPage() {
   const handleAddToCart = () => {
     console.log(`Added ${quantity} of ${product.name} to cart`);
     // Cart functionality would be implemented here
+    increaseCartQuantity(product.id, quantity);
   };
 
   const handleReviewAdded = (newReview: DemoReview) => {

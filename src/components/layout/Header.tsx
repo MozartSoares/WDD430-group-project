@@ -36,6 +36,7 @@ import {
   Info,
   Phone,
 } from '@mui/icons-material';
+import { useCartWidget } from '../providers/CartProvider';
 
 interface HeaderProps {
   cartItemCount?: number;
@@ -53,6 +54,7 @@ export default function Header({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const {openCart, cartQuantity}  = useCartWidget()
 
   const isLoggedIn = !!session;
 
@@ -215,8 +217,8 @@ export default function Header({
             </IconButton>
 
             {/* Cart */}
-            <IconButton onClick={handleCartClick}>
-              <Badge badgeContent={cartItemCount} color="primary">
+            <IconButton onClick={openCart}>
+              <Badge badgeContent={cartQuantity} color="primary">
                 <ShoppingCart />
               </Badge>
             </IconButton>
