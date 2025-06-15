@@ -8,4 +8,5 @@ export interface IProduct extends IBase {
   description?: string;
   imageUrl?: string;
   userId: Types.ObjectId;
+  categoryId?: Types.ObjectId;
 }
