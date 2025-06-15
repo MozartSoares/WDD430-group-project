@@ -42,6 +42,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useCartWidget } from '@/components/providers/CartProvider';
 
 function ProductDetailPage() {
   const params = useParams();
@@ -53,6 +54,7 @@ function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [canReview, setCanReview] = useState(false);
+  const { increaseCartQuantity } = useCartWidget();
 
   useEffect(() => {
     const productId = params.id as string;
@@ -108,6 +110,7 @@ function ProductDetailPage() {
   const handleAddToCart = () => {
     console.log(`Added ${quantity} of ${product.name} to cart`);
     // Cart functionality would be implemented here
+    increaseCartQuantity(product.id, quantity);
   };
 
   const handleReviewAdded = (newReview: DemoReview) => {
