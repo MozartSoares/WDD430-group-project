@@ -1,4 +1,5 @@
 // src/data/demoData.ts
+"use-client";
 export interface DemoUser {
   id: string;
   artistId: number;
@@ -344,11 +345,15 @@ export const getUserById = (userId: string): DemoUser | undefined => {
   return demoUsers.find((user) => user.id === userId);
 };
 
-export const getUserByArtistId = (artistId: number): DemoUser | undefined => {
+export const getUserByArtistId = (
+  artistId: number | string,
+): DemoUser | undefined => {
   return demoUsers.find((user) => user.artistId === artistId);
 };
 
-export const getProductsByArtistId = (artistId: number): DemoProduct[] => {
+export const getProductsByArtistId = (
+  artistId: number | string,
+): DemoProduct[] => {
   return demoProducts.filter((product) => product.artistId === artistId);
 };
 
@@ -358,7 +363,7 @@ export const getReviewsForProduct = (productId: string): DemoReview[] => {
 
 export const canUserReviewProduct = (
   userId: string,
-  productId: string
+  productId: string,
 ): boolean => {
   const product = demoProducts.find((p) => p.id === productId);
   const user = demoUsers.find((u) => u.id === userId);
@@ -370,7 +375,7 @@ export const canUserReviewProduct = (
 
   // Check if user already reviewed this product
   const existingReview = demoReviews.find(
-    (r) => r.productId === productId && r.userId === userId
+    (r) => r.productId === productId && r.userId === userId,
   );
   return !existingReview;
 };

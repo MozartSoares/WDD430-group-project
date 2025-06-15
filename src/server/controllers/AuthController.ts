@@ -1,9 +1,8 @@
-import { NextRequest } from 'next/server';
-import { AuthService } from '../services';
-import { loginUserSchema, registerUserSchema } from '@/types';
-import { handleControllerError, validateBody } from '@/lib/validation';
+import { ValidateBody, handleControllerError } from "@/lib/validation";
+import { type CreateUserSchema, createUserSchema } from "@/types";
+import { AuthService } from "../services";
 
-export const AuthController = {
+export class AuthController {
   //probably we wont need this because nextauth will handle the login and register using the service directly
   //but we can keep it here commented for now
   // login: async (req: NextRequest) => {
@@ -34,23 +33,21 @@ export const AuthController = {
   //   }
   // },
 
-  register: async (req: NextRequest) => {
+  @ValidateBody(createUserSchema)
+  static async register(payload: CreateUserSchema) {
     try {
-      const body = await req.json();
-      const { name, email, password } = validateBody(registerUserSchema, body);
-
-      const user = await AuthService.register({ name, email, password });
+      const user = await AuthService.register(payload);
 
       return Response.json(
         {
           success: true,
-          message: 'User created successfully',
+          message: "User created successfully",
           user,
         },
-        { status: 201 }
+        { status: 201 },
       );
     } catch (error) {
       return handleControllerError(error);
     }
-  },
-};
+  }
+}

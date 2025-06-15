@@ -1,7 +1,11 @@
-import { IBase } from '../Base';
+import type { Types } from "mongoose";
+import type { IBase } from "../Base";
 
 export interface IProduct extends IBase {
   name: string;
-  price: number;
+  originalPrice: number;
+  currentPrice: number;
   description?: string;
+  imageUrl?: string;
+  userId: Types.ObjectId;
 }

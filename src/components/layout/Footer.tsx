@@ -1,26 +1,18 @@
 // src/components/layout/Footer.tsx
-'use client';
-
-import React from 'react';
+"use client";
+import { Facebook, Instagram, Twitter, YouTube } from "@mui/icons-material";
 import {
   Box,
-  Container,
-  Grid,
-  Typography,
-  Link,
   Button,
+  Container,
   Divider,
+  Grid,
   IconButton,
-  useTheme,
+  Link,
+  Typography,
   useMediaQuery,
-} from '@mui/material';
-import {
-  Instagram,
-  Facebook,
-  YouTube,
-  Twitter,
-  Email,
-} from '@mui/icons-material';
+  useTheme,
+} from "@mui/material";
 
 interface FooterLink {
   label: string;
@@ -39,40 +31,38 @@ interface FooterProps {
 
 const footerSections: FooterSection[] = [
   {
-    title: 'Need help?',
+    title: "Need help?",
+    links: [{ label: "Contact Us", href: "/contact" }],
+  },
+  {
+    title: "Customer Support",
     links: [
-      { label: 'Contact Us', href: '/contact' },
+      { label: "Returns & Warranty", href: "/returns" },
+      { label: "Payments", href: "/payments" },
+      { label: "Shipping", href: "/shipping" },
+      { label: "Privacy Policy", href: "/privacy" },
     ],
   },
   {
-    title: 'Customer Support',
+    title: "Corporate Info",
     links: [
-      { label: 'Returns & Warranty', href: '/returns' },
-      { label: 'Payments', href: '/payments' },
-      { label: 'Shipping', href: '/shipping' },
-      { label: 'Privacy Policy', href: '/privacy' },
+      { label: "About Us", href: "/about" },
+      { label: "Brands", href: "/brands" },
+      { label: "Cookies", href: "/cookies" },
     ],
   },
   {
-    title: 'Corporate Info',
+    title: "Gift Card",
     links: [
-      { label: 'About Us', href: '/about' },
-      { label: 'Brands', href: '/brands' },
-      { label: 'Cookies', href: '/cookies' },
-    ],
-  },
-  {
-    title: 'Gift Card',
-    links: [
-      { label: 'Buy Gift Cards', href: '/gift-cards' },
-      { label: 'Redeem Card', href: '/redeem' },
+      { label: "Buy Gift Cards", href: "/gift-cards" },
+      { label: "Redeem Card", href: "/redeem" },
     ],
   },
 ];
 
-export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
+export const Footer = ({ onContactClick, onLinkClick }: FooterProps) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleLinkClick = (href: string) => {
     if (onLinkClick) {
@@ -90,48 +80,48 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
     <Box
       component="footer"
       sx={{
-        backgroundColor: 'background.paper',
+        backgroundColor: "background.paper",
         borderTop: 1,
-        borderColor: 'divider',
+        borderColor: "divider",
         pt: 6,
         pb: 4,
-        mt: 'auto',
+        mt: "auto",
       }}
     >
       <Container maxWidth="lg">
         {/* Main Footer Content */}
         <Grid container spacing={4} sx={{ mb: 4 }}>
           {footerSections.map((section, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Grid item xs={12} sm={6} md={3} key={Math.random()}>
               <Typography
                 variant="h6"
                 component="h3"
                 sx={{
                   fontWeight: 600,
                   mb: 2,
-                  color: 'text.primary',
+                  color: "text.primary",
                 }}
               >
                 {section.title}
               </Typography>
-              
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 {section.links.map((link, linkIndex) => {
                   // Special handling for Contact Us button
-                  if (link.label === 'Contact Us') {
+                  if (link.label === "Contact Us") {
                     return (
                       <Button
-                        key={linkIndex}
+                        key={Math.random()}
                         variant="contained"
                         onClick={handleContactClick}
                         sx={{
-                          backgroundColor: 'text.primary',
-                          color: 'background.paper',
-                          alignSelf: 'flex-start',
+                          backgroundColor: "text.primary",
+                          color: "background.paper",
+                          alignSelf: "flex-start",
                           px: 3,
                           py: 1,
-                          '&:hover': {
-                            backgroundColor: 'text.secondary',
+                          "&:hover": {
+                            backgroundColor: "text.secondary",
                           },
                         }}
                       >
@@ -139,22 +129,22 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
                       </Button>
                     );
                   }
-                  
+
                   return (
                     <Link
-                      key={linkIndex}
+                      key={Math.random()}
                       href={link.href}
                       onClick={(e) => {
                         e.preventDefault();
                         handleLinkClick(link.href);
                       }}
                       sx={{
-                        color: 'text.secondary',
-                        textDecoration: 'none',
-                        fontSize: '0.875rem',
-                        '&:hover': {
-                          color: 'primary.main',
-                          textDecoration: 'underline',
+                        color: "text.secondary",
+                        textDecoration: "none",
+                        fontSize: "0.875rem",
+                        "&:hover": {
+                          color: "primary.main",
+                          textDecoration: "underline",
                         },
                       }}
                     >
@@ -172,10 +162,10 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
         {/* Bottom Footer */}
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'center', md: 'center' },
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "center", md: "center" },
             gap: 2,
           }}
         >
@@ -184,71 +174,71 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
             variant="h6"
             sx={{
               fontWeight: 700,
-              color: 'primary.main',
+              color: "primary.main",
             }}
           >
             Handcrafted Haven
           </Typography>
 
           {/* Social Media Icons */}
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
             <IconButton
               size="small"
               sx={{
-                color: 'text.secondary',
-                '&:hover': {
-                  color: 'primary.main',
-                  backgroundColor: 'primary.main',
-                  '& svg': {
-                    color: 'primary.contrastText',
+                color: "text.secondary",
+                "&:hover": {
+                  color: "primary.main",
+                  backgroundColor: "primary.main",
+                  "& svg": {
+                    color: "primary.contrastText",
                   },
                 },
               }}
             >
               <Instagram />
             </IconButton>
-            
+
             <IconButton
               size="small"
               sx={{
-                color: 'text.secondary',
-                '&:hover': {
-                  color: 'primary.main',
-                  backgroundColor: 'primary.main',
-                  '& svg': {
-                    color: 'primary.contrastText',
+                color: "text.secondary",
+                "&:hover": {
+                  color: "primary.main",
+                  backgroundColor: "primary.main",
+                  "& svg": {
+                    color: "primary.contrastText",
                   },
                 },
               }}
             >
               <Facebook />
             </IconButton>
-            
+
             <IconButton
               size="small"
               sx={{
-                color: 'text.secondary',
-                '&:hover': {
-                  color: 'primary.main',
-                  backgroundColor: 'primary.main',
-                  '& svg': {
-                    color: 'primary.contrastText',
+                color: "text.secondary",
+                "&:hover": {
+                  color: "primary.main",
+                  backgroundColor: "primary.main",
+                  "& svg": {
+                    color: "primary.contrastText",
                   },
                 },
               }}
             >
               <YouTube />
             </IconButton>
-            
+
             <IconButton
               size="small"
               sx={{
-                color: 'text.secondary',
-                '&:hover': {
-                  color: 'primary.main',
-                  backgroundColor: 'primary.main',
-                  '& svg': {
-                    color: 'primary.contrastText',
+                color: "text.secondary",
+                "&:hover": {
+                  color: "primary.main",
+                  backgroundColor: "primary.main",
+                  "& svg": {
+                    color: "primary.contrastText",
                   },
                 },
               }}
@@ -261,7 +251,7 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ textAlign: { xs: 'center', md: 'right' } }}
+            sx={{ textAlign: { xs: "center", md: "right" } }}
           >
             © {new Date().getFullYear()} Handcrafted Haven. All rights reserved.
           </Typography>
@@ -269,4 +259,4 @@ export default function Footer({ onContactClick, onLinkClick }: FooterProps) {
       </Container>
     </Box>
   );
-}
+};

@@ -2,24 +2,25 @@
 import type { Metadata } from "next";
 import { Roboto, Roboto_Slab } from "next/font/google";
 import "./globals.css";
-import { ThemeProviderWrapper } from './ThemeProviderWrapper';
-import { SessionProvider } from '@/components/providers/SessionProvider';
+import { SessionProvider } from "@/components";
+import { ThemeProviderWrapper } from "./ThemeProviderWrapper";
 import { CartWidgetProvider } from "@/components/providers/CartProvider";
+
 
 // Configure Roboto font
 const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
-  variable: '--font-roboto',
-  display: 'swap',
+  weight: ["300", "400", "500", "700"],
+  subsets: ["latin"],
+  variable: "--font-roboto",
+  display: "swap",
 });
 
 // Configure Roboto Slab font
 const robotoSlab = Roboto_Slab({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-roboto-slab',
-  display: 'swap',
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-roboto-slab",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,14 +28,14 @@ export const metadata: Metadata = {
   description: "Discover unique handcrafted treasures from talented artisans",
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body 
+      <body
         className={`${roboto.variable} ${robotoSlab.variable}`}
         suppressHydrationWarning
       >
@@ -48,4 +49,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
