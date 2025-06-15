@@ -37,6 +37,8 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
+import { useCartWidget } from '../providers/CartProvider';
+
 
 interface HeaderProps {
   cartItemCount?: number;
@@ -53,6 +55,8 @@ export const Header = ({ cartItemCount = 0, onCartClick }: HeaderProps) => {
     null,
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const {openCart, cartQuantity}  = useCartWidget()
+
 
   const isLoggedIn = !!session;
 
@@ -215,8 +219,8 @@ export const Header = ({ cartItemCount = 0, onCartClick }: HeaderProps) => {
             </IconButton>
 
             {/* Cart */}
-            <IconButton onClick={handleCartClick}>
-              <Badge badgeContent={cartItemCount} color="primary">
+            <IconButton onClick={openCart}>
+              <Badge badgeContent={cartQuantity} color="primary">
                 <ShoppingCart />
               </Badge>
             </IconButton>
