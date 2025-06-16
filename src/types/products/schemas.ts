@@ -23,6 +23,7 @@ export const updateProductSchema = z.object({
   description: z.string().optional(),
   imageUrl: z.string().url("Invalid image URL").optional(),
   userId: z.string().min(1, "User ID is required").optional(),
+  categoryId: z.string().optional(),
 });
 
 export type CreateProductSchema = z.infer<typeof createProductSchema>;
