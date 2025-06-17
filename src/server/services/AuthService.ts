@@ -1,3 +1,4 @@
+import { normalizeString } from "@/lib/normalizeString";
 import { comparePassword, hashPassword } from "@/lib/password";
 import type { createUserSchema } from "@/types";
 import { UserService } from "./UserService";
@@ -36,14 +37,19 @@ export class AuthService {
     };
   }
 
-  static async register({ email, password, name }: createUserSchema) {
+  static async register({
+    email: rawEmail,
+    password: rawPassword,
+    name,
+  }: createUserSchema) {
+    const email = normalizeString(rawEmail);
     const user = await UserService.findByEmail(email);
     if (user) throw new Error("User already exists");
 
-    const hashedPassword = await hashPassword(password);
+    const password = await hashPassword(rawPassword);
     const newUser = await UserService.create({
       email,
-      password: hashedPassword,
+      password,
       name,
     });
     return {
