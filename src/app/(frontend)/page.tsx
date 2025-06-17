@@ -11,6 +11,7 @@ import { demoProducts } from "@/data/demoData";
 import { Box } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { categoryImages } from "@/data/demoImage";
 
 // Types for demo data
 interface Category {
@@ -38,37 +39,37 @@ const demoCategories: Category[] = [
   {
     id: "1",
     name: "Pottery & Ceramics",
-    image: "/api/placeholder/300/200",
+    image: categoryImages[0].images,
     href: "/products?category=pottery",
   },
   {
     id: "2",
     name: "Jewelry & Accessories",
-    image: "/api/placeholder/300/200",
+    image: categoryImages[1].images,
     href: "/products?category=jewelry",
   },
   {
     id: "3",
     name: "Home Decor",
-    image: "/api/placeholder/300/200",
+    image: categoryImages[2].images,
     href: "/products?category=decor",
   },
   {
     id: "4",
     name: "Textiles & Fiber Arts",
-    image: "/api/placeholder/300/200",
+    image: categoryImages[3].images,
     href: "/products?category=textiles",
   },
   {
     id: "5",
     name: "Woodworking",
-    image: "/api/placeholder/300/200",
+    image: categoryImages[4].images,
     href: "/products?category=wood",
   },
   {
     id: "6",
     name: "Glass & Metalwork",
-    image: "/api/placeholder/300/200",
+    image: categoryImages[5].images,
     href: "/products?category=glass",
   },
 ];

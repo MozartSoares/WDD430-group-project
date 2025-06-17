@@ -215,7 +215,7 @@ function ProductDetailPage() {
           <Grid item xs={12} md={6}>
             <Box
               component="img"
-              src="/api/placeholder/500/500"
+              src={product.images}
               alt={product.name}
               sx={{
                 width: "100%",

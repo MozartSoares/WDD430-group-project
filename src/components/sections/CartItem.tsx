@@ -19,7 +19,7 @@ export function CartItem({ id, quantity }: CartItemProps) {
   return (
     <Stack key={item.id} direction="row" spacing={1}  sx={{ display: 'flex', alignItems: 'center'}}>
       <img
-        src={item.images ? `url(${item.images})` : 'none'}
+        src={item.images ?? 'none'}
         alt={item.name}
         style={{ width: "125px", height: "75px", objectFit: "cover" }}
       />
