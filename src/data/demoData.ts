@@ -1,5 +1,8 @@
 // src/data/demoData.ts
 "use-client";
+
+import { productImages } from "./demoImage";
+
 export interface DemoUser {
   id: string;
   artistId: number;
@@ -34,7 +37,7 @@ export interface DemoProduct {
   category: string;
   materials?: string[];
   dimensions?: string;
-  images?: string[];
+  images?: string;
   createdAt: string;
   inStock: boolean;
   stockQuantity: number;
@@ -132,7 +135,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-06-05",
     inStock: true,
     stockQuantity: 3,
-  },
+    images: productImages[0].images
+},
   {
     id: "2",
     artistId: 1,
@@ -149,7 +153,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-06-08",
     inStock: true,
     stockQuantity: 5,
-  },
+    images: productImages[1].images
+},
   {
     id: "3",
     artistId: 2,
@@ -166,7 +171,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-05-20",
     inStock: true,
     stockQuantity: 1,
-  },
+    images: productImages[2].images
+ },
   {
     id: "4",
     artistId: 2,
@@ -185,7 +191,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-06-01",
     inStock: true,
     stockQuantity: 4,
-  },
+      images: productImages[3].images
+},
   {
     id: "5",
     artistId: 1,
@@ -202,7 +209,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-06-09",
     inStock: true,
     stockQuantity: 2,
-  },
+    images: productImages[4].images
+},
   {
     id: "6",
     artistId: 2,
@@ -219,7 +227,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-05-25",
     inStock: true,
     stockQuantity: 8,
-  },
+    images: productImages[5].images
+},
   {
     id: "7",
     artistId: 1,
@@ -236,7 +245,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-05-30",
     inStock: true,
     stockQuantity: 6,
-  },
+    images: productImages[6].images
+},
   {
     id: "8",
     artistId: 1,
@@ -253,7 +263,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-06-07",
     inStock: true,
     stockQuantity: 3,
-  },
+    images: productImages[7].images
+},
   {
     id: "9",
     artistId: 2,
@@ -270,7 +281,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-06-03",
     inStock: true,
     stockQuantity: 12,
-  },
+    images: productImages[8].images
+},
   {
     id: "10",
     artistId: 2,
@@ -289,7 +301,8 @@ export const demoProducts: DemoProduct[] = [
     createdAt: "2024-06-04",
     inStock: true,
     stockQuantity: 5,
-  },
+    images: productImages[9].images
+},
 ];
 
 // Sample Reviews

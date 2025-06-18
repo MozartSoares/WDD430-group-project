@@ -31,7 +31,7 @@ interface Product {
   originalPrice?: number;
   rating: number;
   reviewCount: number;
-  image?: string;
+  images?: string;
   isNew?: boolean;
   discount?: number;
   colors?: string[];
@@ -249,8 +249,8 @@ export const ProductGrid = ({
                   sx={{
                     height: 200,
                     backgroundColor: "#F3F4F6",
-                    backgroundImage: product.image
-                      ? `url(${product.image})`
+                    backgroundImage: product.images
+                      ? `url(${product.images})`
                       : "none",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
