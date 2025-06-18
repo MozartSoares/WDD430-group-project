@@ -3,12 +3,6 @@
 
 import { Footer, Header } from "@/components/layout/";
 import {
-  type DemoProduct,
-  type DemoUser,
-  getProductsByArtistId,
-  getUserByArtistId,
-} from "@/data/demoData";
-import {
   CalendarToday,
   ChevronRight,
   Language,
@@ -31,23 +25,63 @@ import {
 } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviewCount: number;
+  isNew?: boolean;
+  discount?: number;
+  imageUrl?: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  profileImage?: string;
+  coverImage?: string;
+  location?: string;
+  joinDate: string;
+  website?: string;
+  specialties?: string[];
+  bio?: string;
+}
 
 function ArtisanPage() {
   const params = useParams();
   const router = useRouter();
-  const [artisan, setArtisan] = useState<DemoUser | null>(null);
-  const [artisanProducts, setArtisanProducts] = useState<DemoProduct[]>([]);
+  const [artisan, setArtisan] = useState<User | null>(null);
+  const [artisanProducts, setArtisanProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const artistId = params.id as string;
-    if (artistId) {
-      const user = getUserByArtistId(artistId);
-      if (user) {
+    if (!artistId) return;
+
+    async function fetchData() {
+      try {
+        const [userRes, productRes] = await Promise.all([
+          fetch(`/api/users/${artistId}`),
+          fetch(`/api/products?artistId=${artistId}`),
+        ]);
+
+        if (!userRes.ok) throw new Error("Failed to load user");
+        if (!productRes.ok) throw new Error("Failed to load products");
+
+        const user = await userRes.json();
+        const products = await productRes.json();
+
         setArtisan(user);
-        const products = getProductsByArtistId(artistId);
         setArtisanProducts(products);
+      } catch (err) {
+        console.error("Error loading artisan or products:", err);
+        setArtisan(null);
       }
     }
+
+    fetchData();
   }, [params.id]);
 
   if (!artisan) {

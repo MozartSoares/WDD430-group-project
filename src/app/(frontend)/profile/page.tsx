@@ -2,12 +2,7 @@
 "use client";
 
 import { AddProductModal, Footer, Header } from "@/components";
-import {
-  type DemoProduct,
-  type DemoUser,
-  demoUsers,
-  getProductsByArtistId,
-} from "@/data/demoData";
+
 import {
   Add,
   CalendarToday,
@@ -37,24 +32,60 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
 
+// Types for data
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviewCount: number;
+  image?: string;
+  isNew?: boolean;
+  discount?: number;
+}
+interface User {
+  id: string;
+  name: string;
+  profileImage?: string;
+  coverImage?: string;
+  location?: string;
+  joinDate: string;
+  website?: string;
+  specialties?: string[];
+  bio?: string;
+  artistId: number;
+}
+
 function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [userData, setUserData] = useState<DemoUser | null>(null);
-  const [userProducts, setUserProducts] = useState<DemoProduct[]>([]);
-  const [editedProfile, setEditedProfile] = useState<Partial<DemoUser>>({});
+  const [userData, setUserData] = useState<User | null>(null);
+  const [userProducts, setUserProducts] = useState<Product[]>([]);
+  const [editedProfile, setEditedProfile] = useState<Partial<User>>({});
 
   useEffect(() => {
     if (session?.user?.email) {
-      const user = demoUsers.find((u) => u.email === session.user!.email);
-      if (user) {
-        setUserData(user);
-        setEditedProfile(user);
-        const products = getProductsByArtistId(user.artistId);
-        setUserProducts(products);
-      }
+      const fetchData = async () => {
+        try {
+          const userRes = await fetch("/api/user");
+          const user: User = await userRes.json();
+          setUserData(user);
+          setEditedProfile(user);
+
+          const productsRes = await fetch(`/api/products?artistId=${user.id}`);
+          const products: Product[] = await productsRes.json();
+          setUserProducts(products);
+        } catch (error) {
+          console.error("Failed to load profile data:", error);
+        }
+      };
+
+      fetchData();
     }
   }, [session]);
 
@@ -101,26 +132,17 @@ function ProfilePage() {
   };
 
   const handleSave = () => {
-    // In real app, this would make an API call
     const updatedUser = { ...userData, ...editedProfile };
     setUserData(updatedUser);
-
-    // Update the demo data (for demo purposes)
-    const userIndex = demoUsers.findIndex((u) => u.id === userData.id);
-    if (userIndex !== -1) {
-      demoUsers[userIndex] = updatedUser;
-    }
-
     setIsEditing(false);
+
   };
 
-  const handleInputChange =
-    (field: keyof DemoUser) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setEditedProfile((prev) => ({
-        ...prev,
-        [field]: event.target.value,
-      }));
-    };
+
+  const handleInputChange = (field: keyof User) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedProfile((prev) => ({ ...prev, [field]: event.target.value }));
+  };
+
 
   const handleSpecialtiesChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -135,7 +157,7 @@ function ProfilePage() {
     }));
   };
 
-  const handleProductAdded = (newProduct: DemoProduct) => {
+  const handleProductAdded = (newProduct: Product) => {
     setUserProducts((prev) => [newProduct, ...prev]);
     setShowAddProduct(false);
   };
@@ -450,7 +472,7 @@ function ProfilePage() {
         onClose={() => setShowAddProduct(false)}
         onProductAdded={handleProductAdded}
         artistId={userData.artistId}
-      />
+        />
     </Box>
   );
 }

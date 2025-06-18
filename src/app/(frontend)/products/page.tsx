@@ -1,11 +1,40 @@
 "use client";
 
 import { Footer, Header, ProductGrid } from "@/components";
-import { demoProducts } from "@/data/demoData";
 import { ChevronRight } from "@mui/icons-material";
 import { Box, Breadcrumbs, Container, Link, Typography } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+
+async function getProducts({
+  category,
+  search,
+  page,
+}: {
+  category: string | null;
+  search: string | null;
+  page: number;
+}) {
+  const params = new URLSearchParams();
+
+  if (category) params.append("category", category);
+  if (search) params.append("search", search);
+  params.append("page", String(page));
+
+  const res = await fetch(`/api/products?${params.toString()}`);
+
+  if (!res.ok) {
+    throw new Error("Error fetching products");
+  }
+
+  const data = await res.json();
+
+  return {
+    products: data.items,
+    total: data.totalCount,
+  };
+}
+
 
 function SearchParamsHandler({
   onCategoryChange,
@@ -35,6 +64,23 @@ function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [category, setCategory] = useState<string | null>(null);
   const [search, setSearch] = useState<string | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+
+  
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const data = await getProducts({
+        category,
+        search,
+        page: currentPage,
+      });
+      setProducts(data.products);
+      setTotalProducts(data.total);
+    };
+
+    fetchProducts();
+  }, [category, search, currentPage]);
 
   const handleCategoryChange = (cat: string | null) => {
     setCategory(cat);
@@ -137,14 +183,14 @@ function ProductsPage() {
 
       <Box component="main" sx={{ flexGrow: 1 }}>
         <ProductGrid
-          products={demoProducts}
-          totalProducts={28}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-          onProductClick={handleProductClick}
-          onSortChange={handleSortChange}
-          onFilterClick={handleFilterClick}
-          showFilters={true}
+           products={products}
+           totalProducts={totalProducts}
+           currentPage={currentPage}
+           onPageChange={handlePageChange}
+           onProductClick={handleProductClick}
+           onSortChange={handleSortChange}
+           onFilterClick={handleFilterClick}
+           showFilters={true}
         />
       </Box>
 

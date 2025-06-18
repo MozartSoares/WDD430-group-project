@@ -3,12 +3,36 @@
 
 import { Drawer, Typography, Box, Stack, Button } from "@mui/material";
 import { useCartWidget } from "../providers/CartProvider";
-import { demoProducts } from "@/data/demoData";
+import { useEffect, useState } from "react";
 import { CartItem } from "./CartItem";
 import { formatCurrency } from "@/lib/formatCurrency";
 
+
 export default function CartWidget(){
   const { isOpen, closeCart, cartQuantity, cartItems, resetCart }  = useCartWidget()
+  const [realProducts, setRealProducts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    async function fetchCartProducts() {
+      const entries = await Promise.all(
+        cartItems.map(async ({ id }) => {
+          try {
+            const res = await fetch(`/api/products/${id}`);
+            const data = await res.json();
+            return [id, data.price] as [string, number];
+          } catch {
+            return [id, 0];
+          }
+        })
+      );
+      setRealProducts(Object.fromEntries(entries));
+    }
+
+    if (cartItems.length > 0) {
+      fetchCartProducts();
+    }
+  }, [cartItems]);
+
     return (
         <Drawer open={isOpen} anchor={'right'} onClose={closeCart} PaperProps={{ sx: { width: { xs: "75%", sm: 500 }, padding: 2, }}}> 
             <Typography variant="h4">
@@ -25,9 +49,10 @@ export default function CartWidget(){
                         Total:{" "}
                         {formatCurrency(
                             cartItems.reduce((total, cartItem) => {
-                                const item = demoProducts.find(i => i.id === cartItem.id)
-                                return total + (item?.price ?? 0) * cartItem.quantity
-                            }, 0)
+                                const price = realProducts[cartItem.id] ?? 0;
+                                return total + price * cartItem.quantity;
+                              }, 0)
+                              
                         )}
                         </Typography>
                         <Button

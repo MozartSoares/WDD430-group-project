@@ -1,7 +1,6 @@
 // src/components/modals/AddProductModal.tsx
 "use client";
 
-import type { DemoProduct } from "@/data/demoData";
 import { Add, Close, CloudUpload, Delete } from "@mui/icons-material";
 import {
   Alert,
@@ -25,10 +24,30 @@ import {
 import type React from "react";
 import { useState } from "react";
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviewCount: number;
+  image?: string;
+  isNew?: boolean;
+  discount?: number;
+  artistId: number;
+  category: string;
+  materials?: string[];
+  dimensions?: string;
+  createdAt: string;
+  inStock: boolean;
+  stockQuantity: number;
+}
+
 interface AddProductModalProps {
   open: boolean;
-  onClose: () => void;
-  onProductAdded: (product: DemoProduct) => void;
+  onCloseAction: () => void;
+  onProductAddedAction: (product: Product) => void;  
   artistId: number;
 }
 
@@ -49,8 +68,8 @@ const categories = [
 
 export const AddProductModal = ({
   open,
-  onClose,
-  onProductAdded,
+  onCloseAction,
+  onProductAddedAction,
   artistId,
 }: AddProductModalProps) => {
   const [formData, setFormData] = useState({
@@ -154,7 +173,7 @@ export const AddProductModal = ({
         ? Math.round(((originalPrice - price) / originalPrice) * 100)
         : undefined;
 
-      const newProduct: DemoProduct = {
+      const newProduct: Product = {
         id: `product_${Date.now()}`,
         artistId,
         name: formData.name,
@@ -173,7 +192,7 @@ export const AddProductModal = ({
         stockQuantity: Number.parseInt(formData.stockQuantity),
       };
 
-      onProductAdded(newProduct);
+      onProductAddedAction(newProduct);
       handleClose();
     } catch (error) {
       console.error("Error adding product:", error);
@@ -197,7 +216,7 @@ export const AddProductModal = ({
     setCurrentMaterial("");
     setErrors({});
     setLoading(false);
-    onClose();
+    onCloseAction();
   };
 
   return (

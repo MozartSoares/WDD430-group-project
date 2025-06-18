@@ -1,7 +1,6 @@
 // src/components/modals/ReviewModal.tsx
 "use client";
 
-import type { DemoReview } from "@/data/demoData";
 import { Close, Star } from "@mui/icons-material";
 import {
   Alert,
@@ -19,10 +18,18 @@ import {
 import type React from "react";
 import { useState } from "react";
 
+interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  userId: string;
+  productId: string;
+}
+
 interface ReviewModalProps {
   open: boolean;
-  onClose: () => void;
-  onReviewAdded: (review: DemoReview) => void;
+  onCloseAction: () => void;
+  onReviewAddedAction: (review: Review) => void;
   productId: string;
   productName: string;
   userId: string;
@@ -31,8 +38,8 @@ interface ReviewModalProps {
 
 export const ReviewModal = ({
   open,
-  onClose,
-  onReviewAdded,
+  onCloseAction,
+  onReviewAddedAction,
   productId,
   productName,
   userId,
@@ -66,21 +73,22 @@ export const ReviewModal = ({
     setLoading(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId,
+          userId,
+          userName,
+          rating,
+          comment: comment.trim(),
+        }),
+      });
 
-      const newReview: DemoReview = {
-        id: `review_${Date.now()}`,
-        productId,
-        userId,
-        userName,
-        rating: rating!,
-        comment: comment.trim(),
-        createdAt: new Date().toISOString(),
-        helpful: 0,
-      };
+      if (!res.ok) throw new Error("Failed to submit review");
 
-      onReviewAdded(newReview);
+      const newReview = await res.json();
+      onReviewAddedAction(newReview);
       handleClose();
     } catch (error) {
       console.error("Error adding review:", error);
@@ -88,13 +96,12 @@ export const ReviewModal = ({
       setLoading(false);
     }
   };
-
   const handleClose = () => {
     setRating(null);
     setComment("");
     setErrors({});
     setLoading(false);
-    onClose();
+    onCloseAction();
   };
 
   const handleRatingChange = (

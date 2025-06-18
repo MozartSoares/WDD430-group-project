@@ -4,15 +4,6 @@
 import { Footer, Header, ReviewModal } from "@/components";
 
 import {
-  type DemoProduct,
-  type DemoReview,
-  type DemoUser,
-  canUserReviewProduct,
-  demoProducts,
-  getReviewsForProduct,
-  getUserByArtistId,
-} from "@/data/demoData";
-import {
   Add,
   ChevronRight,
   FavoriteOutlined,
@@ -48,43 +39,59 @@ function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
-  const [product, setProduct] = useState<DemoProduct | null>(null);
-  const [artisan, setArtisan] = useState<DemoUser | null>(null);
-  const [reviews, setReviews] = useState<DemoReview[]>([]);
+  const [product, setProduct] = useState<any>(null);
+  const [artisan, setArtisan] = useState<any>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [canReview, setCanReview] = useState(false);
   const { increaseCartQuantity } = useCartWidget();
 
   useEffect(() => {
-    const productId = params.id as string;
-    const foundProduct = demoProducts.find((p) => p.id === productId);
-
-    if (foundProduct) {
-      setProduct(foundProduct);
-
-      // Get artisan info
-      const productArtisan = getUserByArtistId(foundProduct.artistId);
-      setArtisan(productArtisan || null);
-
-      // Get reviews
-      const productReviews = getReviewsForProduct(productId);
-      setReviews(productReviews);
-
-      // Check if current user can review
-      if (session?.user?.email) {
-        const userEmail = session.user.email;
-        let userId = "";
-        if (userEmail === "demo@example.com") userId = "user_0";
-        else if (userEmail === "artisan1@example.com") userId = "user_1";
-        else if (userEmail === "artisan2@example.com") userId = "user_2";
-
-        if (userId) {
-          setCanReview(canUserReviewProduct(userId, productId));
+    const fetchProductData = async () => {
+      const productId = params.id as string;
+  
+      try {
+        const [productRes, reviewsRes] = await Promise.all([
+          fetch(`/api/products/${productId}`),
+          fetch(`/api/products/${productId}/reviews`),
+        ]);
+  
+        if (!productRes.ok || !reviewsRes.ok) {
+          throw new Error("Failed to fetch product or reviews");
         }
+  
+        const productData = await productRes.json();
+        const reviewsData = await reviewsRes.json();
+  
+        setProduct(productData);
+        setReviews(reviewsData);
+  
+        const artisanRes = await fetch(`/api/users/${productData.artistId}`);
+        if (artisanRes.ok) {
+          const artisanData = await artisanRes.json();
+          setArtisan(artisanData);
+        }
+  
+        if (session?.user?.email) {
+          const userRes = await fetch(`/api/users/by-email?email=${session.user.email}`);
+          if (userRes.ok) {
+            const userData = await userRes.json();
+            const checkReviewRes = await fetch(`/api/products/${productId}/can-review?userId=${userData.id}`);
+            if (checkReviewRes.ok) {
+              const { canReview } = await checkReviewRes.json();
+              setCanReview(canReview);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading product page:", error);
       }
-    }
+    };
+  
+    fetchProductData();
   }, [params.id, session]);
+  
 
   if (!product) {
     return (
@@ -113,7 +120,7 @@ function ProductDetailPage() {
     increaseCartQuantity(product.id, quantity);
   };
 
-  const handleReviewAdded = (newReview: DemoReview) => {
+  const handleReviewAdded = (newReview: any) => {
     setReviews((prev) => [newReview, ...prev]);
 
     // Update product review count and rating
@@ -122,7 +129,7 @@ function ProductDetailPage() {
       updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
       updatedReviews.length;
 
-    setProduct((prev) =>
+      setProduct((prev: any) =>
       prev
         ? {
             ...prev,

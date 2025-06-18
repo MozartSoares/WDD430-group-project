@@ -122,7 +122,7 @@ function LoginPage() {
               </Typography>
             </Box>
 
-            {/* Demo Credentials Alert */}
+            {/*  Credentials Alert */}
             <Alert
               severity="info"
               sx={{
@@ -134,7 +134,7 @@ function LoginPage() {
               }}
             >
               {/* <p>
-                <strong>Demo Login:</strong> demo@example.com / password
+                <strong> Login:</strong> demo@example.com / password
               </p>
               <p>
                 <strong>Artist1 Login:</strong> artisan1@example.com / password

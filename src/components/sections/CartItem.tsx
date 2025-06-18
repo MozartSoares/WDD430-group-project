@@ -2,9 +2,16 @@
 
 import { Typography, Box, Stack, IconButton, Button } from "@mui/material";
 import { Clear, Remove } from "@mui/icons-material";
-import { demoProducts } from "@/data/demoData";
 import { useCartWidget } from "../providers/CartProvider";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { useEffect, useState } from "react";
+
+interface Product{
+  id: string;
+  name: string;
+  price: number;
+  images?: string[];
+}
 
 type CartItemProps = {
   id: string
@@ -13,8 +20,16 @@ type CartItemProps = {
 
 export function CartItem({ id, quantity }: CartItemProps) {
   const { decreaseCartQuantity, removeFromCart }  = useCartWidget()
-  const item = demoProducts.find(p => p.id === id)
-  if (item == null) return null
+  const [item, setItem] = useState<Product | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => setItem(data))
+      .catch(() => setItem(null));
+  }, [id]);
+
+  if (!item) return null;
 
   return (
     <Stack key={item.id} direction="row" spacing={1}  sx={{ display: 'flex', alignItems: 'center'}}>
