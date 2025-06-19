@@ -29,7 +29,7 @@ interface AddProductModalProps {
   open: boolean;
   onClose: () => void;
   onProductAdded: (product: DemoProduct) => void;
-  artistId: number;
+  artistId: string;
 }
 
 const categories = [

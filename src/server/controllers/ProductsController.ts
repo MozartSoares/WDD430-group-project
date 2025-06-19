@@ -37,6 +37,38 @@ export class ProductsController {
     }
   }
 
+  @ValidateId
+  static async getByCategoryId(id: string) {
+    try {
+      const product = await ProductService.getByCategoryId(id);
+      if (!product) {
+        return Response.json(
+          { success: false, message: "Product not found" },
+          { status: 404 },
+        );
+      }
+      return Response.json({ success: true, product });
+    } catch (error) {
+      return handleControllerError(error);
+    }
+  }
+
+  @ValidateId
+  static async getByUserId(id: string) {
+    try {
+      const product = await ProductService.getByUserId(id);
+      if (!product) {
+        return Response.json(
+          { success: false, message: "Product not found" },
+          { status: 404 },
+        );
+      }
+      return Response.json({ success: true, product });
+    } catch (error) {
+      return handleControllerError(error);
+    }
+  }
+
   @ValidateBody(createProductSchema)
   static async create(payload: CreateProductSchema) {
     try {

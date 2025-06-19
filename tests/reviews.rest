@@ -1,0 +1,67 @@
+// Localhost ---------------------------------------------------------------
+// Localhost ---------------------------------------------------------------
+// Localhost ---------------------------------------------------------------
+
+### Create a categories
+POST http://localhost:3000/api/categories HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jewelry & Accessories",
+    "description": "Jewels, pendants, bracelets, and other kinds of accessories.",
+    "imageUrl": //Optional image Url
+}
+
+### Get all categories
+GET http://localhost:3000/api/categories HTTP/1.1
+
+### Get category by id
+GET http://localhost:3000/api/categories/68534f39767c0fba49141349 HTTP/1.1
+
+
+### Update a categories
+PUT http://localhost:3000/api/categories/68534f39767c0fba49141349 HTTP/1.1
+content-type: application/json
+
+{
+    // "name": 
+    // "description": 
+    // "imageUrl": 
+}
+
+### Delete a categories
+DELETE http://localhost:3000/api/categories/68534f39767c0fba49141349 HTTP/1.1
+
+// Production ---------------------------------------------------------------
+// Production ---------------------------------------------------------------
+// Production ---------------------------------------------------------------
+
+### Create a categories
+POST https://handcrafted-haven-mozartsoares-projects.vercel.app/api/categories HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jewelry & Accessories",
+    "description": "Jewels, pendants, bracelets, and other kinds of accessories.",
+    "imageUrl": //Optional image Url
+}
+
+### Get all categories
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/categories HTTP/1.1
+
+### Get category by id
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/categories/68534f39767c0fba49141349 HTTP/1.1
+
+
+### Update a categories
+PUT https://handcrafted-haven-mozartsoares-projects.vercel.app/api/categories/68534f39767c0fba49141349 HTTP/1.1
+content-type: application/json
+
+{
+    // "name": 
+    // "description": 
+    // "imageUrl": 
+}
+
+### Delete a categories
+DELETE https://handcrafted-haven-mozartsoares-projects.vercel.app/api/categories/68534f39767c0fba49141349 HTTP/1.1

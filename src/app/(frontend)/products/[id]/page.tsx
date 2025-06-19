@@ -161,12 +161,12 @@ function ProductDetailPage() {
     return "";
   };
 
-  const getCurrentArtistId = (): number | null => {
+  const getCurrentArtistId = (): string | null => {
     if (!session?.user?.email) return null;
     const email = session.user.email;
-    if (email === "demo@example.com") return 0;
-    if (email === "artisan1@example.com") return 1;
-    if (email === "artisan2@example.com") return 2;
+    if (email === "demo@example.com") return "0";
+    if (email === "artisan1@example.com") return "1";
+    if (email === "artisan2@example.com") return "2";
     return null;
   };
 

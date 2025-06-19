@@ -1,4 +1,4 @@
-import { Review } from "@/models/Reviews";
+import { Review } from "@/models/Review";
 import type { CreateReviewSchema } from "@/types";
 
 export const ReviewService = {
@@ -10,6 +10,12 @@ export const ReviewService = {
   },
   getById: async (id: string) => {
     return await Review.findById(id);
+  },
+  getByProductId: async (id: string) => {
+    return await Review.find({productId: id});
+  },
+  getByUserId: async (id: string) => {
+    return await Review.find({userId: id});
   },
   update: async (id: string, data: Partial<CreateReviewSchema>) => {
     return await Review.findByIdAndUpdate(id, data, { new: true });
