@@ -6,9 +6,11 @@ import { useCartWidget } from "../providers/CartProvider";
 import { useEffect, useState } from "react";
 import { CartItem } from "./CartItem";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { useRouter } from "next/navigation";
 
 
 export default function CartWidget(){
+  const router = useRouter();
   const { isOpen, closeCart, cartQuantity, cartItems, resetCart }  = useCartWidget()
   const [realProducts, setRealProducts] = useState<Record<string, number>>({});
 
@@ -58,7 +60,7 @@ export default function CartWidget(){
                         <Button
                         variant="contained"
                         size="large"
-                        onClick={resetCart}
+                        onClick={() => router.push("/order-confirmation")}
                         sx={{ flexGrow: 1, py: 1.5 }}
                         >
                         Proceed to Checkout
