@@ -1,8 +1,12 @@
 // src/components/modals/AddProductModal.tsx
 "use client";
 
-import type { DemoProduct } from "@/data/demoData";
-import { Add, Close, CloudUpload, Delete } from "@mui/icons-material";
+import { ImageUpload } from "@/components/common/ImageUpload";
+import { useCategories } from "@/hooks/useCategories";
+import { useProducts } from "@/hooks/useProducts";
+import type { IProduct } from "@/types";
+import type { CreateProductSchema } from "@/types/products/schemas";
+import { Add, Close, Delete } from "@mui/icons-material";
 import {
   Alert,
   Box,
@@ -23,29 +27,14 @@ import {
   Typography,
 } from "@mui/material";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AddProductModalProps {
   open: boolean;
   onClose: () => void;
-  onProductAdded: (product: DemoProduct) => void;
+  onProductAdded: (product: IProduct) => void;
   artistId: string;
 }
-
-const categories = [
-  "Ceramics",
-  "Jewelry",
-  "Furniture",
-  "Textiles",
-  "Glass Art",
-  "Leather Goods",
-  "Wood Crafts",
-  "Bath & Body",
-  "Metal Work",
-  "Paper Crafts",
-  "Fiber Arts",
-  "Home Decor",
-];
 
 export const AddProductModal = ({
   open,
@@ -56,17 +45,39 @@ export const AddProductModal = ({
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    price: "",
+    currentPrice: "",
     originalPrice: "",
-    category: "",
-    materials: "",
+    categoryId: "",
     dimensions: "",
     stockQuantity: "1",
   });
+  const [imageData, setImageData] = useState<string | null>(null);
   const [materials, setMaterials] = useState<string[]>([]);
   const [currentMaterial, setCurrentMaterial] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  const { createProduct, loading: productLoading } = useProducts();
+  const { getCategories, loading: categoriesLoading } = useCategories();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesResponse = await getCategories();
+        if (categoriesResponse.success && categoriesResponse.categories) {
+          setCategories(categoriesResponse.categories);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    if (open) {
+      fetchCategories();
+    }
+  }, [open]);
 
   const handleInputChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,6 +101,10 @@ export const AddProductModal = ({
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
+  };
+
+  const handleImageChange = (base64: string | null) => {
+    setImageData(base64);
   };
 
   const addMaterial = () => {
@@ -118,16 +133,16 @@ export const AddProductModal = ({
     if (!formData.name.trim()) newErrors.name = "Product name is required";
     if (!formData.description.trim())
       newErrors.description = "Description is required";
-    if (!formData.price || Number.parseFloat(formData.price) <= 0)
-      newErrors.price = "Valid price is required";
-    if (!formData.category) newErrors.category = "Category is required";
+    if (!formData.currentPrice || Number.parseFloat(formData.currentPrice) <= 0)
+      newErrors.currentPrice = "Valid price is required";
+    if (!formData.categoryId) newErrors.categoryId = "Category is required";
     if (!formData.stockQuantity || Number.parseInt(formData.stockQuantity) < 0)
       newErrors.stockQuantity = "Valid stock quantity is required";
 
     if (
       formData.originalPrice &&
       Number.parseFloat(formData.originalPrice) <=
-        Number.parseFloat(formData.price)
+        Number.parseFloat(formData.currentPrice)
     ) {
       newErrors.originalPrice =
         "Original price must be higher than current price";
@@ -143,37 +158,25 @@ export const AddProductModal = ({
     setLoading(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const price = Number.parseFloat(formData.price);
-      const originalPrice = formData.originalPrice
-        ? Number.parseFloat(formData.originalPrice)
-        : undefined;
-      const discount = originalPrice
-        ? Math.round(((originalPrice - price) / originalPrice) * 100)
-        : undefined;
-
-      const newProduct: DemoProduct = {
-        id: `product_${Date.now()}`,
-        artistId,
-        name: formData.name,
-        description: formData.description,
-        price,
-        originalPrice,
-        rating: 0,
-        reviewCount: 0,
-        isNew: true, // Will be calculated based on createdAt
-        discount,
-        category: formData.category,
+      const newProduct: CreateProductSchema = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        currentPrice: Number.parseFloat(formData.currentPrice),
+        originalPrice: formData.originalPrice
+          ? Number.parseFloat(formData.originalPrice)
+          : Number.parseFloat(formData.currentPrice),
+        categoryId: formData.categoryId,
+        userId: artistId,
+        stockQuantity: Number.parseInt(formData.stockQuantity),
         materials: materials.length > 0 ? materials : undefined,
         dimensions: formData.dimensions || undefined,
-        createdAt: new Date().toISOString(),
-        inStock: true,
-        stockQuantity: Number.parseInt(formData.stockQuantity),
+        imageUrl: imageData ? imageData : undefined,
       };
 
-      onProductAdded(newProduct);
+      const productResponse = await createProduct(newProduct);
+      if (productResponse.success && productResponse.product) {
+        onProductAdded(productResponse.product);
+      }
       handleClose();
     } catch (error) {
       console.error("Error adding product:", error);
@@ -186,13 +189,13 @@ export const AddProductModal = ({
     setFormData({
       name: "",
       description: "",
-      price: "",
+      currentPrice: "",
       originalPrice: "",
-      category: "",
-      materials: "",
+      categoryId: "",
       dimensions: "",
       stockQuantity: "1",
     });
+    setImageData(null);
     setMaterials([]);
     setCurrentMaterial("");
     setErrors({});
@@ -228,206 +231,210 @@ export const AddProductModal = ({
 
       <DialogContent sx={{ pt: 2 }}>
         <Grid container spacing={3}>
-          {/* Product Name */}
+          {/* Basic Information */}
           <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              Basic Information
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
             <TextField
-              label="Product Name"
+              label="Product Name *"
               value={formData.name}
               onChange={handleInputChange("name")}
               fullWidth
-              required
               error={!!errors.name}
               helperText={errors.name}
-              placeholder="e.g. Handcrafted Ceramic Vase"
+              placeholder="e.g., Handcrafted Ceramic Vase"
             />
           </Grid>
 
-          {/* Description */}
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth error={!!errors.categoryId}>
+              <InputLabel>Category *</InputLabel>
+              <Select
+                value={formData.categoryId}
+                onChange={handleSelectChange("categoryId")}
+                label="Category *"
+                disabled={categoriesLoading}
+              >
+                {categories.map((category) => (
+                  <MenuItem
+                    key={category._id.toString()}
+                    value={category._id.toString()}
+                  >
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.categoryId && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 0.5, ml: 1.75 }}
+                >
+                  {errors.categoryId}
+                </Typography>
+              )}
+            </FormControl>
+          </Grid>
+
           <Grid item xs={12}>
             <TextField
-              label="Description"
+              label="Description *"
               value={formData.description}
               onChange={handleInputChange("description")}
               fullWidth
               multiline
               rows={3}
-              required
               error={!!errors.description}
               helperText={errors.description}
               placeholder="Describe your product, its features, and what makes it special..."
             />
           </Grid>
 
-          {/* Price and Original Price */}
-          <Grid item xs={6}>
+          {/* Product Image */}
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              Product Image
+            </Typography>
+            <ImageUpload
+              currentImage={imageData ?? undefined}
+              onImageChange={handleImageChange}
+              variant="product"
+            />
+          </Grid>
+
+          {/* Pricing */}
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              Pricing & Stock
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
             <TextField
-              label="Price"
-              value={formData.price}
-              onChange={handleInputChange("price")}
+              label="Current Price *"
+              value={formData.currentPrice}
+              onChange={handleInputChange("currentPrice")}
               fullWidth
-              required
               type="number"
-              error={!!errors.price}
-              helperText={errors.price}
+              inputProps={{ min: 0, step: 0.01 }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">$</InputAdornment>
                 ),
               }}
-              inputProps={{ min: 0, step: 0.01 }}
+              error={!!errors.currentPrice}
+              helperText={errors.currentPrice}
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={4}>
             <TextField
               label="Original Price (Optional)"
               value={formData.originalPrice}
               onChange={handleInputChange("originalPrice")}
               fullWidth
               type="number"
-              error={!!errors.originalPrice}
-              helperText={errors.originalPrice || "For sale items only"}
+              inputProps={{ min: 0, step: 0.01 }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">$</InputAdornment>
                 ),
               }}
-              inputProps={{ min: 0, step: 0.01 }}
+              error={!!errors.originalPrice}
+              helperText={errors.originalPrice || "For showing discounts"}
             />
           </Grid>
 
-          {/* Category */}
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth required error={!!errors.category}>
-              <InputLabel>Category</InputLabel>
-              <Select
-                value={formData.category}
-                onChange={handleSelectChange("category")}
-                label="Category"
-              >
-                {categories.map((category) => (
-                  <MenuItem key={category} value={category}>
-                    {category}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.category && (
-                <Typography
-                  variant="caption"
-                  color="error"
-                  sx={{ mt: 0.5, ml: 1.5 }}
-                >
-                  {errors.category}
-                </Typography>
-              )}
-            </FormControl>
-          </Grid>
-
-          {/* Stock Quantity */}
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} md={4}>
             <TextField
-              label="Stock Quantity"
+              label="Stock Quantity *"
               value={formData.stockQuantity}
               onChange={handleInputChange("stockQuantity")}
               fullWidth
-              required
               type="number"
+              inputProps={{ min: 0 }}
               error={!!errors.stockQuantity}
               helperText={errors.stockQuantity}
-              inputProps={{ min: 0 }}
             />
           </Grid>
 
-          {/* Materials */}
+          {/* Product Details */}
           <Grid item xs={12}>
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                Materials
-              </Typography>
-              <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
-                <TextField
-                  placeholder="Add material (e.g. Clay, Wood, Silver)"
-                  value={currentMaterial}
-                  onChange={(e) => setCurrentMaterial(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  size="small"
-                  sx={{ flexGrow: 1 }}
-                />
-                <Button
-                  variant="outlined"
-                  onClick={addMaterial}
-                  disabled={!currentMaterial.trim()}
-                  startIcon={<Add />}
-                  size="small"
-                >
-                  Add
-                </Button>
-              </Box>
-              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                {materials.map((material, index) => (
-                  <Chip
-                    key={Math.random()}
-                    label={material}
-                    onDelete={() => removeMaterial(material)}
-                    deleteIcon={<Delete />}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                  />
-                ))}
-              </Box>
-            </Box>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              Product Details
+            </Typography>
           </Grid>
 
-          {/* Dimensions */}
-          <Grid item xs={12}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Dimensions (Optional)"
               value={formData.dimensions}
               onChange={handleInputChange("dimensions")}
               fullWidth
-              placeholder="e.g. 8&quot; H x 4&quot; W or 48&quot; L x 24&quot; W x 18&quot; H"
-              helperText="Include height, width, depth, or other relevant measurements"
+              placeholder='e.g., 8" H x 4" W x 4" D'
+              helperText="Product dimensions"
             />
           </Grid>
 
-          {/* Image Upload Placeholder */}
+          {/* Materials */}
           <Grid item xs={12}>
-            <Box
-              sx={{
-                border: "2px dashed #ccc",
-                borderRadius: 2,
-                p: 3,
-                textAlign: "center",
-                backgroundColor: "#f9f9f9",
-              }}
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
             >
-              <CloudUpload sx={{ fontSize: 48, color: "#ccc", mb: 1 }} />
-              <Typography variant="body2" color="text.secondary">
-                Image upload will be available in the full version
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                For now, placeholder images will be used
-              </Typography>
+              Materials (Optional)
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              <TextField
+                label="Add Material"
+                value={currentMaterial}
+                onChange={(e) => setCurrentMaterial(e.target.value)}
+                onKeyPress={handleKeyPress}
+                size="small"
+                placeholder="e.g., Oak Wood, Sterling Silver"
+              />
+              <Button
+                variant="outlined"
+                onClick={addMaterial}
+                disabled={!currentMaterial.trim()}
+                startIcon={<Add />}
+              >
+                Add
+              </Button>
             </Box>
+
+            {materials.length > 0 && (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                {materials.map((material) => (
+                  <Chip
+                    key={material}
+                    label={material}
+                    onDelete={() => removeMaterial(material)}
+                    deleteIcon={<Delete />}
+                    color="primary"
+                    variant="outlined"
+                  />
+                ))}
+              </Box>
+            )}
+          </Grid>
+
+          {/* Guidelines */}
+          <Grid item xs={12}>
+            <Alert severity="info">
+              <Typography variant="body2">
+                <strong>Tips:</strong> Use clear, descriptive names and
+                high-quality images. Detailed descriptions help customers
+                understand your craftsmanship and materials used.
+              </Typography>
+            </Alert>
           </Grid>
         </Grid>
-
-        {formData.originalPrice &&
-          formData.price &&
-          Number.parseFloat(formData.originalPrice) >
-            Number.parseFloat(formData.price) && (
-            <Alert severity="info" sx={{ mt: 2 }}>
-              <strong>Sale Item:</strong> This product will show a{" "}
-              {Math.round(
-                ((Number.parseFloat(formData.originalPrice) -
-                  Number.parseFloat(formData.price)) /
-                  Number.parseFloat(formData.originalPrice)) *
-                  100,
-              )}
-              % discount
-            </Alert>
-          )}
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
@@ -437,7 +444,7 @@ export const AddProductModal = ({
         <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={loading || productLoading}
           sx={{ minWidth: 120 }}
         >
           {loading ? "Adding..." : "Add Product"}

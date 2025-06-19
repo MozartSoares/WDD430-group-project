@@ -3,24 +3,16 @@
 
 import { Footer, Header, ReviewModal } from "@/components";
 
-import {
-  type DemoProduct,
-  type DemoReview,
-  type DemoUser,
-  canUserReviewProduct,
-  demoProducts,
-  getReviewsForProduct,
-  getUserByArtistId,
-} from "@/data/demoData";
+import { useCartWidget } from "@/components/providers/CartProvider";
+import { useProducts } from "@/hooks/useProducts";
+import type { IProduct, IReview, IUser } from "@/types";
 import {
   Add,
   ChevronRight,
   FavoriteOutlined,
-  LocationOn,
   RateReview,
   Remove,
   ShareOutlined,
-  ThumbUp,
   Verified,
 } from "@mui/icons-material";
 import {
@@ -30,6 +22,7 @@ import {
   Breadcrumbs,
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   Grid,
@@ -42,51 +35,66 @@ import {
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useCartWidget } from '@/components/providers/CartProvider';
 
 function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
-  const [product, setProduct] = useState<DemoProduct | null>(null);
-  const [artisan, setArtisan] = useState<DemoUser | null>(null);
-  const [reviews, setReviews] = useState<DemoReview[]>([]);
+  const [product, setProduct] = useState<IProduct | null>(null);
+  const [artisan, setArtisan] = useState<IUser | null>(null);
+  const [reviews, setReviews] = useState<IReview[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [canReview, setCanReview] = useState(false);
   const { increaseCartQuantity } = useCartWidget();
+  const {
+    getProduct,
+    loading: productLoading,
+    error: productError,
+    calculateDiscountPercentage,
+  } = useProducts();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const productId = params.id as string;
-    const foundProduct = demoProducts.find((p) => p.id === productId);
-
-    if (foundProduct) {
-      setProduct(foundProduct);
-
-      // Get artisan info
-      const productArtisan = getUserByArtistId(foundProduct.artistId);
-      setArtisan(productArtisan || null);
-
-      // Get reviews
-      const productReviews = getReviewsForProduct(productId);
-      setReviews(productReviews);
-
-      // Check if current user can review
-      if (session?.user?.email) {
-        const userEmail = session.user.email;
-        let userId = "";
-        if (userEmail === "demo@example.com") userId = "user_0";
-        else if (userEmail === "artisan1@example.com") userId = "user_1";
-        else if (userEmail === "artisan2@example.com") userId = "user_2";
-
-        if (userId) {
-          setCanReview(canUserReviewProduct(userId, productId));
+    const fetchProduct = async () => {
+      try {
+        const productResponse = await getProduct(productId);
+        if (productResponse.success && productResponse.product) {
+          setProduct(productResponse.product);
+          setReviews(productResponse.product.reviews ?? []);
         }
+      } catch (error) {
+        console.error("Error fetching product:", error);
       }
-    }
-  }, [params.id, session]);
+    };
+    fetchProduct();
+  }, [params.id]);
 
-  if (!product) {
+  useEffect(() => {
+    if (!session || !session.user) return;
+    const userId = session.user.id;
+    if (userId && product) {
+      setCanReview(userId !== product.userId.toString());
+    }
+  }, [session, product]);
+
+  if (productLoading || !product) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!product && !productLoading) {
     return (
       <Box
         sx={{
@@ -100,6 +108,9 @@ function ProductDetailPage() {
       </Box>
     );
   }
+  if (!product) {
+    return null;
+  }
 
   const handleQuantityChange = (change: number) => {
     setQuantity((prev) =>
@@ -107,13 +118,11 @@ function ProductDetailPage() {
     );
   };
 
-  const handleAddToCart = () => {
-    console.log(`Added ${quantity} of ${product.name} to cart`);
-    // Cart functionality would be implemented here
-    increaseCartQuantity(product.id, quantity);
+  const handleAddToCart = async () => {
+    await increaseCartQuantity(product._id.toString(), quantity);
   };
 
-  const handleReviewAdded = (newReview: DemoReview) => {
+  const handleReviewAdded = (newReview: IReview) => {
     setReviews((prev) => [newReview, ...prev]);
 
     // Update product review count and rating
@@ -143,36 +152,9 @@ function ProductDetailPage() {
     });
   };
 
-  const getCurrentUserId = (): string | null => {
-    if (!session?.user?.email) return null;
-    const email = session.user.email;
-    if (email === "demo@example.com") return "user_0";
-    if (email === "artisan1@example.com") return "user_1";
-    if (email === "artisan2@example.com") return "user_2";
-    return null;
-  };
-
-  const getCurrentUserName = (): string => {
-    if (!session?.user?.email) return "";
-    const email = session.user.email;
-    if (email === "demo@example.com") return "Demo User";
-    if (email === "artisan1@example.com") return "Sarah Chen";
-    if (email === "artisan2@example.com") return "Marcus Rodriguez";
-    return "";
-  };
-
-  const getCurrentArtistId = (): string | null => {
-    if (!session?.user?.email) return null;
-    const email = session.user.email;
-    if (email === "demo@example.com") return "0";
-    if (email === "artisan1@example.com") return "1";
-    if (email === "artisan2@example.com") return "2";
-    return null;
-  };
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header cartItemCount={0} onCartClick={() => {}} />
+      <Header />
 
       <Container maxWidth="lg" sx={{ py: 3, flexGrow: 1 }}>
         {/* Breadcrumbs */}
@@ -215,7 +197,7 @@ function ProductDetailPage() {
           <Grid item xs={12} md={6}>
             <Box
               component="img"
-              src={product.images}
+              src={product.imageUrl}
               alt={product.name}
               sx={{
                 width: "100%",
@@ -232,9 +214,12 @@ function ProductDetailPage() {
               {product.isNew && (
                 <Chip label="New" color="success" size="small" />
               )}
-              {product.discount && (
+              {product.currentPrice < product.originalPrice && (
                 <Chip
-                  label={`-${product.discount}%`}
+                  label={`-${calculateDiscountPercentage(
+                    product.originalPrice,
+                    product.currentPrice,
+                  )}%`}
                   color="error"
                   size="small"
                 />
@@ -259,9 +244,9 @@ function ProductDetailPage() {
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
               <Typography variant="h4" color="primary" sx={{ fontWeight: 600 }}>
-                ${product.price}
+                ${product.currentPrice}
               </Typography>
-              {product.originalPrice && (
+              {product.originalPrice > product.currentPrice && (
                 <Typography
                   variant="h6"
                   color="text.secondary"
@@ -290,7 +275,9 @@ function ProductDetailPage() {
                   <Typography variant="body2" color="text.secondary">
                     Category
                   </Typography>
-                  <Typography variant="body1">{product.category}</Typography>
+                  <Typography variant="body1">
+                    {product.category?.name}
+                  </Typography>
                 </Grid>
                 {product.materials && (
                   <Grid item xs={6}>
@@ -359,10 +346,10 @@ function ProductDetailPage() {
                 variant="contained"
                 size="large"
                 onClick={handleAddToCart}
-                disabled={!product.inStock}
+                disabled={!product.stockQuantity}
                 sx={{ flexGrow: 1, py: 1.5 }}
               >
-                {product.inStock ? "Add to Cart" : "Out of Stock"}
+                {product.stockQuantity ? "Add to Cart" : "Out of Stock"}
               </Button>
               <IconButton size="large" color="primary">
                 <FavoriteOutlined />
@@ -381,7 +368,7 @@ function ProductDetailPage() {
               Meet the Artisan
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <Avatar src={artisan.profileImage} sx={{ width: 80, height: 80 }}>
+              <Avatar src={artisan.imageUrl} sx={{ width: 80, height: 80 }}>
                 {artisan.name.charAt(0)}
               </Avatar>
               <Box sx={{ flexGrow: 1 }}>
@@ -393,29 +380,17 @@ function ProductDetailPage() {
                   </Typography>
                   <Verified color="primary" fontSize="small" />
                 </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
-                    mb: 1,
-                  }}
-                >
-                  <LocationOn fontSize="small" color="action" />
-                  <Typography variant="body2" color="text.secondary">
-                    {artisan.location}
-                  </Typography>
-                </Box>
+
                 <Typography
                   variant="body2"
                   color="text.secondary"
                   sx={{ mb: 2 }}
                 >
-                  {artisan.bio}
+                  {artisan.biography}
                 </Typography>
                 <Button
                   variant="outlined"
-                  onClick={() => router.push(`/artisans/${artisan.artistId}`)}
+                  onClick={() => router.push(`/artisans/${artisan._id}`)}
                 >
                   View Profile
                 </Button>
@@ -465,11 +440,7 @@ function ProductDetailPage() {
 
           {session && !canReview && reviews.length > 0 && (
             <Alert severity="info" sx={{ mb: 3 }}>
-              <Typography>
-                {product.artistId === getCurrentArtistId()
-                  ? "You cannot review your own product."
-                  : "You have already reviewed this product."}
-              </Typography>
+              <Typography>You cannot review your own product.</Typography>
             </Alert>
           )}
 
@@ -485,12 +456,12 @@ function ProductDetailPage() {
           ) : (
             <Box>
               {reviews.map((review, index) => (
-                <Box key={review.id}>
+                <Box key={review._id.toString()}>
                   <Box
                     sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}
                   >
                     <Avatar sx={{ width: 40, height: 40 }}>
-                      {review.userName.charAt(0)}
+                      {review.user?.name.charAt(0)}
                     </Avatar>
                     <Box sx={{ flexGrow: 1 }}>
                       <Box
@@ -505,11 +476,11 @@ function ProductDetailPage() {
                           variant="subtitle2"
                           sx={{ fontWeight: 600 }}
                         >
-                          {review.userName}
+                          {review.user?.name}
                         </Typography>
                         <Rating value={review.rating} size="small" readOnly />
                         <Typography variant="caption" color="text.secondary">
-                          {formatDate(review.createdAt)}
+                          {formatDate(review.createdAt.toString())}
                         </Typography>
                       </Box>
                       <Typography
@@ -519,16 +490,6 @@ function ProductDetailPage() {
                       >
                         {review.comment}
                       </Typography>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <IconButton size="small">
-                          <ThumbUp fontSize="small" />
-                        </IconButton>
-                        <Typography variant="caption" color="text.secondary">
-                          {review.helpful} helpful
-                        </Typography>
-                      </Box>
                     </Box>
                   </Box>
                   {index < reviews.length - 1 && <Divider sx={{ my: 3 }} />}
@@ -539,7 +500,7 @@ function ProductDetailPage() {
         </Paper>
       </Container>
 
-      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
+      <Footer />
 
       {/* Review Modal */}
       {canReview && session && (
@@ -547,10 +508,8 @@ function ProductDetailPage() {
           open={showReviewModal}
           onClose={() => setShowReviewModal(false)}
           onReviewAdded={handleReviewAdded}
-          productId={product.id}
-          productName={product.name}
-          userId={getCurrentUserId() || ""}
-          userName={getCurrentUserName()}
+          product={product}
+          user={session?.user as IUser & { id: string }}
         />
       )}
     </Box>

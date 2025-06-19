@@ -18,6 +18,15 @@ CategoryModel.virtual("products", {
   justOne: false,
 });
 
+export const waitForCategoryVirtuals = async (category: any) => {
+  const categoryObj = category.toObject();
+  const products = await category.products;
+  return {
+    ...categoryObj,
+    products,
+  };
+};
+
 export const Category =
   mongoose.models.Category ||
   mongoose.model<ICategory>("Category", CategoryModel);

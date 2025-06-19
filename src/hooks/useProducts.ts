@@ -44,9 +44,17 @@ export const useProducts = () => {
     [del],
   );
 
+  const calculateDiscountPercentage = (
+    originalPrice: number,
+    currentPrice: number,
+  ): number => {
+    return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+  };
+
   return {
     getProducts,
     createProduct,
+    calculateDiscountPercentage,
     getProduct,
     updateProduct,
     deleteProduct,

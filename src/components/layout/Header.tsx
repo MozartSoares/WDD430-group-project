@@ -1,8 +1,8 @@
 // src/components/layout/Header.tsx
 "use client";
 
+import { useArtisans } from "@/hooks/useArtisans";
 import {
-  Category,
   Close,
   Home,
   Logout,
@@ -34,7 +34,7 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCartWidget } from "../providers/CartProvider";
 
 interface HeaderProps {
@@ -52,8 +52,21 @@ export const Header = ({ onCartClick }: HeaderProps) => {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const { openCart, cartQuantity } = useCartWidget();
+  const { getArtisan } = useArtisans();
 
   const isLoggedIn = !!session;
+
+  const [userImage, setUserImage] = useState<string | null>(null);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const fetchUserImage = async () => {
+      if (session?.user?.id) {
+        const response = await getArtisan(session?.user?.id);
+        setUserImage(response.user?.imageUrl ?? null);
+      }
+    };
+    fetchUserImage();
+  }, [session]);
 
   const handleLoginClick = () => {
     router.push("/login");
@@ -98,7 +111,6 @@ export const Header = ({ onCartClick }: HeaderProps) => {
   const navigationItems = [
     { label: "Home", href: "/", icon: <Home /> },
     { label: "All Products", href: "/products", icon: <ShoppingBag /> },
-    { label: "Categories", href: "/categories", icon: <Category /> },
   ];
 
   const handleNavClick = (href: string) => {
@@ -222,7 +234,10 @@ export const Header = ({ onCartClick }: HeaderProps) => {
             {isLoggedIn ? (
               <>
                 <IconButton onClick={handleUserMenuClick}>
-                  <Avatar sx={{ width: 32, height: 32 }}>
+                  <Avatar
+                    src={userImage ?? undefined}
+                    sx={{ width: 32, height: 32 }}
+                  >
                     {session?.user?.name?.[0] || "U"}
                   </Avatar>
                 </IconButton>

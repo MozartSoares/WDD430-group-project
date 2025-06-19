@@ -1,5 +1,6 @@
 import type { Types } from "mongoose";
 import type { IBase } from "../Base";
+import type { ICategory } from "../categories/types";
 import type { IReview } from "../reviews/types";
 
 export interface IProduct extends IBase {
@@ -19,4 +20,5 @@ export interface IProduct extends IBase {
   reviews?: IReview[];
   rating?: number;
   reviewCount?: number;
+  category?: ICategory;
 }
