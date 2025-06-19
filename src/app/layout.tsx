@@ -6,7 +6,6 @@ import { SessionProvider } from "@/components";
 import { ThemeProviderWrapper } from "./ThemeProviderWrapper";
 import { CartWidgetProvider } from "@/components/providers/CartProvider";
 
-
 // Configure Roboto font
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -41,9 +40,7 @@ const RootLayout = ({
       >
         <SessionProvider>
           <ThemeProviderWrapper>
-            <CartWidgetProvider>
-            {children}
-            </CartWidgetProvider>
+            <CartWidgetProvider>{children}</CartWidgetProvider>
           </ThemeProviderWrapper>
         </SessionProvider>
       </body>

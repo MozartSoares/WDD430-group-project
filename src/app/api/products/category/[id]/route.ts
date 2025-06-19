@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 // GET /api/products/category/[id] - get product by category id
 export async function GET(
-  req: NextRequest, 
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   await dbConnect();

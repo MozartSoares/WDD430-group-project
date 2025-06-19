@@ -48,7 +48,7 @@ export const useProducts = () => {
     originalPrice: number,
     currentPrice: number,
   ): number => {
-    return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+    return Math.floor(((originalPrice - currentPrice) / originalPrice) * 100);
   };
 
   return {

@@ -224,7 +224,7 @@ export const Header = ({ onCartClick }: HeaderProps) => {
             </IconButton>
 
             {/* Cart */}
-            <IconButton onClick={openCart}>
+            <IconButton onClick={() => {}}>
               <Badge badgeContent={cartQuantity} color="primary">
                 <ShoppingCart />
               </Badge>

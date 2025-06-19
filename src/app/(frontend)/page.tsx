@@ -68,7 +68,6 @@ function Home() {
     router.push("/products");
   };
 
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header onCartClick={() => console.log("Cart clicked")} />

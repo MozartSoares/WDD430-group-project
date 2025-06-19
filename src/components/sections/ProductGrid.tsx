@@ -2,7 +2,6 @@
 
 import { useProducts } from "@/hooks/useProducts";
 import type { IProduct } from "@/types";
-import { FilterList } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -58,11 +57,10 @@ export const ProductGrid = ({
         return copy.sort((a, b) => b.currentPrice - a.currentPrice);
       case "rating":
         return copy.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-      case "newest":
       default:
         return copy.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
     }
   }, [products, sortBy]);
@@ -289,7 +287,7 @@ export const ProductGrid = ({
                         -
                         {calculateDiscountPercentage(
                           product.originalPrice,
-                          product.currentPrice
+                          product.currentPrice,
                         )}
                         %
                       </Typography>
