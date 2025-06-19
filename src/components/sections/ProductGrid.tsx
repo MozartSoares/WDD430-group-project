@@ -30,21 +30,19 @@ interface ProductGridProps {
   currentPage?: number;
   onPageChange?: (page: number) => void;
   onProductClick?: (product: IProduct) => void;
-  onSortChange?: (sortBy: string) => void;
-  onFilterClick?: () => void;
   showFilters?: boolean;
 }
 
 const isNewProduct = (createdAt: Date): boolean => {
   const now = new Date();
-  const diffTime = Math.abs(now.getTime() - createdAt.getTime());
+  const diffTime = Math.abs(now.getTime() - new Date(createdAt).getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays <= 7;
 };
 
 const calculateDiscountPercentage = (
   originalPrice: number,
-  currentPrice: number,
+  currentPrice: number
 ): number => {
   return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
 };
@@ -55,22 +53,34 @@ export const ProductGrid = ({
   currentPage = 1,
   onPageChange,
   onProductClick,
-  onSortChange,
-  onFilterClick,
   showFilters = true,
 }: ProductGridProps) => {
   const theme = useTheme();
-  const [sortBy, setSortBy] = useState("");
-  const [activeFilters, setActiveFilters] = useState(["New Arrivals"]);
+  const [sortBy, setSortBy] = useState("newest");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   const totalProducts = useMemo(() => products.length, [products.length]);
 
-  const handleSortChange = (event: SelectChangeEvent<string>) => {
-    const value = event.target.value;
-    setSortBy(value);
-    if (onSortChange) {
-      onSortChange(value);
+  const sortedProducts = useMemo(() => {
+    const copy = [...products];
+    switch (sortBy) {
+      case "price-low":
+        return copy.sort((a, b) => a.currentPrice - b.currentPrice);
+      case "price-high":
+        return copy.sort((a, b) => b.currentPrice - a.currentPrice);
+      case "rating":
+        return copy.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+      case "newest":
+      default:
+        return copy.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
     }
+  }, [products, sortBy]);
+
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
+    setSortBy(event.target.value);
   };
 
   const handleProductClick = (product: IProduct) => {
@@ -98,54 +108,7 @@ export const ProductGrid = ({
                   alignItems: "center",
                 }}
               >
-                <Button
-                  variant="contained"
-                  startIcon={<FilterList />}
-                  onClick={onFilterClick}
-                  sx={{
-                    backgroundColor: "text.primary",
-                    color: "background.paper",
-                    "&:hover": {
-                      backgroundColor: "text.secondary",
-                    },
-                  }}
-                >
-                  Sort by
-                </Button>
-
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "text.primary",
-                    color: "background.paper",
-                    "&:hover": {
-                      backgroundColor: "text.secondary",
-                    },
-                  }}
-                >
-                  New Arrivals
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  sx={{
-                    color: "text.secondary",
-                    borderColor: "text.secondary",
-                  }}
-                >
-                  Sales
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  startIcon={<FilterList />}
-                  sx={{
-                    color: "text.secondary",
-                    borderColor: "text.secondary",
-                  }}
-                >
-                  All filters
-                </Button>
+                {/* Você pode remover esses botões ou conectar filtros reais */}
               </Box>
             </Grid>
 
@@ -156,7 +119,7 @@ export const ProductGrid = ({
                   justifyContent: { xs: "flex-start", md: "flex-end" },
                 }}
               >
-                <FormControl size="small" sx={{ minWidth: 120 }}>
+                <FormControl size="small" sx={{ minWidth: 160 }}>
                   <InputLabel>Sort by</InputLabel>
                   <Select
                     value={sortBy}
@@ -199,7 +162,7 @@ export const ProductGrid = ({
         {loading ? (
           <CircularProgress />
         ) : (
-          products.map((product) => (
+          sortedProducts.map((product) => (
             <Grid
               item
               xs={12}
@@ -220,7 +183,6 @@ export const ProductGrid = ({
                 }}
                 onClick={() => handleProductClick(product)}
               >
-                {/* Product Image */}
                 <Box sx={{ position: "relative" }}>
                   <CardMedia
                     component="div"
@@ -235,7 +197,6 @@ export const ProductGrid = ({
                     }}
                   />
 
-                  {/* Badges */}
                   {product.isNew && (
                     <Chip
                       label="NEW"
@@ -267,7 +228,6 @@ export const ProductGrid = ({
                   )}
                 </Box>
 
-                {/* Product Info */}
                 <CardContent sx={{ p: 2 }}>
                   <Typography
                     variant="subtitle2"
@@ -291,7 +251,6 @@ export const ProductGrid = ({
                     {product.description}
                   </Typography>
 
-                  {/* Rating */}
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <Rating
                       value={product.rating}
@@ -308,7 +267,6 @@ export const ProductGrid = ({
                     </Typography>
                   </Box>
 
-                  {/* Price */}
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Typography
                       variant="subtitle2"
@@ -343,7 +301,7 @@ export const ProductGrid = ({
                         -
                         {calculateDiscountPercentage(
                           product.originalPrice,
-                          product.currentPrice,
+                          product.currentPrice
                         )}
                         %
                       </Typography>
@@ -384,7 +342,6 @@ export const ProductGrid = ({
           }}
         />
 
-        {/* Show More Button */}
         <Button
           variant="contained"
           size="large"

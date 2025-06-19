@@ -18,6 +18,8 @@ function Home() {
   const [cartCount, setCartCount] = useState(3);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [sortOption, setSortOption] = useState("newest");
+
   const {
     getCategories,
     loading: categoryLoading,
@@ -70,6 +72,7 @@ function Home() {
   const handleBackClick = () => {
     router.push("/products");
   };
+
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
