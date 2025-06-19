@@ -29,6 +29,12 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Vercel Deploysment
+## Handcrafted Heaven
+
+### Vercel Deployment
 
 <https://handcrafted-haven-mozartsoares-projects.vercel.app/>
+
+### Rest API
+
+The API endpoints can be tested in the rest files inside the `/test` folder.

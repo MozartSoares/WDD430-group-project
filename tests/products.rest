@@ -38,11 +38,18 @@ PUT http://localhost:3000/api/products/68534f39767c0fba49141349 HTTP/1.1
 content-type: application/json
 
 {
-    // "name": 
-    // "description": 
-    // "imageUrl": 
+    "name": "Sterling Silver Necklace",
+    "originalPrice": 120,
+    "currentPrice": 120,
+    "description": 
+      "Elegant handcrafted sterling silver necklace with intricate wire-wrapped pendant. 18-inch chain with adjustable clasp.",
+    "imageUrl": "string",
+    "userId": "68535a8d1573941ff458db02",
+    "categoryId": "68534f39767c0fba49141349",
+    "stockQuantity": 5,
+    "materials": ["Sterling Silver"],
+    "dimensions": "18 inch chain"
 }
-
 ### Delete a products
 DELETE http://localhost:3000/api/products/68534f39767c0fba49141349 HTTP/1.1
 
@@ -55,9 +62,17 @@ POST https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products HTT
 content-type: application/json
 
 {
-    "name": "Jewelry & Accessories",
-    "description": "Jewels, pendants, bracelets, and other kinds of accessories.",
-    "imageUrl": //Optional image Url
+    "name": "Sterling Silver Necklace",
+    "originalPrice": 120,
+    "currentPrice": 120,
+    "description": 
+      "Elegant handcrafted sterling silver necklace with intricate wire-wrapped pendant. 18-inch chain with adjustable clasp.",
+    "imageUrl": "string",
+    "userId": "68535a8d1573941ff458db02",
+    "categoryId": "68534f39767c0fba49141349",
+    "stockQuantity": 5,
+    "materials": ["Sterling Silver"],
+    "dimensions": "18 inch chain"
 }
 
 ### Get all products
@@ -66,15 +81,29 @@ GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products HTTP
 ### Get product by id
 GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products/68534f39767c0fba49141349 HTTP/1.1
 
+### Get product by category  id
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products/category/68534f39767c0fba49141349 HTTP/1.1
+
+### Get product by user  id
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products/user/68534f39767c0fba49141349 HTTP/1.1
+
 
 ### Update a products
 PUT https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products/68534f39767c0fba49141349 HTTP/1.1
 content-type: application/json
 
 {
-    // "name": 
-    // "description": 
-    // "imageUrl": 
+    "name": "Sterling Silver Necklace",
+    "originalPrice": 120,
+    "currentPrice": 120,
+    "description": 
+      "Elegant handcrafted sterling silver necklace with intricate wire-wrapped pendant. 18-inch chain with adjustable clasp.",
+    "imageUrl": "string",
+    "userId": "68535a8d1573941ff458db02",
+    "categoryId": "68534f39767c0fba49141349",
+    "stockQuantity": 5,
+    "materials": ["Sterling Silver"],
+    "dimensions": "18 inch chain"
 }
 
 ### Delete a products
