@@ -1,5 +1,6 @@
 "use client";
 
+import { useProducts } from "@/hooks/useProducts";
 import type { IProduct } from "@/types";
 import { FilterList } from "@mui/icons-material";
 import {
@@ -35,20 +36,6 @@ interface ProductGridProps {
   showFilters?: boolean;
 }
 
-const isNewProduct = (createdAt: Date): boolean => {
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - createdAt.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays <= 7;
-};
-
-const calculateDiscountPercentage = (
-  originalPrice: number,
-  currentPrice: number,
-): number => {
-  return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
-};
-
 export const ProductGrid = ({
   loading = true,
   products,
@@ -61,6 +48,7 @@ export const ProductGrid = ({
 }: ProductGridProps) => {
   const theme = useTheme();
   const [sortBy, setSortBy] = useState("");
+  const { calculateDiscountPercentage } = useProducts();
   const [activeFilters, setActiveFilters] = useState(["New Arrivals"]);
 
   const totalProducts = useMemo(() => products.length, [products.length]);

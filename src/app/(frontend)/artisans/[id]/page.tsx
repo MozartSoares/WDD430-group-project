@@ -2,14 +2,10 @@
 "use client";
 
 import { Footer, Header } from "@/components/layout/";
-import type { DemoProduct, DemoUser } from "@/data/demoData";
 import { useArtisans } from "@/hooks/useArtisans";
-import {
-  CalendarToday,
-  ChevronRight,
-  Language,
-  LocationOn,
-} from "@mui/icons-material";
+import { useProducts } from "@/hooks/useProducts";
+import type { IProduct, IUser } from "@/types";
+import { CalendarToday, ChevronRight } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -18,6 +14,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  CircularProgress,
   Container,
   Grid,
   Link,
@@ -26,15 +23,16 @@ import {
   Typography,
 } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function ArtisanPage() {
   const params = useParams();
   const router = useRouter();
-  const [artisan, setArtisan] = useState<DemoUser | null>(null);
+  const [artisan, setArtisan] = useState<IUser | null>(null);
   const { getArtisan, loading, error } = useArtisans();
-  const [artisanProducts, setArtisanProducts] = useState<DemoProduct[]>([]);
-
+  const [artisanProducts, setArtisanProducts] = useState<IProduct[]>([]);
+  const { calculateDiscountPercentage } = useProducts();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const artistId = params.id as string;
     if (!artistId) return;
@@ -45,13 +43,25 @@ function ArtisanPage() {
           setArtisan(artisanResponse.users);
         }
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Error fetching artisan:", error);
       }
     };
     fetchArtisan();
-  }, [params.id, getArtisan]);
+  }, [params.id]);
 
-  if (!artisan) {
+  if (loading && !artisan) {
+    return (
+      <Box
+        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        <Header />
+        <CircularProgress />
+        <Footer />
+      </Box>
+    );
+  }
+
+  if (!loading || !artisan) {
     return (
       <Box
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
@@ -79,28 +89,18 @@ function ArtisanPage() {
     });
   };
 
-  const calculateAverageRating = () => {
-    if (artisanProducts.length === 0) return 0;
-    const totalRating = artisanProducts.reduce(
-      (sum, product) => sum + product.rating,
-      0,
-    );
-    return totalRating / artisanProducts.length;
-  };
-
-  const getTotalReviews = () => {
+  const totalReviews = useMemo(() => {
     return artisanProducts.reduce(
-      (sum, product) => sum + product.reviewCount,
+      (sum, product) => sum + (product.reviewCount ?? 0),
       0,
     );
-  };
+  }, [artisanProducts]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header cartItemCount={0} onCartClick={() => {}} />
+      <Header />
 
       <Container maxWidth="lg" sx={{ py: 3, flexGrow: 1 }}>
-        {/* Breadcrumbs */}
         <Breadcrumbs
           separator={<ChevronRight fontSize="small" />}
           aria-label="breadcrumb"
@@ -139,14 +139,12 @@ function ArtisanPage() {
           </Typography>
         </Breadcrumbs>
 
-        {/* Artisan Profile Header */}
         <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-          {/* Cover Image */}
-          {artisan.coverImage && (
+          {artisan.imageUrl && (
             <Box
               sx={{
                 height: 200,
-                backgroundImage: `url(${artisan.coverImage})`,
+                backgroundImage: `url(${artisan.imageUrl})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 borderRadius: 2,
@@ -157,7 +155,7 @@ function ArtisanPage() {
 
           <Box sx={{ display: "flex", alignItems: "flex-start", gap: 3 }}>
             <Avatar
-              src={artisan.profileImage}
+              src={artisan.imageUrl}
               sx={{ width: 120, height: 120, fontSize: "3rem" }}
             >
               {artisan.name.charAt(0)}
@@ -174,120 +172,53 @@ function ArtisanPage() {
 
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <LocationOn fontSize="small" color="action" />
-                  <Typography variant="body2" color="text.secondary">
-                    {artisan.location}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <CalendarToday fontSize="small" color="action" />
                   <Typography variant="body2" color="text.secondary">
-                    Joined {formatJoinDate(artisan.joinDate)}
+                    Joined {formatJoinDate(artisan.createdAt.toString())}
                   </Typography>
                 </Box>
 
-                {artisan.website && (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <Language fontSize="small" color="action" />
-                    <Typography
-                      variant="body2"
-                      color="primary"
-                      component="a"
-                      href={`https://${artisan.website}`}
-                      target="_blank"
-                      sx={{
-                        textDecoration: "none",
-                        "&:hover": { textDecoration: "underline" },
-                      }}
-                    >
-                      {artisan.website}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-
-              {/* Social Media Links */}
-              {/* {artisan.socialMedia && (
-                <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                  {artisan.socialMedia.instagram && (
-                    <Tooltip title={`Follow on Instagram: ${artisan.socialMedia.instagram}`}>
-                      <IconButton size="small" color="primary">
-                        <Instagram />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {artisan.socialMedia.facebook && (
-                    <Tooltip title={`Visit Facebook: ${artisan.socialMedia.facebook}`}>
-                      <IconButton size="small" color="primary">
-                        <Facebook />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {artisan.socialMedia.etsy && (
-                    <Tooltip title={`Shop on Etsy: ${artisan.socialMedia.etsy}`}>
-                      <IconButton size="small" color="primary">
-                        <Store />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </Box>
-              )} */}
-
-              {/* Specialties */}
-              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-                {artisan.specialties?.map((specialty, index) => (
-                  <Chip
-                    key={Math.random()}
-                    label={specialty}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                  />
-                ))}
-              </Box>
-
-              {/* Stats */}
-              <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {artisanProducts.length}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Products
-                  </Typography>
-                </Box>
-                <Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
+                  <Box>
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      {calculateAverageRating().toFixed(1)}
+                      {artisanProducts.length}
                     </Typography>
-                    <Rating
-                      value={calculateAverageRating()}
-                      precision={0.1}
-                      size="small"
-                      readOnly
-                    />
+                    <Typography variant="body2" color="text.secondary">
+                      Products
+                    </Typography>
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {getTotalReviews()} reviews
-                  </Typography>
+                  <Box>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                    >
+                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        {artisan.averageRating?.toFixed(1)}
+                      </Typography>
+                      <Rating
+                        value={artisan.averageRating}
+                        precision={0.1}
+                        size="small"
+                        readOnly
+                      />
+                    </Box>
+                    <Typography variant="body2" color="text.secondary">
+                      {totalReviews} reviews
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
 
-              {/* Bio */}
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ lineHeight: 1.6 }}
-              >
-                {artisan.bio}
-              </Typography>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ lineHeight: 1.6 }}
+                >
+                  {artisan.biography}
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Paper>
 
-        {/* Products Section */}
         <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
           <Typography
             variant="h5"
@@ -309,7 +240,7 @@ function ArtisanPage() {
           ) : (
             <Grid container spacing={3}>
               {artisanProducts.map((product) => (
-                <Grid item xs={12} sm={6} md={4} key={product.id}>
+                <Grid item xs={12} sm={6} md={4} key={product._id.toString()}>
                   <Card
                     sx={{
                       cursor: "pointer",
@@ -318,12 +249,12 @@ function ArtisanPage() {
                         transform: "translateY(-4px)",
                       },
                     }}
-                    onClick={() => router.push(`/products/${product.id}`)}
+                    onClick={() => router.push(`/products/${product._id}`)}
                   >
                     <CardMedia
                       component="img"
                       height="200"
-                      image={product.images}
+                      image={product.imageUrl}
                       alt={product.name}
                     />
                     <CardContent>
@@ -375,7 +306,7 @@ function ArtisanPage() {
                             color="primary"
                             sx={{ fontWeight: 600 }}
                           >
-                            ${product.price}
+                            ${product.currentPrice}
                           </Typography>
                           {product.originalPrice && (
                             <Typography
@@ -390,9 +321,9 @@ function ArtisanPage() {
                         {product.isNew && (
                           <Chip label="New" size="small" color="success" />
                         )}
-                        {product.discount && (
+                        {product.originalPrice < product.currentPrice && (
                           <Chip
-                            label={`-${product.discount}%`}
+                            label={`-${calculateDiscountPercentage(product.originalPrice, product.currentPrice)}%`}
                             size="small"
                             color="error"
                           />
@@ -406,8 +337,7 @@ function ArtisanPage() {
           )}
         </Paper>
       </Container>
-
-      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
+      <Footer />
     </Box>
   );
 }

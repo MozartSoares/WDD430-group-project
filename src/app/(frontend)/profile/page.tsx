@@ -2,21 +2,10 @@
 "use client";
 
 import { AddProductModal, Footer, Header } from "@/components";
-import {
-  type DemoProduct,
-  type DemoUser,
-  demoUsers,
-  getProductsByArtistId,
-} from "@/data/demoData";
-import {
-  Add,
-  CalendarToday,
-  Cancel,
-  Edit,
-  Language,
-  LocationOn,
-  Save,
-} from "@mui/icons-material";
+import { ImageUpload } from "@/components/common/ImageUpload";
+import { useArtisans } from "@/hooks/useArtisans";
+import type { IProduct, IUser } from "@/types";
+import { Add, CalendarToday, Cancel, Edit, Save } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -25,6 +14,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  CircularProgress,
   Container,
   Grid,
   Paper,
@@ -42,23 +32,30 @@ function ProfilePage() {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [userData, setUserData] = useState<DemoUser | null>(null);
-  const [userProducts, setUserProducts] = useState<DemoProduct[]>([]);
-  const [editedProfile, setEditedProfile] = useState<Partial<DemoUser>>({});
+  const [user, setUser] = useState<IUser | null>(null);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [editedProfile, setEditedProfile] = useState<Partial<IUser>>({});
+  const {
+    getArtisan,
+    updateArtisan,
+    loading: userLoading,
+    error: userError,
+  } = useArtisans();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (session?.user?.email) {
-      const user = demoUsers.find((u) => u.email === session.user!.email);
-      if (user) {
-        setUserData(user);
-        setEditedProfile(user);
-        const products = getProductsByArtistId(user.artistId);
-        setUserProducts(products);
+    const fetchUser = async () => {
+      if (session?.user?.id) {
+        const user = await getArtisan(session?.user?.id);
+        setUser(user.user);
+        setEditedProfile(user.user);
+        setProducts(user.user.products);
       }
-    }
+    };
+    fetchUser();
   }, [session]);
 
-  if (status === "loading") {
+  if (userLoading && !user) {
     return (
       <Box
         sx={{
@@ -68,17 +65,17 @@ function ProfilePage() {
           minHeight: "100vh",
         }}
       >
-        <Typography>Loading...</Typography>
+        <CircularProgress />
       </Box>
     );
   }
 
-  if (status === "unauthenticated") {
+  if (userError && !user) {
     router.push("/login");
     return null;
   }
 
-  if (!userData) {
+  if (!user && !userLoading) {
     return (
       <Box
         sx={{
@@ -93,34 +90,43 @@ function ProfilePage() {
     );
   }
 
+  if (!user) {
+    return null;
+  }
+
   const handleEditToggle = () => {
     if (isEditing) {
-      setEditedProfile(userData);
+      setEditedProfile(user!);
     }
     setIsEditing(!isEditing);
   };
 
-  const handleSave = () => {
-    // In real app, this would make an API call
-    const updatedUser = { ...userData, ...editedProfile };
-    setUserData(updatedUser);
-
-    // Update the demo data (for demo purposes)
-    const userIndex = demoUsers.findIndex((u) => u.id === userData.id);
-    if (userIndex !== -1) {
-      demoUsers[userIndex] = updatedUser;
+  const handleSave = async () => {
+    const updatedUser = { ...user, ...editedProfile };
+    const updatedUserResponse = await updateArtisan(
+      user!._id.toString(),
+      updatedUser,
+    );
+    if (updatedUserResponse.success) {
+      setUser(updatedUserResponse.user);
     }
-
     setIsEditing(false);
   };
 
   const handleInputChange =
-    (field: keyof DemoUser) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (field: keyof IUser) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setEditedProfile((prev) => ({
         ...prev,
         [field]: event.target.value,
       }));
     };
+
+  const handleImageChange = (base64: string | null) => {
+    setEditedProfile((prev) => ({
+      ...prev,
+      imageUrl: base64 || undefined,
+    }));
+  };
 
   const handleSpecialtiesChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -135,8 +141,8 @@ function ProfilePage() {
     }));
   };
 
-  const handleProductAdded = (newProduct: DemoProduct) => {
-    setUserProducts((prev) => [newProduct, ...prev]);
+  const handleProductAdded = (newProduct: IProduct) => {
+    setProducts((prev) => [newProduct, ...prev]);
     setShowAddProduct(false);
   };
 
@@ -149,7 +155,7 @@ function ProfilePage() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header cartItemCount={0} onCartClick={() => {}} />
+      <Header />
 
       <Container maxWidth="lg" sx={{ py: 4, flexGrow: 1 }}>
         {/* Profile Header */}
@@ -157,12 +163,22 @@ function ProfilePage() {
           <Box
             sx={{ display: "flex", alignItems: "flex-start", gap: 3, mb: 3 }}
           >
-            <Avatar
-              src={userData.profileImage}
-              sx={{ width: 120, height: 120, fontSize: "3rem" }}
-            >
-              {userData.name.charAt(0)}
-            </Avatar>
+            {isEditing ? (
+              <ImageUpload
+                currentImage={editedProfile.imageUrl || user?.imageUrl}
+                onImageChange={handleImageChange}
+                variant="avatar"
+                size={120}
+              />
+            ) : (
+              <Avatar
+                src={user?.imageUrl}
+                sx={{ width: 120, height: 120, fontSize: "3rem" }}
+              >
+                <img src={user?.imageUrl} alt={user?.name} />
+                {/* {user?.name?.charAt(0)} */}
+              </Avatar>
+            )}
 
             <Box sx={{ flexGrow: 1 }}>
               <Box
@@ -182,7 +198,7 @@ function ProfilePage() {
                     component="h1"
                     sx={{ fontWeight: 600 }}
                   >
-                    {userData.name}
+                    {user?.name}
                   </Typography>
                 )}
 
@@ -218,7 +234,7 @@ function ProfilePage() {
               </Box>
 
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                {/* <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <LocationOn fontSize="small" color="action" />
                   {isEditing ? (
                     <TextField
@@ -230,19 +246,19 @@ function ProfilePage() {
                     />
                   ) : (
                     <Typography variant="body2" color="text.secondary">
-                      {userData.location}
+                      {user.biography}
                     </Typography>
                   )}
-                </Box>
+                </Box> */}
 
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <CalendarToday fontSize="small" color="action" />
                   <Typography variant="body2" color="text.secondary">
-                    Joined {formatJoinDate(userData.joinDate)}
+                    Joined {formatJoinDate(user?.createdAt?.toString() ?? "")}
                   </Typography>
                 </Box>
 
-                {userData.website && (
+                {/* {user.website && (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                     <Language fontSize="small" color="action" />
                     {isEditing ? (
@@ -258,18 +274,18 @@ function ProfilePage() {
                         variant="body2"
                         color="primary"
                         component="a"
-                        href={`https://${userData.website}`}
+                        href={`https://${user.website}`}
                         target="_blank"
                       >
-                        {userData.website}
+                        {user.website}
                       </Typography>
                     )}
                   </Box>
-                )}
+                )} */}
               </Box>
 
               {/* Specialties */}
-              <Box sx={{ mb: 2 }}>
+              {/* <Box sx={{ mb: 2 }}>
                 {isEditing ? (
                   <TextField
                     label="Specialties (comma separated)"
@@ -282,7 +298,7 @@ function ProfilePage() {
                   />
                 ) : (
                   <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                    {userData.specialties?.map((specialty, index) => (
+                    {user.specialties?.map((specialty) => (
                       <Chip
                         key={Math.random()}
                         label={specialty}
@@ -292,15 +308,15 @@ function ProfilePage() {
                       />
                     ))}
                   </Box>
-                )}
-              </Box>
+                )} */}
+              {/* </Box> */}
 
               {/* Bio */}
               {isEditing ? (
                 <TextField
                   label="Bio"
-                  value={editedProfile.bio || ""}
-                  onChange={handleInputChange("bio")}
+                  value={editedProfile.biography || ""}
+                  onChange={handleInputChange("biography")}
                   variant="outlined"
                   multiline
                   rows={4}
@@ -313,7 +329,7 @@ function ProfilePage() {
                   color="text.secondary"
                   sx={{ lineHeight: 1.6 }}
                 >
-                  {userData.bio}
+                  {user?.biography}
                 </Typography>
               )}
             </Box>
@@ -331,7 +347,7 @@ function ProfilePage() {
             }}
           >
             <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
-              My Products ({userProducts.length})
+              My Products ({products.length})
             </Typography>
             <Button
               variant="contained"
@@ -343,7 +359,7 @@ function ProfilePage() {
             </Button>
           </Box>
 
-          {userProducts.length === 0 ? (
+          {products.length === 0 ? (
             <Box sx={{ textAlign: "center", py: 6 }}>
               <Typography variant="h6" color="text.secondary" gutterBottom>
                 No products listed yet
@@ -361,8 +377,8 @@ function ProfilePage() {
             </Box>
           ) : (
             <Grid container spacing={3}>
-              {userProducts.map((product) => (
-                <Grid item xs={12} sm={6} md={4} key={product.id}>
+              {products.map((product, index) => (
+                <Grid item xs={12} sm={6} md={4} key={product.name}>
                   <Card
                     sx={{
                       cursor: "pointer",
@@ -371,12 +387,12 @@ function ProfilePage() {
                         transform: "translateY(-4px)",
                       },
                     }}
-                    onClick={() => router.push(`/products/${product.id}`)}
+                    onClick={() => router.push(`/products/${product._id}`)}
                   >
                     <CardMedia
                       component="img"
                       height="200"
-                      image="/api/placeholder/300/200"
+                      image={product.imageUrl}
                       alt={product.name}
                     />
                     <CardContent>
@@ -427,7 +443,7 @@ function ProfilePage() {
                           color="primary"
                           sx={{ fontWeight: 600 }}
                         >
-                          ${product.price}
+                          ${product.currentPrice}
                         </Typography>
                         {product.isNew && (
                           <Chip label="New" size="small" color="success" />
@@ -442,14 +458,14 @@ function ProfilePage() {
         </Paper>
       </Container>
 
-      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
+      <Footer />
 
       {/* Add Product Modal */}
       <AddProductModal
         open={showAddProduct}
         onClose={() => setShowAddProduct(false)}
         onProductAdded={handleProductAdded}
-        artistId={userData.artistId}
+        artistId={user?._id.toString() ?? ""}
       />
     </Box>
   );

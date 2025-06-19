@@ -41,11 +41,6 @@ function Home() {
         console.error("Error fetching categories:", error);
       }
     };
-    fetchCategories();
-  }, []);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const productsResponse = await getProducts();
@@ -56,7 +51,7 @@ function Home() {
         console.error("Error fetching products:", error);
       }
     };
-    fetchProducts();
+    Promise.all([fetchCategories(), fetchProducts()]);
   }, []);
 
   const handleCategoryClick = (category: ICategory) => {

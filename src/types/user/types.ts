@@ -6,4 +6,7 @@ export interface IUser extends IBase {
   password: string;
   biography?: string;
   imageUrl?: string;
+
+  //virtual
+  averageRating?: number;
 }

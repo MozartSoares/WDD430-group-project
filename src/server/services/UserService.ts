@@ -1,5 +1,5 @@
 import { hashPassword } from "@/lib/password";
-import { User } from "@/models/";
+import { User, waitForUserVirtuals } from "@/models/";
 import type { IUser, createUserSchema } from "@/types";
 
 export const UserService = {
@@ -10,22 +10,18 @@ export const UserService = {
   },
   findByEmail: async (email: string): Promise<IUser | null> => {
     const user = await User.findOne({ email });
-    return user;
+    return await waitForUserVirtuals(user);
   },
   findById: async (id: string): Promise<IUser | null> => {
-    const user = await User.findById(id);
-    return user;
+    const userWithProducts = await User.findById(id).populate("products");
+    return await waitForUserVirtuals(userWithProducts);
   },
   getAll: async (): Promise<IUser[] | null> => {
     return await User.find();
   },
   getById: async (id: string): Promise<IUser | null> => {
-    return await User.findById(id);
-  },
-  getByIdWithProducts: async (id: string): Promise<IUser | null> => {
-    const user = await UserService.getById(id);
-
-    return await User.findById(id).populate("products");
+    const userWithProducts = await User.findById(id).populate("products");
+    return await waitForUserVirtuals(userWithProducts);
   },
 
   update: async (id: string, data: Partial<IUser>) => {

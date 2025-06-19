@@ -1,7 +1,10 @@
 // src/components/modals/ReviewModal.tsx
 "use client";
 
-import type { DemoReview } from "@/data/demoData";
+import { useReviews } from "@/hooks/useReviews";
+import type { IProduct, IUser } from "@/types";
+import type { CreateReviewSchema } from "@/types/reviews/schemas";
+import type { IReview } from "@/types/reviews/types";
 import { Close, Star } from "@mui/icons-material";
 import {
   Alert,
@@ -22,26 +25,23 @@ import { useState } from "react";
 interface ReviewModalProps {
   open: boolean;
   onClose: () => void;
-  onReviewAdded: (review: DemoReview) => void;
-  productId: string;
-  productName: string;
-  userId: string;
-  userName: string;
+  onReviewAdded: (review: IReview) => void;
+  product: IProduct;
+  user: IUser & { id: string };
 }
 
 export const ReviewModal = ({
   open,
   onClose,
   onReviewAdded,
-  productId,
-  productName,
-  userId,
-  userName,
+  product,
+  user,
 }: ReviewModalProps) => {
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const { createReview, loading: reviewLoading } = useReviews();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -66,21 +66,17 @@ export const ReviewModal = ({
     setLoading(true);
 
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const newReview: DemoReview = {
-        id: `review_${Date.now()}`,
-        productId,
-        userId,
-        userName,
+      const newReview: CreateReviewSchema = {
+        productId: product._id.toString(),
+        userId: user.id,
         rating: rating!,
         comment: comment.trim(),
-        createdAt: new Date().toISOString(),
-        helpful: 0,
       };
 
-      onReviewAdded(newReview);
+      const reviewResponse = await createReview(newReview);
+      if (reviewResponse.success && reviewResponse.review) {
+        onReviewAdded(reviewResponse.review);
+      }
       handleClose();
     } catch (error) {
       console.error("Error adding review:", error);
@@ -155,7 +151,7 @@ export const ReviewModal = ({
         {/* Product Info */}
         <Box sx={{ mb: 3, p: 2, backgroundColor: "#f5f5f5", borderRadius: 2 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-            {productName}
+            {product.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Share your experience with this product

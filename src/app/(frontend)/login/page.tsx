@@ -66,7 +66,7 @@ function LoginPage() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header cartItemCount={0} onCartClick={() => {}} />
+      <Header />
 
       <Box
         sx={{
@@ -308,7 +308,7 @@ function LoginPage() {
         </Container>
       </Box>
 
-      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
+      <Footer />
     </Box>
   );
 }

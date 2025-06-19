@@ -1,5 +1,6 @@
 import type { IProduct, IReview } from "@/types";
 import mongoose from "mongoose";
+import { waitForReviewVirtuals } from "./Review";
 
 const ProductModel = new mongoose.Schema<IProduct>(
   {
@@ -24,6 +25,14 @@ const ProductModel = new mongoose.Schema<IProduct>(
   },
   { timestamps: true },
 );
+
+ProductModel.virtual("category", {
+  ref: "Category",
+  localField: "categoryId",
+  strictPopulate: false,
+  foreignField: "_id",
+  justOne: true,
+});
 
 ProductModel.virtual("reviews", {
   ref: "Review",
@@ -74,18 +83,26 @@ ProductModel.virtual("isNew").get(async function () {
 
 export const waitForProductVirtuals = async (product: any) => {
   const productObj = product.toObject();
-  const [rating, reviewCount, isNew, reviews] = await Promise.all([
+  const [rating, reviewCount, isNew, category, reviews] = await Promise.all([
     product.rating,
     product.reviewCount,
     product.isNew,
+    product.category,
     product.reviews,
   ]);
+  const reviewsWithUser = await Promise.all(
+    reviews.map(async (review: IReview) => {
+      return await waitForReviewVirtuals(review);
+    }),
+  );
+
   return {
     ...productObj,
     rating,
     reviewCount,
     isNew,
-    reviews,
+    category,
+    reviews: reviewsWithUser,
   };
 };
 

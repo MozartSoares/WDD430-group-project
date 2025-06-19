@@ -4,7 +4,14 @@ import { Footer, Header, ProductGrid } from "@/components";
 import { useProducts } from "@/hooks/useProducts";
 import type { IProduct } from "@/types";
 import { ChevronRight } from "@mui/icons-material";
-import { Box, Breadcrumbs, Container, Link, Typography } from "@mui/material";
+import {
+  Box,
+  Breadcrumbs,
+  CircularProgress,
+  Container,
+  Link,
+  Typography,
+} from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -66,8 +73,8 @@ function ProductsPage() {
     setSearch(search);
   };
 
-  const handleProductClick = (product: any) => {
-    router.push(`/products/${product.id}`);
+  const handleProductClick = (product: IProduct) => {
+    router.push(`/products/${product._id}`);
   };
 
   const handlePageChange = (page: number) => {
@@ -125,8 +132,7 @@ function ProductsPage() {
           {pageTitle}
         </Typography>
 
-        {/* Suspense wrap para o SearchParamsHandler */}
-        <Suspense fallback={<div>Loading filters...</div>}>
+        <Suspense fallback={<CircularProgress />}>
           <SearchParamsHandler
             onCategoryChange={handleCategoryChange}
             onSearchChange={handleSearchChange}
@@ -148,6 +154,7 @@ function ProductsPage() {
 
       <Box component="main" sx={{ flexGrow: 1 }}>
         <ProductGrid
+          loading={productLoading}
           products={products}
           currentPage={currentPage}
           onPageChange={handlePageChange}
