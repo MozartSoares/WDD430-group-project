@@ -5,11 +5,9 @@ import {
   Category,
   Close,
   Home,
-  Info,
   Logout,
   Menu as MenuIcon,
   Person,
-  Phone,
   Search,
   ShoppingBag,
   ShoppingCart,
@@ -37,17 +35,15 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
-import { useCartWidget } from '../providers/CartProvider';
-
+import { useCartWidget } from "../providers/CartProvider";
 
 interface HeaderProps {
-  cartItemCount?: number;
   isLoggedIn?: boolean;
   onLoginClick?: () => void;
   onCartClick?: () => void;
 }
 
-export const Header = ({ cartItemCount = 0, onCartClick }: HeaderProps) => {
+export const Header = ({ onCartClick }: HeaderProps) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -55,8 +51,7 @@ export const Header = ({ cartItemCount = 0, onCartClick }: HeaderProps) => {
     null,
   );
   const [searchQuery, setSearchQuery] = useState("");
-  const {openCart, cartQuantity}  = useCartWidget()
-
+  const { openCart, cartQuantity } = useCartWidget();
 
   const isLoggedIn = !!session;
 
@@ -104,8 +99,6 @@ export const Header = ({ cartItemCount = 0, onCartClick }: HeaderProps) => {
     { label: "Home", href: "/", icon: <Home /> },
     { label: "All Products", href: "/products", icon: <ShoppingBag /> },
     { label: "Categories", href: "/categories", icon: <Category /> },
-    { label: "About", href: "/about", icon: <Info /> },
-    { label: "Contact", href: "/contact", icon: <Phone /> },
   ];
 
   const handleNavClick = (href: string) => {

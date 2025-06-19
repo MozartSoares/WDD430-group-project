@@ -18,7 +18,6 @@ import {
   IconButton,
   InputAdornment,
   Paper,
-  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -75,7 +74,7 @@ export default function RegisterPage() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header cartItemCount={0} onCartClick={() => {}} />
+      <Header />
       <Box
         sx={{
           flexGrow: 1,
@@ -211,7 +210,7 @@ export default function RegisterPage() {
           </Paper>
         </Container>
       </Box>
-      <Footer onContactClick={() => {}} onLinkClick={() => {}} />
+      <Footer />
     </Box>
   );
 }

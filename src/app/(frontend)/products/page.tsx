@@ -1,7 +1,8 @@
 "use client";
 
 import { Footer, Header, ProductGrid } from "@/components";
-import { demoProducts } from "@/data/demoData";
+import { useProducts } from "@/hooks/useProducts";
+import type { IProduct } from "@/types";
 import { ChevronRight } from "@mui/icons-material";
 import { Box, Breadcrumbs, Container, Link, Typography } from "@mui/material";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -35,6 +36,27 @@ function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [category, setCategory] = useState<string | null>(null);
   const [search, setSearch] = useState<string | null>(null);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const {
+    getProducts,
+    loading: productLoading,
+    error: productError,
+  } = useProducts();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsResponse = await getProducts();
+        if (productsResponse.success && productsResponse.products) {
+          setProducts(productsResponse.products);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleCategoryChange = (cat: string | null) => {
     setCategory(cat);
@@ -50,14 +72,6 @@ function ProductsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const handleSortChange = (sortBy: string) => {
-    console.log("Sort changed to:", sortBy);
-  };
-
-  const handleFilterClick = () => {
-    console.log("Filter clicked");
   };
 
   const getCategoryName = (categoryId: string | null) => {
@@ -78,10 +92,7 @@ function ProductsPage() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Header
-        cartItemCount={3}
-        onCartClick={() => console.log("Cart clicked")}
-      />
+      <Header />
 
       <Container maxWidth="lg" sx={{ py: 3 }}>
         {/* Breadcrumbs */}
@@ -137,21 +148,15 @@ function ProductsPage() {
 
       <Box component="main" sx={{ flexGrow: 1 }}>
         <ProductGrid
-          products={demoProducts}
-          totalProducts={28}
+          products={products}
           currentPage={currentPage}
           onPageChange={handlePageChange}
           onProductClick={handleProductClick}
-          onSortChange={handleSortChange}
-          onFilterClick={handleFilterClick}
           showFilters={true}
         />
       </Box>
 
-      <Footer
-        onContactClick={() => console.log("Contact clicked")}
-        onLinkClick={() => console.log("Footer link clicked")}
-      />
+      <Footer />
     </Box>
   );
 }

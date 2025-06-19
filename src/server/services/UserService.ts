@@ -22,6 +22,12 @@ export const UserService = {
   getById: async (id: string): Promise<IUser | null> => {
     return await User.findById(id);
   },
+  getByIdWithProducts: async (id: string): Promise<IUser | null> => {
+    const user = await UserService.getById(id);
+
+    return await User.findById(id).populate("products");
+  },
+
   update: async (id: string, data: Partial<IUser>) => {
     if (data.password) {
       data.password = await hashPassword(data.password);

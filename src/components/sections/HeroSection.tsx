@@ -1,4 +1,3 @@
-// src/components/sections/HeroSection.tsx
 "use client";
 import {
   Box,

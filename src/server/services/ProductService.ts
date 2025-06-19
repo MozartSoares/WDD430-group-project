@@ -1,4 +1,4 @@
-import { Product } from "@/models/Product";
+import { Product, waitForProductVirtuals } from "@/models/Product";
 import type { CreateProductSchema } from "@/types";
 
 export const ProductService = {
@@ -6,16 +6,37 @@ export const ProductService = {
     return await Product.create(product);
   },
   getAll: async () => {
-    return await Product.find();
+    const products = await Product.find().populate("reviews");
+
+    const productsWithRating = await Promise.all(
+      products.map(async (product) => {
+        return await waitForProductVirtuals(product);
+      }),
+    );
+
+    return productsWithRating;
   },
   getById: async (id: string) => {
-    return await Product.findById(id);
+    const product = await Product.findById(id).populate("reviews");
+    return await waitForProductVirtuals(product);
   },
   getByCategoryId: async (id: string) => {
-    return await Product.find({categoryId: id});
+    const products = await Product.find({ categoryId: id }).populate("reviews");
+    const productsWithRating = await Promise.all(
+      products.map(async (product) => {
+        return await waitForProductVirtuals(product);
+      }),
+    );
+    return productsWithRating;
   },
   getByUserId: async (id: string) => {
-    return await Product.find({userId: id});
+    const products = await Product.find({ userId: id }).populate("reviews");
+    const productsWithRating = await Promise.all(
+      products.map(async (product) => {
+        return await waitForProductVirtuals(product);
+      }),
+    );
+    return productsWithRating;
   },
   update: async (id: string, data: Partial<CreateProductSchema>) => {
     return await Product.findByIdAndUpdate(id, data, { new: true });

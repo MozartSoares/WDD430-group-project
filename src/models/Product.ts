@@ -1,5 +1,5 @@
+import type { IProduct, IReview } from "@/types";
 import mongoose from "mongoose";
-import type { IProduct } from "@/types";
 
 const ProductModel = new mongoose.Schema<IProduct>(
   {
@@ -19,13 +19,75 @@ const ProductModel = new mongoose.Schema<IProduct>(
     },
     description: { type: String, required: false },
     stockQuantity: { type: Number, required: true },
-    materials: [
-        { type: String, required: false }
-    ],
+    materials: [{ type: String, required: false }],
     dimensions: { type: String, required: false },
   },
   { timestamps: true },
 );
+
+ProductModel.virtual("reviews", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "productId",
+  strictPopulate: false,
+  justOne: false,
+});
+
+ProductModel.virtual("rating").get(async function () {
+  if (this.reviews && this.reviews.length > 0) {
+    const totalRating = this.reviews.reduce(
+      (sum: number, review: IReview) => sum + review.rating,
+      0,
+    );
+    return Math.round((totalRating / this.reviews.length) * 10) / 10;
+  }
+
+  const Review = mongoose.model("Review");
+  const reviews = await Review.find({ productId: this._id });
+
+  if (reviews.length === 0) return 0;
+
+  const totalRating = reviews.reduce(
+    (sum: number, review: IReview) => sum + review.rating,
+    0,
+  );
+  return Math.round((totalRating / reviews.length) * 10) / 10;
+});
+
+ProductModel.virtual("reviewCount").get(async function () {
+  if (this.reviews && Array.isArray(this.reviews)) {
+    return this.reviews.length;
+  }
+
+  const Review = mongoose.model("Review");
+  const count = await Review.countDocuments({ productId: this._id });
+  return count;
+});
+
+ProductModel.virtual("isNew").get(async function () {
+  const now = new Date();
+  const createdAt = new Date(this.createdAt);
+  const diffTime = Math.abs(now.getTime() - createdAt.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays <= 7;
+});
+
+export const waitForProductVirtuals = async (product: any) => {
+  const productObj = product.toObject();
+  const [rating, reviewCount, isNew, reviews] = await Promise.all([
+    product.rating,
+    product.reviewCount,
+    product.isNew,
+    product.reviews,
+  ]);
+  return {
+    ...productObj,
+    rating,
+    reviewCount,
+    isNew,
+    reviews,
+  };
+};
 
 export const Product =
   mongoose.models.Product || mongoose.model<IProduct>("Product", ProductModel);

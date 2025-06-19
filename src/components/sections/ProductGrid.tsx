@@ -1,6 +1,6 @@
-// src/components/sections/ProductGrid.tsx
 "use client";
 
+import type { IProduct } from "@/types";
 import { FilterList } from "@mui/icons-material";
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  CircularProgress,
   Container,
   FormControl,
   Grid,
@@ -17,74 +18,40 @@ import {
   Pagination,
   Rating,
   Select,
+  type SelectChangeEvent,
   Typography,
-  useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useState } from "react";
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviewCount: number;
-  images?: string;
-  isNew?: boolean;
-  discount?: number;
-  colors?: string[];
-  sizes?: string[];
-}
+import { useMemo, useState } from "react";
 
 interface ProductGridProps {
-  products?: Product[];
-  totalProducts?: number;
+  loading: boolean;
+  products: IProduct[];
   currentPage?: number;
   onPageChange?: (page: number) => void;
-  onProductClick?: (product: Product) => void;
+  onProductClick?: (product: IProduct) => void;
   onSortChange?: (sortBy: string) => void;
   onFilterClick?: () => void;
   showFilters?: boolean;
 }
 
-const defaultProducts: Product[] = [
-  {
-    id: "1",
-    name: "Product Name",
-    description: "Description, color, size",
-    price: 95,
-    originalPrice: 119,
-    rating: 4.5,
-    reviewCount: 42,
-    isNew: true,
-    discount: 20,
-  },
-  {
-    id: "2",
-    name: "Product Name",
-    description: "Description, color, size",
-    price: 95,
-    rating: 4.0,
-    reviewCount: 28,
-    isNew: true,
-  },
-  // Add more products as needed
-  ...Array.from({ length: 8 }, (_, i) => ({
-    id: `${i + 3}`,
-    name: "Product Name",
-    description: "Description, color, size",
-    price: 95,
-    rating: 4.2,
-    reviewCount: 15,
-    isNew: i % 3 === 0,
-  })),
-];
+const isNewProduct = (createdAt: Date): boolean => {
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - createdAt.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays <= 7;
+};
+
+const calculateDiscountPercentage = (
+  originalPrice: number,
+  currentPrice: number,
+): number => {
+  return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+};
 
 export const ProductGrid = ({
-  products = defaultProducts,
-  totalProducts = 28,
+  loading = true,
+  products,
   currentPage = 1,
   onPageChange,
   onProductClick,
@@ -93,11 +60,12 @@ export const ProductGrid = ({
   showFilters = true,
 }: ProductGridProps) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [sortBy, setSortBy] = useState("");
   const [activeFilters, setActiveFilters] = useState(["New Arrivals"]);
 
-  const handleSortChange = (event: any) => {
+  const totalProducts = useMemo(() => products.length, [products.length]);
+
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
     setSortBy(value);
     if (onSortChange) {
@@ -105,7 +73,7 @@ export const ProductGrid = ({
     }
   };
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = (product: IProduct) => {
     if (onProductClick) {
       onProductClick(product);
     }
@@ -228,148 +196,164 @@ export const ProductGrid = ({
 
       {/* Products Grid */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        {products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} lg={2.4} key={product.id}>
-            <Card
-              sx={{
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: theme.shadows[4],
-                },
-                position: "relative",
-              }}
-              onClick={() => handleProductClick(product)}
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          products.map((product) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              lg={2.4}
+              key={product._id.toString()}
             >
-              {/* Product Image */}
-              <Box sx={{ position: "relative" }}>
-                <CardMedia
-                  component="div"
-                  sx={{
-                    height: 200,
-                    backgroundColor: "#F3F4F6",
-                    backgroundImage: product.images
-                      ? `url(${product.images})`
-                      : "none",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                />
-
-                {/* Badges */}
-                {product.isNew && (
-                  <Chip
-                    label="NEW"
-                    size="small"
+              <Card
+                sx={{
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: theme.shadows[4],
+                  },
+                  position: "relative",
+                }}
+                onClick={() => handleProductClick(product)}
+              >
+                {/* Product Image */}
+                <Box sx={{ position: "relative" }}>
+                  <CardMedia
+                    component="div"
                     sx={{
-                      position: "absolute",
-                      top: 8,
-                      left: 8,
-                      backgroundColor: "text.primary",
-                      color: "background.paper",
-                      fontWeight: "bold",
+                      height: 200,
+                      backgroundColor: "#F3F4F6",
+                      backgroundImage: product.imageUrl
+                        ? `url(${product.imageUrl})`
+                        : "none",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
                     }}
                   />
-                )}
 
-                {product.discount && (
-                  <Chip
-                    label={`-${product.discount}%`}
-                    size="small"
+                  {/* Badges */}
+                  {product.isNew && (
+                    <Chip
+                      label="NEW"
+                      size="small"
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        left: 8,
+                        backgroundColor: "text.primary",
+                        color: "background.paper",
+                        fontWeight: "bold",
+                      }}
+                    />
+                  )}
+
+                  {product?.currentPrice < product?.originalPrice && (
+                    <Chip
+                      label={`-${calculateDiscountPercentage(product.originalPrice, product.currentPrice)}%`}
+                      size="small"
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        backgroundColor: "error.main",
+                        color: "error.contrastText",
+                        fontWeight: "bold",
+                      }}
+                    />
+                  )}
+                </Box>
+
+                {/* Product Info */}
+                <CardContent sx={{ p: 2 }}>
+                  <Typography
+                    variant="subtitle2"
+                    component="h3"
                     sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      backgroundColor: "error.main",
-                      color: "error.contrastText",
-                      fontWeight: "bold",
+                      fontWeight: 500,
+                      mb: 0.5,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
                     }}
-                  />
-                )}
-              </Box>
+                  >
+                    {product.name}
+                  </Typography>
 
-              {/* Product Info */}
-              <CardContent sx={{ p: 2 }}>
-                <Typography
-                  variant="subtitle2"
-                  component="h3"
-                  sx={{
-                    fontWeight: 500,
-                    mb: 0.5,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {product.name}
-                </Typography>
-
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ display: "block", mb: 1 }}
-                >
-                  {product.description}
-                </Typography>
-
-                {/* Rating */}
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                  <Rating
-                    value={product.rating}
-                    precision={0.5}
-                    size="small"
-                    readOnly
-                  />
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ ml: 0.5 }}
+                    sx={{ display: "block", mb: 1 }}
                   >
-                    ({product.reviewCount})
-                  </Typography>
-                </Box>
-
-                {/* Price */}
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography
-                    variant="subtitle2"
-                    component="span"
-                    sx={{ fontWeight: 600, color: "text.primary" }}
-                  >
-                    ${product.price}
+                    {product.description}
                   </Typography>
 
-                  {product.originalPrice && (
+                  {/* Rating */}
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <Rating
+                      value={product.rating}
+                      precision={0.5}
+                      size="small"
+                      readOnly
+                    />
                     <Typography
                       variant="caption"
-                      component="span"
-                      sx={{
-                        textDecoration: "line-through",
-                        color: "text.secondary",
-                      }}
+                      color="text.secondary"
+                      sx={{ ml: 0.5 }}
                     >
-                      ${product.originalPrice}
+                      ({product.reviewCount})
                     </Typography>
-                  )}
+                  </Box>
 
-                  {product.discount && (
+                  {/* Price */}
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Typography
-                      variant="caption"
+                      variant="subtitle2"
                       component="span"
-                      sx={{
-                        color: "error.main",
-                        fontWeight: 500,
-                      }}
+                      sx={{ fontWeight: 600, color: "text.primary" }}
                     >
-                      -{product.discount}%
+                      ${product.currentPrice}
                     </Typography>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+
+                    {product.originalPrice && (
+                      <Typography
+                        variant="caption"
+                        component="span"
+                        sx={{
+                          textDecoration: "line-through",
+                          color: "text.secondary",
+                        }}
+                      >
+                        ${product.originalPrice}
+                      </Typography>
+                    )}
+
+                    {product.currentPrice < product.originalPrice && (
+                      <Typography
+                        variant="caption"
+                        component="span"
+                        sx={{
+                          color: "error.main",
+                          fontWeight: 500,
+                        }}
+                      >
+                        -
+                        {calculateDiscountPercentage(
+                          product.originalPrice,
+                          product.currentPrice,
+                        )}
+                        %
+                      </Typography>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        )}
       </Grid>
 
       {/* Pagination */}
@@ -382,7 +366,7 @@ export const ProductGrid = ({
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          Showing 10 of {totalProducts} products
+          Showing {totalProducts} products
         </Typography>
 
         <Pagination

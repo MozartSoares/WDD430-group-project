@@ -2,12 +2,8 @@
 "use client";
 
 import { Footer, Header } from "@/components/layout/";
-import {
-  type DemoProduct,
-  type DemoUser,
-  getProductsByArtistId,
-  getUserByArtistId,
-} from "@/data/demoData";
+import type { DemoProduct, DemoUser } from "@/data/demoData";
+import { useArtisans } from "@/hooks/useArtisans";
 import {
   CalendarToday,
   ChevronRight,
@@ -36,26 +32,31 @@ function ArtisanPage() {
   const params = useParams();
   const router = useRouter();
   const [artisan, setArtisan] = useState<DemoUser | null>(null);
+  const { getArtisan, loading, error } = useArtisans();
   const [artisanProducts, setArtisanProducts] = useState<DemoProduct[]>([]);
 
   useEffect(() => {
     const artistId = params.id as string;
-    if (artistId) {
-      const user = getUserByArtistId(artistId);
-      if (user) {
-        setArtisan(user);
-        const products = getProductsByArtistId(artistId);
-        setArtisanProducts(products);
+    if (!artistId) return;
+    const fetchArtisan = async () => {
+      try {
+        const artisanResponse = await getArtisan(artistId);
+        if (artisanResponse.success && artisanResponse.users) {
+          setArtisan(artisanResponse.users);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
       }
-    }
-  }, [params.id]);
+    };
+    fetchArtisan();
+  }, [params.id, getArtisan]);
 
   if (!artisan) {
     return (
       <Box
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
-        <Header cartItemCount={0} onCartClick={() => {}} />
+        <Header />
         <Box
           sx={{
             display: "flex",
@@ -66,7 +67,7 @@ function ArtisanPage() {
         >
           <Typography variant="h5">Artisan not found</Typography>
         </Box>
-        <Footer onContactClick={() => {}} onLinkClick={() => {}} />
+        <Footer />
       </Box>
     );
   }

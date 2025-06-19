@@ -1,4 +1,3 @@
-// src/components/layout/Footer.tsx
 "use client";
 import { Facebook, Instagram, Twitter, YouTube } from "@mui/icons-material";
 import {
@@ -10,8 +9,6 @@ import {
   IconButton,
   Link,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 
 interface FooterLink {
@@ -22,11 +19,6 @@ interface FooterLink {
 interface FooterSection {
   title: string;
   links: FooterLink[];
-}
-
-interface FooterProps {
-  onContactClick?: () => void;
-  onLinkClick?: (href: string) => void;
 }
 
 const footerSections: FooterSection[] = [
@@ -60,21 +52,9 @@ const footerSections: FooterSection[] = [
   },
 ];
 
-export const Footer = ({ onContactClick, onLinkClick }: FooterProps) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleLinkClick = (href: string) => {
-    if (onLinkClick) {
-      onLinkClick(href);
-    }
-  };
-
-  const handleContactClick = () => {
-    if (onContactClick) {
-      onContactClick();
-    }
-  };
+export const Footer = () => {
+  const handleContactClick = () => {};
+  const handleLinkClick = (href: string) => {};
 
   return (
     <Box

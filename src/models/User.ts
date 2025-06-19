@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import type { IUser } from "@/types";
+import mongoose from "mongoose";
 
 const UserModel = new mongoose.Schema<IUser>(
   {
@@ -11,6 +11,13 @@ const UserModel = new mongoose.Schema<IUser>(
   },
   { timestamps: true },
 );
+
+UserModel.virtual("products", {
+  ref: "Product",
+  localField: "_id",
+  foreignField: "userId",
+  justOne: false,
+});
 
 export const User =
   mongoose.models.User || mongoose.model<IUser>("User", UserModel);
