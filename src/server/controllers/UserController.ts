@@ -32,21 +32,6 @@ export class UserController {
     }
   }
 
-  static async getByEmail(email: string) {
-    try {
-      const user = await UserService.findByEmail(email);
-      if (!user) {
-        return Response.json(
-          { success: false, message: "User not by that email found" },
-          { status: 404 },
-        );
-      }
-      return Response.json({ success: true, user });
-    } catch (error) {
-      return handleControllerError(error);
-    }
-  }
-
   @ValidateId
   @ValidateBody(updateUserSchema)
   static async update(id: string, payload: UpdateUserSchema) {

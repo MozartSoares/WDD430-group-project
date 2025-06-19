@@ -5,7 +5,6 @@ const CategoryModel = new mongoose.Schema<ICategory>(
   {
     name: { type: String, required: true },
     description: { type: String },
-    imageUrl: { type: String },
   },
   { timestamps: true }
 );
