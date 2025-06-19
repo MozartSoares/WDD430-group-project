@@ -9,7 +9,4 @@ export interface IProduct extends IBase {
   imageUrl?: string;
   userId: Types.ObjectId;
   categoryId?: Types.ObjectId;
-  stockQuantity: number,
-  materials?: string[],
-  dimensions?: string,
 }

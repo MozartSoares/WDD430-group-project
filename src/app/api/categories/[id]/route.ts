@@ -2,7 +2,7 @@ import { dbConnect } from "@/lib/mongodb";
 import { CategoriesController } from "@/server/controllers";
 import type { NextRequest } from "next/server";
 
-// GET /api/categories/[id] - get category by id
+// GET /api/categories/ - get category by id
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },

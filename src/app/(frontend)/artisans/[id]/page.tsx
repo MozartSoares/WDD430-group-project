@@ -322,7 +322,7 @@ function ArtisanPage() {
                     <CardMedia
                       component="img"
                       height="200"
-                      image={product.images}
+                      image="/api/placeholder/300/200"
                       alt={product.name}
                     />
                     <CardContent>
