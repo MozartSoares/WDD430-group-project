@@ -1,10 +1,10 @@
 "use client";
 
+import { useCategories } from "@/hooks/useCategories";
 import { useProducts } from "@/hooks/useProducts";
-import type { IProduct } from "@/types";
+import type { ICategory, IProduct } from "@/types";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardMedia,
@@ -15,14 +15,13 @@ import {
   Grid,
   InputLabel,
   MenuItem,
-  Pagination,
   Rating,
   Select,
   type SelectChangeEvent,
   Typography,
   useTheme,
 } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface ProductGridProps {
   loading: boolean;
@@ -43,13 +42,49 @@ export const ProductGrid = ({
 }: ProductGridProps) => {
   const theme = useTheme();
   const [sortBy, setSortBy] = useState("newest");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const { calculateDiscountPercentage } = useProducts();
+  const [categoriesMap, setCategoriesMap] = useState<Map<string, ICategory>>(
+    new Map(),
+  );
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
-  const totalProducts = useMemo(() => products.length, [products.length]);
+  const { getCategories } = useCategories();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await getCategories();
+      setCategories(response.categories);
+      setCategoriesMap(
+        new Map(
+          response.categories.map((category: ICategory) => [
+            category._id.toString(),
+            category,
+          ]),
+        ),
+      );
+    };
+    fetchCategories();
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory === "all") {
+      return products;
+    }
+    return products.filter(
+      (product) => product.categoryId?.toString() === selectedCategory,
+    );
+  }, [products, selectedCategory]);
+
+  const totalProducts = useMemo(
+    () => filteredProducts.length,
+    [filteredProducts.length],
+  );
 
   const sortedProducts = useMemo(() => {
-    const copy = [...products];
+    const copy = [...filteredProducts];
     switch (sortBy) {
       case "price-low":
         return copy.sort((a, b) => a.currentPrice - b.currentPrice);
@@ -63,10 +98,14 @@ export const ProductGrid = ({
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
     }
-  }, [products, sortBy]);
+  }, [filteredProducts, sortBy]);
 
   const handleSortChange = (event: SelectChangeEvent<string>) => {
     setSortBy(event.target.value);
+  };
+
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    setSelectedCategory(event.target.value);
   };
 
   const handleProductClick = (product: IProduct) => {
@@ -85,7 +124,28 @@ export const ProductGrid = ({
       {showFilters && (
         <Box sx={{ mb: 4 }}>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
+              <FormControl size="small" sx={{ minWidth: 180 }}>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={selectedCategory}
+                  label="Category"
+                  onChange={handleCategoryChange}
+                >
+                  <MenuItem value="all">All Categories</MenuItem>
+                  {categories.map((category) => (
+                    <MenuItem
+                      key={category._id.toString()}
+                      value={category._id.toString()}
+                    >
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} md={4}>
               <Box
                 sx={{
                   display: "flex",
@@ -94,11 +154,17 @@ export const ProductGrid = ({
                   alignItems: "center",
                 }}
               >
-                {/* Você pode remover esses botões ou conectar filtros reais */}
+                {selectedCategory !== "all" && (
+                  <Chip
+                    label={`Category: ${categoriesMap.get(selectedCategory)?.name || "Unknown"}`}
+                    onDelete={() => setSelectedCategory("all")}
+                    sx={{ mr: 1, mb: 1 }}
+                  />
+                )}
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <Box
                 sx={{
                   display: "flex",
@@ -313,7 +379,7 @@ export const ProductGrid = ({
           Showing {totalProducts} products
         </Typography>
 
-        <Pagination
+        {/* <Pagination
           count={Math.ceil(totalProducts / 10)}
           page={currentPage}
           onChange={(_, page) => onPageChange && onPageChange(page)}
@@ -326,8 +392,8 @@ export const ProductGrid = ({
               },
             },
           }}
-        />
-
+        /> */}
+        {/* 
         <Button
           variant="contained"
           size="large"
@@ -343,7 +409,7 @@ export const ProductGrid = ({
           }}
         >
           SHOW MORE
-        </Button>
+        </Button> */}
       </Box>
     </Container>
   );
