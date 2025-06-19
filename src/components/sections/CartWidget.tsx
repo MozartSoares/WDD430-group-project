@@ -6,8 +6,11 @@ import { useCartWidget } from "../providers/CartProvider";
 import { demoProducts } from "@/data/demoData";
 import { CartItem } from "./CartItem";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { useRouter } from "next/navigation";
+
 
 export default function CartWidget(){
+    const router = useRouter();
   const { isOpen, closeCart, cartQuantity, cartItems, resetCart }  = useCartWidget()
     return (
         <Drawer open={isOpen} anchor={'right'} onClose={closeCart} PaperProps={{ sx: { width: { xs: "75%", sm: 500 }, padding: 2, }}}> 
@@ -33,7 +36,7 @@ export default function CartWidget(){
                         <Button
                         variant="contained"
                         size="large"
-                        onClick={resetCart}
+                        onClick={() => router.push("/order-confirmation")}
                         sx={{ flexGrow: 1, py: 1.5 }}
                         >
                         Proceed to Checkout
