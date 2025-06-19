@@ -2,7 +2,7 @@ import { dbConnect } from "@/lib/mongodb";
 import { ProductsController } from "@/server/controllers";
 import type { NextRequest } from "next/server";
 
-// GET /api/products/ - get product by id
+// GET /api/products/[id] - get product by id
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },

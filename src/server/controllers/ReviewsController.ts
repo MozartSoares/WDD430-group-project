@@ -37,6 +37,38 @@ export class ReviewsController {
     }
   }
 
+  @ValidateId
+  static async getByProductId(id: string) {
+    try {
+      const review = await ReviewService.getByProductId(id);
+      if (!review) {
+        return Response.json(
+          { success: false, message: "Reviews of that product not found" },
+          { status: 404 },
+        );
+      }
+      return Response.json({ success: true, review });
+    } catch (error) {
+      return handleControllerError(error);
+    }
+  }
+
+  @ValidateId
+  static async getByUserId(id: string) {
+    try {
+      const review = await ReviewService.getByUserId(id);
+      if (!review) {
+        return Response.json(
+          { success: false, message: "Reviews by that user not found" },
+          { status: 404 },
+        );
+      }
+      return Response.json({ success: true, review });
+    } catch (error) {
+      return handleControllerError(error);
+    }
+  }
+
   @ValidateBody(createReviewSchema)
   static async create(payload: CreateReviewSchema) {
     try {

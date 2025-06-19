@@ -1,0 +1,81 @@
+// Localhost ---------------------------------------------------------------
+// Localhost ---------------------------------------------------------------
+// Localhost ---------------------------------------------------------------
+
+### Create a user only works through register page
+# POST http://localhost:3000/api/user HTTP/1.1
+# content-type: application/json
+# 
+# {
+#    "name": "Marcus Rodriguez",
+#    "email": "artisan4@example.com",
+#    "password": "password",
+#    "biography": "Master woodworker specializing in custom furniture and home decor. Each piece is handcrafted using sustainable materials and traditional joinery techniques passed down through generations. I believe in creating heirloom-quality pieces that tell a story.",
+#    "imageUrl": "/api/placeholder/150/150"
+# }
+
+### Get all user
+GET http://localhost:3000/api/user HTTP/1.1
+
+### Get user by id
+GET http://localhost:3000/api/user/684a3938762ff45544f559f5 HTTP/1.1
+
+### Get user by email
+GET http://localhost:3000/api/user/email/user@example.com HTTP/1.1
+
+
+### Update a user
+PUT http://localhost:3000/api/user/685352f2767c0fba49141351 HTTP/1.1
+content-type: application/json
+
+{
+   "name": "Sarah Chen",
+   "email": "artisan3@example.com",
+   "password": "password",
+   "biography": "Passionate ceramic artist with over 10 years of experience creating functional and decorative pottery. I draw inspiration from nature and traditional Japanese techniques, combining them with modern aesthetics to create unique pieces that bring beauty and functionality to everyday life.",
+   "imageUrl": "/api/placeholder/800/300"
+}
+
+### Delete a user
+DELETE http://localhost:3000/api/user/68535aa51573941ff458db03 HTTP/1.1
+
+// Production ---------------------------------------------------------------
+// Production ---------------------------------------------------------------
+// Production ---------------------------------------------------------------
+
+### Create a user only works through register page
+# POST http://localhost:3000/api/user HTTP/1.1
+# content-type: application/json
+# 
+# {
+#    "name": "Marcus Rodriguez",
+#    "email": "artisan4@example.com",
+#    "password": "password",
+#    "biography": "Master woodworker specializing in custom furniture and home decor. Each piece is handcrafted using sustainable materials and traditional joinery techniques passed down through generations. I believe in creating heirloom-quality pieces that tell a story.",
+#    "imageUrl": "/api/placeholder/150/150"
+# }
+
+### Get all user
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/user HTTP/1.1
+
+### Get user by id
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/user/684a3938762ff45544f559f5 HTTP/1.1
+
+### Get user by email
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/user/email/user@example.com HTTP/1.1
+
+
+### Update a user
+PUT https://handcrafted-haven-mozartsoares-projects.vercel.app/api/user/685352f2767c0fba49141351 HTTP/1.1
+content-type: application/json
+
+{
+   "name": "Sarah Chen",
+   "email": "artisan3@example.com",
+   "password": "password",
+   "biography": "Passionate ceramic artist with over 10 years of experience creating functional and decorative pottery. I draw inspiration from nature and traditional Japanese techniques, combining them with modern aesthetics to create unique pieces that bring beauty and functionality to everyday life.",
+   "imageUrl": "/api/placeholder/800/300"
+}
+
+### Delete a user
+DELETE https://handcrafted-haven-mozartsoares-projects.vercel.app/api/user/68535aa51573941ff458db03 HTTP/1.1

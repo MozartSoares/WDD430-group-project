@@ -1,0 +1,81 @@
+// Localhost ---------------------------------------------------------------
+// Localhost ---------------------------------------------------------------
+// Localhost ---------------------------------------------------------------
+
+### Create a products
+POST http://localhost:3000/api/products HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Sterling Silver Necklace",
+    "originalPrice": 120,
+    "currentPrice": 120,
+    "description": 
+      "Elegant handcrafted sterling silver necklace with intricate wire-wrapped pendant. 18-inch chain with adjustable clasp.",
+    "imageUrl": "string",
+    "userId": "68535a8d1573941ff458db02",
+    "categoryId": "68534f39767c0fba49141349",
+    "stockQuantity": 5,
+    "materials": ["Sterling Silver"],
+    "dimensions": "18 inch chain"
+}
+
+### Get all products
+GET http://localhost:3000/api/products HTTP/1.1
+
+### Get product by id
+GET http://localhost:3000/api/products/68534f39767c0fba49141349 HTTP/1.1
+
+### Get product by category  id
+GET http://localhost:3000/api/products/category/68534f39767c0fba49141349 HTTP/1.1
+
+### Get product by user  id
+GET http://localhost:3000/api/products/user/68534f39767c0fba49141349 HTTP/1.1
+
+
+### Update a products
+PUT http://localhost:3000/api/products/68534f39767c0fba49141349 HTTP/1.1
+content-type: application/json
+
+{
+    // "name": 
+    // "description": 
+    // "imageUrl": 
+}
+
+### Delete a products
+DELETE http://localhost:3000/api/products/68534f39767c0fba49141349 HTTP/1.1
+
+// Production ---------------------------------------------------------------
+// Production ---------------------------------------------------------------
+// Production ---------------------------------------------------------------
+
+### Create a products
+POST https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jewelry & Accessories",
+    "description": "Jewels, pendants, bracelets, and other kinds of accessories.",
+    "imageUrl": //Optional image Url
+}
+
+### Get all products
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products HTTP/1.1
+
+### Get product by id
+GET https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products/68534f39767c0fba49141349 HTTP/1.1
+
+
+### Update a products
+PUT https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products/68534f39767c0fba49141349 HTTP/1.1
+content-type: application/json
+
+{
+    // "name": 
+    // "description": 
+    // "imageUrl": 
+}
+
+### Delete a products
+DELETE https://handcrafted-haven-mozartsoares-projects.vercel.app/api/products/68534f39767c0fba49141349 HTTP/1.1

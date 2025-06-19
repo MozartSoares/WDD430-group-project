@@ -5,7 +5,7 @@ import { productImages } from "./demoImage";
 
 export interface DemoUser {
   id: string;
-  artistId: number;
+  artistId: string;
   email: string;
   password: string;
   name: string;
@@ -25,7 +25,7 @@ export interface DemoUser {
 
 export interface DemoProduct {
   id: string;
-  artistId: number;
+  artistId: string;
   name: string;
   description: string;
   price: number;
@@ -58,7 +58,7 @@ export interface DemoReview {
 export const demoUsers: DemoUser[] = [
   {
     id: "user_0",
-    artistId: 0,
+    artistId: "0",
     email: "demo@example.com",
     password: "password",
     name: "Demo User",
@@ -70,7 +70,7 @@ export const demoUsers: DemoUser[] = [
   },
   {
     id: "user_1",
-    artistId: 1,
+    artistId: "1",
     email: "artisan1@example.com",
     password: "password",
     name: "Sarah Chen",
@@ -88,11 +88,12 @@ export const demoUsers: DemoUser[] = [
   },
   {
     id: "user_2",
-    artistId: 2,
+    artistId: "2",
     email: "artisan2@example.com",
     password: "password",
     name: "Marcus Rodriguez",
-    bio: "Master woodworker specializing in custom furniture and home decor. Each piece is handcrafted using sustainable materials and traditional joinery techniques passed down through generations. I believe in creating heirloom-quality pieces that tell a story.",
+    bio: 
+    "Master woodworker specializing in custom furniture and home decor. Each piece is handcrafted using sustainable materials and traditional joinery techniques passed down through generations. I believe in creating heirloom-quality pieces that tell a story.",
     location: "Austin, TX",
     specialties: ["Woodworking", "Furniture", "Custom Design"],
     joinDate: "2023-08-15",
@@ -119,7 +120,7 @@ const isProductNew = (createdAt: string): boolean => {
 export const demoProducts: DemoProduct[] = [
   {
     id: "1",
-    artistId: 1,
+    artistId: "1",
     name: "Handcrafted Ceramic Vase",
     description:
       "Beautiful blue glaze ceramic vase, perfect for fresh flowers or as a standalone decorative piece. Hand-thrown on the pottery wheel with a unique crystalline glaze.",
@@ -139,7 +140,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "2",
-    artistId: 1,
+    artistId: "1",
     name: "Sterling Silver Necklace",
     description:
       "Elegant handcrafted sterling silver necklace with intricate wire-wrapped pendant. 18-inch chain with adjustable clasp.",
@@ -157,7 +158,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "3",
-    artistId: 2,
+    artistId: "2",
     name: "Wooden Coffee Table",
     description:
       "Rustic oak coffee table with natural edge and hand-rubbed finish. Features traditional mortise and tenon joinery for lasting durability.",
@@ -175,7 +176,7 @@ export const demoProducts: DemoProduct[] = [
  },
   {
     id: "4",
-    artistId: 2,
+    artistId: "2",
     name: "Hand-woven Throw Blanket",
     description:
       "Cozy wool blend throw blanket in earth tones. Hand-woven on a traditional loom with natural dyes.",
@@ -195,7 +196,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "5",
-    artistId: 1,
+    artistId: "1",
     name: "Glass Art Sculpture",
     description:
       "Mesmerizing blue and green glass sculpture created using traditional glassblowing techniques. Each piece is unique.",
@@ -213,7 +214,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "6",
-    artistId: 2,
+    artistId: "2",
     name: "Leather Wallet",
     description:
       "Handstitched brown leather wallet with multiple card slots and bill compartment. Made from full-grain leather.",
@@ -231,7 +232,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "7",
-    artistId: 1,
+    artistId: "1",
     name: "Ceramic Dinner Plates Set",
     description:
       "Set of 4 handcrafted ceramic dinner plates with beautiful white glaze and subtle texture. Microwave and dishwasher safe.",
@@ -249,7 +250,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "8",
-    artistId: 1,
+    artistId: "1",
     name: "Macrame Wall Hanging",
     description:
       "Large macrame wall hanging made with natural cotton cord. Perfect for bohemian or modern home decor.",
@@ -267,7 +268,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "9",
-    artistId: 2,
+    artistId: "2",
     name: "Handmade Soap Set",
     description:
       "Set of 3 lavender-scented handmade soaps with natural ingredients. Made with organic oils and essential oils.",
@@ -285,7 +286,7 @@ export const demoProducts: DemoProduct[] = [
 },
   {
     id: "10",
-    artistId: 2,
+    artistId: "2",
     name: "Custom Wood Sign",
     description:
       "Personalized pine wood sign with hand-carved text. Perfect for home decor or business signage.",
@@ -359,13 +360,13 @@ export const getUserById = (userId: string): DemoUser | undefined => {
 };
 
 export const getUserByArtistId = (
-  artistId: number | string,
+  artistId: string,
 ): DemoUser | undefined => {
   return demoUsers.find((user) => user.artistId === artistId);
 };
 
 export const getProductsByArtistId = (
-  artistId: number | string,
+  artistId: string,
 ): DemoProduct[] => {
   return demoProducts.filter((product) => product.artistId === artistId);
 };
